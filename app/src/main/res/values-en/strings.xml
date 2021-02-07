@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Contacts</string>
+    <string name="action_insert_dummy_data">Insert Dummy Data</string>
+    <string name="action_delete_all_entries">Delete All Contacts</string>
+    <string name="editor_activity_title_new_contact">Add a Contact</string>
+    <string name="editor_activity_title_edit_contact">Edit Contact</string>
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
+    <string name="category_overview">Overview</string>
+    <string name="category_favContactSwitch">Favorite contact</string>
+    <string name="hint_contact_name">Name</string>
+    <string name="editor_insert_contact_success">Contact saved!</string>
+    <string name="editor_insert_contact_failed">Error with saving contact</string>
+    <string name="empty_view_title_text">It\'s a bit lonely here...</string>
+    <string name="empty_view_subtitle_text">Get started by adding a contect</string>
+    <string name="hint_contact_lastname">Lastname</string>
+    <string name="category_contacts">Contacts</string>
+    <string name="hint_contact_phone">Phone number</string>
+    <string name="hint_contact_mail">Email</string>
+    <string name="category_infos">Birthday</string>
+    <string name="hint_contact_bday">Birthday date</string>
+    <string name="language_change">Change language</string>
+    <string name="language_fr">French</string>
+    <string name="language_en">English</string>
+    <string name="validate_choice">Validate</string>
+</resources>

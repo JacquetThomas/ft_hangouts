@@ -1,0 +1,231 @@
+/*
+ * Copyright (C) 2016 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.cjacquet.ft.hangouts;
+
+import android.app.LoaderManager;
+import android.content.ContentUris;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.CursorLoader;
+import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.RadioButton;
+
+import com.cjacquet.ft.hangouts.data.ContactContract.ContactEntry;
+
+import java.util.Locale;
+
+import static com.cjacquet.ft.hangouts.data.ContactContract.ContactEntry.COLUMN_CONTACT_LASTNAME;
+import static com.cjacquet.ft.hangouts.data.ContactContract.ContactEntry.COLUMN_CONTACT_NAME;
+import static com.cjacquet.ft.hangouts.data.ContactContract.ContactEntry.COLUMN_CONTACT_PHONE;
+import static com.cjacquet.ft.hangouts.data.ContactContract.ContactEntry.CONTENT_URI;
+import static com.cjacquet.ft.hangouts.data.ContactContract.ContactEntry._ID;
+
+/**
+ * Displays list of contacts that were entered and stored in the app.
+ */
+public class CatalogActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    private final static int CONTACT_LOADER = 0;
+
+    ContactCursorAdapter mCursorAdapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        LocaleHelper.setLocale(CatalogActivity.this, LocaleHelper.getLanguage(this));
+
+        setContentView(R.layout.activity_catalog);
+
+        // Setup FAB to open EditorActivity
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(CatalogActivity.this, EditorActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // Find the ListView which will be populated with the contact data
+        ListView contactListView = (ListView) findViewById(R.id.lvItems);
+
+        // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
+        View emptyView = findViewById(R.id.empty_view);
+        contactListView.setEmptyView(emptyView);
+
+        mCursorAdapter = new ContactCursorAdapter(this, null);
+        contactListView.setAdapter(mCursorAdapter);
+
+        contactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Intent intent = new Intent(CatalogActivity.this, EditorActivity.class);
+
+                Uri currentContactUri = ContentUris.withAppendedId(CONTENT_URI, id);
+                intent.setData(currentContactUri);
+
+                startActivity(intent);
+            }
+        });
+
+        // Init Loader
+        getLoaderManager().initLoader(CONTACT_LOADER, null, this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu options from the res/menu/menu_catalog.xml file.
+        // This adds menu items to the app bar.
+        getMenuInflater().inflate(R.menu.menu_catalog, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // User clicked on a menu option in the app bar overflow menu
+        switch (item.getItemId()) {
+            // Respond to a click on the "Insert dummy data" menu option
+            case R.id.action_insert_dummy_data:
+                this.insertContacts();
+                return true;
+            // Respond to a click on the "Delete all entries" menu option
+            case R.id.action_delete_all_entries:
+                this.deleteContacts();
+                return true;
+            // Respond to a click on the "Change language" menu option
+            case R.id.action_language_change:
+                this.showPopupWindow();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void showPopupWindow() {
+
+        // inflate the layout of the popup window
+        LayoutInflater inflater = (LayoutInflater)
+                getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.popup_window, null);
+
+        // create the popup window
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        boolean focusable = true; // lets taps outside the popup also dismiss it
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+        // show the popup window
+        // which view you pass in doesn't matter, it is only used for the window tolken
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            popupWindow.setElevation(20);
+        }
+        popupWindow.showAtLocation(getWindow().getDecorView().getRootView(), Gravity.CENTER, 0, 0);
+        this.setupRadioGroup(popupView);
+    }
+
+    private void setupRadioGroup(View view) {
+        // Set onClickListener for FR
+        RadioButton switcherFr = view.findViewById(R.id.radioButtonFr);
+        switcherFr.setOnClickListener(new RadioButton.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if(((RadioButton)v).isSelected()){
+                    ((RadioButton)v).setChecked(false);
+                    ((RadioButton)v).setSelected(false);
+                } else {
+                    ((RadioButton)v).setChecked(true);
+                    ((RadioButton)v).setSelected(true);
+                    CatalogActivity.changeLanguage(getApplicationContext(), Locale.FRANCE);
+                }
+            }
+        });
+
+        // Set onClickListener for EN
+        RadioButton switcherEn = view.findViewById(R.id.radioButtonEn);
+        switcherEn.setOnClickListener(new RadioButton.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if(((RadioButton)v).isSelected()){
+                    ((RadioButton)v).setChecked(false);
+                    ((RadioButton)v).setSelected(false);
+                } else {
+                    ((RadioButton)v).setChecked(true);
+                    ((RadioButton)v).setSelected(true);
+                    CatalogActivity.changeLanguage(getApplicationContext(), Locale.ENGLISH);
+                }
+            }
+        });
+
+        // Get current locale
+        String locale = LocaleHelper.getLanguage(this);
+        switch (locale) {
+            case "fr":
+                switcherFr.setChecked(true);
+                break;
+            case "en":
+                switcherEn.setChecked(true);
+                break;
+        }
+    }
+
+    public static void changeLanguage(Context context, Locale locale) {
+        LocaleHelper.setLocale(context, locale.getLanguage());
+
+    }
+
+    private void insertContacts() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_CONTACT_NAME, "Toto");
+        contentValues.put(COLUMN_CONTACT_LASTNAME, "Terrier");
+        contentValues.put(ContactEntry.COLUMN_CONTACT_PHONE, "000-000-000");
+        Uri newRowId = getContentResolver().insert(ContactEntry.CONTENT_URI, contentValues);
+    }
+
+    private void deleteContacts() {
+        getContentResolver().delete(CONTENT_URI, null, null);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        String projection[] = {_ID, COLUMN_CONTACT_NAME, COLUMN_CONTACT_LASTNAME, COLUMN_CONTACT_PHONE};
+        return new CursorLoader(this, CONTENT_URI, projection, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        mCursorAdapter.swapCursor(cursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mCursorAdapter.swapCursor(null);
+    }
+}

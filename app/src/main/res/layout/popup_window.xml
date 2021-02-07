@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#f2f2f2"
+    android:orientation="vertical"
+    android:padding="30dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="@string/language_change"
+        android:textSize="22sp" />
+
+    <RadioGroup
+        android:id="@+id/language_radio_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+
+        <RadioButton
+            android:id="@+id/radioButtonFr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/language_fr" />
+
+        <RadioButton
+            android:id="@+id/radioButtonEn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/language_en" />
+
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/button_validate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/validate_choice"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+</LinearLayout>
+
