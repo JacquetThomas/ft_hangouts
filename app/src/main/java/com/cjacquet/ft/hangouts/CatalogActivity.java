@@ -197,51 +197,19 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
     }
 
     private void setupRadioGroup(final View view) {
-        // Set onClickListener for FR
         RadioButton switcherFr = view.findViewById(R.id.radioButtonFr);
-        switcherFr.setOnClickListener(new RadioButton.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                if(((RadioButton)v).isSelected()){
-                    ((RadioButton)v).setChecked(false);
-                    ((RadioButton)v).setSelected(false);
-                } else {
-                    ((RadioButton)v).setChecked(true);
-                    ((RadioButton)v).setSelected(true);
-                }
-            }
-        });
-
-        // Set onClickListener for EN
         RadioButton switcherEn = view.findViewById(R.id.radioButtonEn);
-        switcherEn.setOnClickListener(new RadioButton.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                if(((RadioButton)v).isSelected()){
-                    ((RadioButton)v).setChecked(false);
-                    ((RadioButton)v).setSelected(false);
-                } else {
-                    ((RadioButton)v).setChecked(true);
-                    ((RadioButton)v).setSelected(true);
-                }
-            }
-        });
 
         // Get current locale
         String locale = LocaleHelper.getLanguage(this);
-        System.out.println(locale);
         switch (locale) {
             case "fr":
                 switcherFr.setChecked(true);
-                switcherFr.setSelected(true);
                 switcherEn.setChecked(false);
-                switcherEn.setSelected(false);
                 break;
             case "en":
                 switcherEn.setChecked(true);
-                switcherEn.setSelected(true);
                 switcherFr.setChecked(false);
-                switcherFr.setSelected(false);
                 break;
         }
     }
