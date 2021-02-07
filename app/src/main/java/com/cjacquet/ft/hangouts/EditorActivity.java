@@ -72,8 +72,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
         setContentView(R.layout.activity_editor);
 
-        LocaleHelper.setLocale(this, "fr");
-
         Intent intent = getIntent();
         mCurrentContactUri = intent.getData();
 

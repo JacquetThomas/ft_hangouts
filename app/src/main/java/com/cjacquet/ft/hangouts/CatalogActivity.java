@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -34,10 +35,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.cjacquet.ft.hangouts.data.ContactContract.ContactEntry;
 
@@ -61,9 +64,10 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LocaleHelper.setLocale(CatalogActivity.this, LocaleHelper.getLanguage(this));
 
+        LocaleHelper.setLocale(this, getResources().getConfiguration().locale.getLanguage());
         setContentView(R.layout.activity_catalog);
+
 
         // Setup FAB to open EditorActivity
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -149,9 +153,50 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
         }
         popupWindow.showAtLocation(getWindow().getDecorView().getRootView(), Gravity.CENTER, 0, 0);
         this.setupRadioGroup(popupView);
+        this.setupValidateCancel(popupWindow, popupView);
     }
 
-    private void setupRadioGroup(View view) {
+    private void setupValidateCancel(final PopupWindow popupWindow, final View popupView) {
+        Button cancel = popupView.findViewById(R.id.button_cancel);
+        Button validate = popupView.findViewById(R.id.button_validate);
+
+        validate.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                RadioGroup changeLang = popupView.findViewById(R.id.language_radio_group);
+                Locale selectedLocale = null;
+                switch (changeLang.getCheckedRadioButtonId()) {
+                    case R.id.radioButtonEn:
+                        selectedLocale = Locale.ENGLISH;
+                        break;
+                    case R.id.radioButtonFr:
+                        selectedLocale = Locale.FRANCE;
+                        break;
+                }
+                if (selectedLocale != null) {
+                    LocaleHelper.setLocale(getApplicationContext(), selectedLocale.getLanguage());
+
+                    Locale.setDefault(selectedLocale);
+                    Configuration config = getBaseContext().getResources().getConfiguration();
+                    config.locale = selectedLocale;
+                    getBaseContext().getResources().updateConfiguration(config,
+                            getBaseContext().getResources().getDisplayMetrics());
+
+                    popupWindow.dismiss();
+                    recreate();
+                }
+            }
+        });
+
+        cancel.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+    }
+
+    private void setupRadioGroup(final View view) {
         // Set onClickListener for FR
         RadioButton switcherFr = view.findViewById(R.id.radioButtonFr);
         switcherFr.setOnClickListener(new RadioButton.OnClickListener(){
@@ -163,7 +208,6 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
                 } else {
                     ((RadioButton)v).setChecked(true);
                     ((RadioButton)v).setSelected(true);
-                    CatalogActivity.changeLanguage(getApplicationContext(), Locale.FRANCE);
                 }
             }
         });
@@ -179,19 +223,25 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
                 } else {
                     ((RadioButton)v).setChecked(true);
                     ((RadioButton)v).setSelected(true);
-                    CatalogActivity.changeLanguage(getApplicationContext(), Locale.ENGLISH);
                 }
             }
         });
 
         // Get current locale
         String locale = LocaleHelper.getLanguage(this);
+        System.out.println(locale);
         switch (locale) {
             case "fr":
                 switcherFr.setChecked(true);
+                switcherFr.setSelected(true);
+                switcherEn.setChecked(false);
+                switcherEn.setSelected(false);
                 break;
             case "en":
                 switcherEn.setChecked(true);
+                switcherEn.setSelected(true);
+                switcherFr.setChecked(false);
+                switcherFr.setSelected(false);
                 break;
         }
     }

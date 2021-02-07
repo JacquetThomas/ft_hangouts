@@ -57,7 +57,9 @@ public class LocaleHelper {
         Locale.setDefault(locale);
 
         Configuration configuration = context.getResources().getConfiguration();
-        configuration.setLocale(locale);
+        configuration.locale = locale;
+        context.getResources().updateConfiguration(configuration,
+                context.getResources().getDisplayMetrics());
 
         return context.createConfigurationContext(configuration);
     }
