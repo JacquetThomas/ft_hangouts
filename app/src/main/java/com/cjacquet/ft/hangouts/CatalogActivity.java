@@ -18,7 +18,6 @@ package com.cjacquet.ft.hangouts;
 import android.app.LoaderManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -143,8 +142,7 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
         // create the popup window
         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        boolean focusable = true; // lets taps outside the popup also dismiss it
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, false);
 
         // show the popup window
         // which view you pass in doesn't matter, it is only used for the window tolken
@@ -214,17 +212,12 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
         }
     }
 
-    public static void changeLanguage(Context context, Locale locale) {
-        LocaleHelper.setLocale(context, locale.getLanguage());
-
-    }
-
     private void insertContacts() {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_CONTACT_NAME, "Toto");
         contentValues.put(COLUMN_CONTACT_LASTNAME, "Terrier");
         contentValues.put(ContactEntry.COLUMN_CONTACT_PHONE, "000-000-000");
-        Uri newRowId = getContentResolver().insert(ContactEntry.CONTENT_URI, contentValues);
+        getContentResolver().insert(ContactEntry.CONTENT_URI, contentValues);
     }
 
     private void deleteContacts() {
@@ -233,7 +226,7 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        String projection[] = {_ID, COLUMN_CONTACT_NAME, COLUMN_CONTACT_LASTNAME, COLUMN_CONTACT_PHONE};
+        String[] projection = {_ID, COLUMN_CONTACT_NAME, COLUMN_CONTACT_LASTNAME, COLUMN_CONTACT_PHONE};
         return new CursorLoader(this, CONTENT_URI, projection, null, null, null);
     }
 

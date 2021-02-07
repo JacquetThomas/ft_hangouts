@@ -31,10 +31,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.cjacquet.ft.hangouts.data.ContactContract;
 import com.cjacquet.ft.hangouts.data.ContactContract.ContactEntry;
 import com.cjacquet.ft.hangouts.fragments.DatePickerFragment;
 
@@ -52,14 +50,11 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     /** EditText field to enter the contact's phone */
     private EditText mPhoneEditText;
 
-    /** EditText field to enter the contact's gender */
-    private Spinner mGenderSpinner;
+    /** EditText field to enter the contact's birthday */
+    private EditText mBDayEditText;
 
-    /**
-     * Gender of the contact. The possible values are:
-     * 0 for unknown gender, 1 for male, 2 for female.
-     */
-    private int mGender = 0;
+    /** EditText field to enter the contact's mail */
+    private EditText mMailEditText;
 
     private final static int EXISTING_CONTACT_LOADER = 0;
 
@@ -86,7 +81,8 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mNameEditText = (EditText) findViewById(R.id.edit_contact_name);
         mLastnameEditText = (EditText) findViewById(R.id.edit_contact_lastname);
         mPhoneEditText = (EditText) findViewById(R.id.edit_contact_phone);
-
+        mBDayEditText = (EditText) findViewById(R.id.edit_contact_bday);
+        mMailEditText = (EditText) findViewById(R.id.edit_contact_mail);
     }
 
     @Override
@@ -109,7 +105,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             // Respond to a click on the "Delete" menu option
             case R.id.action_delete:
                 String text = "Error, cannot delete contact.";
-                if (this.deleteContact() == 1);
+                if (this.deleteContact() == 1)
                     text = "Contact succesfully deleted.";
                 Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
                 toast.show();
@@ -130,17 +126,19 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         String name =  mNameEditText.getText().toString().trim();
         String lastname = mLastnameEditText.getText().toString().trim();
         String phone = mPhoneEditText.getText().toString().trim();
-        //String mail = mMailEditText.getText().toString().trim();
-        //String bday = mMailEditText.getText().toString().trim();
+        String mail = mMailEditText.getText().toString().trim();
+        String bday = mBDayEditText.getText().toString().trim();
 
         if (mCurrentContactUri == null && TextUtils.isEmpty(name) && TextUtils.isEmpty(lastname)
                 && TextUtils.isEmpty(phone))
             return ;
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ContactContract.ContactEntry.COLUMN_CONTACT_NAME, name);
-        contentValues.put(ContactContract.ContactEntry.COLUMN_CONTACT_LASTNAME, lastname);
-        contentValues.put(ContactContract.ContactEntry.COLUMN_CONTACT_PHONE, phone);
+        contentValues.put(ContactEntry.COLUMN_CONTACT_NAME, name);
+        contentValues.put(ContactEntry.COLUMN_CONTACT_LASTNAME, lastname);
+        contentValues.put(ContactEntry.COLUMN_CONTACT_PHONE, phone);
+        contentValues.put(ContactEntry.COLUMN_CONTACT_MAIL, mail);
+        contentValues.put(ContactEntry.COLUMN_CONTACT_BDAY, bday);
 
         if (mCurrentContactUri != null) {
             updateRows = getContentResolver().update(mCurrentContactUri, contentValues, null, null);
@@ -207,7 +205,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             // Update the views on the screen with the values from the database
             mNameEditText.setText(name);
             mLastnameEditText.setText(lastname);
-
+            mPhoneEditText.setText(phone);
+            mBDayEditText.setText(bday);
+            mMailEditText.setText(mail);
         }
     }
 
