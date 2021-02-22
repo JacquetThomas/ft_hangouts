@@ -71,6 +71,7 @@ public class ContactCursorAdapter extends CursorAdapter {
                 Intent intent = new Intent(v.getContext(), MessageActivity.class);
                 View parentView = v.getRootView();
                 intent.putExtra("phoneNumber", ((TextView)parentView.findViewById(R.id.summary)).getText().toString());
+                intent.putExtra("contactName", ((TextView)parentView.findViewById(R.id.name)).getText().toString());
                 v.getContext().startActivity(intent);
             }
         });

@@ -12,6 +12,7 @@ import com.cjacquet.ft.hangouts.messages.MessageListAdapter;
 import com.cjacquet.ft.hangouts.messages.MessageType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MessageActivity extends BasePermissionAppCompatActivity {
@@ -23,6 +24,7 @@ public class MessageActivity extends BasePermissionAppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message_list);
+        setTitle(this.getIntent().getExtras().get("contactName").toString());
 
         this.getReadSMSPermission(new BasePermissionAppCompatActivity.RequestPermissionAction() {
             @Override
@@ -45,6 +47,7 @@ public class MessageActivity extends BasePermissionAppCompatActivity {
         mMessageRecycler = (RecyclerView) findViewById(R.id.recycler_gchat);
         mMessageAdapter = new MessageListAdapter(this, messages);
         mMessageRecycler.setLayoutManager(new LinearLayoutManager(this));
+        mMessageRecycler.setAdapter(mMessageAdapter);
     }
 
     public List<Message> getAllMessages() {
@@ -59,29 +62,31 @@ public class MessageActivity extends BasePermissionAppCompatActivity {
 
         if (c.moveToFirst()) {
             for (int i = 0; i < totalSMS; i++) {
+                if (c.getString(c
+                        .getColumnIndexOrThrow("address")).contains(this.otherNumber)) {
+                    message = new Message();
+                    message.setId(c.getString(c.getColumnIndexOrThrow("_id")));
+                    message.setAddress(c.getString(c
+                            .getColumnIndexOrThrow("address")));
+                    message.setText(c.getString(c.getColumnIndexOrThrow("body")));
+                    message.setRead(Boolean.valueOf(c.getString(c.getColumnIndex("read"))));
+                    message.setTime(Long.parseLong(c.getString(c.getColumnIndexOrThrow("date"))));
+                    if (c.getString(c.getColumnIndexOrThrow("type")).contains("1")) {
+                        message.setType(MessageType.RECEIVED);
+                    } else {
+                        message.setType(MessageType.SENT);
+                    }
 
-                message = new Message();
-                message.setId(c.getString(c.getColumnIndexOrThrow("_id")));
-                message.setAddress(c.getString(c
-                        .getColumnIndexOrThrow("address")));
-                message.setText(c.getString(c.getColumnIndexOrThrow("body")));
-                message.setRead(Boolean.valueOf(c.getString(c.getColumnIndex("read"))));
-                message.setTime(Long.parseLong(c.getString(c.getColumnIndexOrThrow("date"))));
-                if (c.getString(c.getColumnIndexOrThrow("type")).contains("1")) {
-                    message.setType(MessageType.RECEIVED);
-                } else {
-                    message.setType(MessageType.RECEIVED);
+                    messagesList.add(message);
+                    c.moveToNext();
                 }
-
-                messagesList.add(message);
-                c.moveToNext();
             }
         }
         // else {
         // throw new RuntimeException("You have no SMS");
         // }
         c.close();
-
+        Collections.reverse(messagesList);
         return messagesList;
     }
 }
