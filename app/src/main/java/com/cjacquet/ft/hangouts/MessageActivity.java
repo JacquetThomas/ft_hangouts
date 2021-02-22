@@ -12,7 +12,6 @@ import com.cjacquet.ft.hangouts.messages.MessageListAdapter;
 import com.cjacquet.ft.hangouts.messages.MessageType;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class MessageActivity extends BasePermissionAppCompatActivity {
@@ -46,7 +45,9 @@ public class MessageActivity extends BasePermissionAppCompatActivity {
 
         mMessageRecycler = (RecyclerView) findViewById(R.id.recycler_gchat);
         mMessageAdapter = new MessageListAdapter(this, messages);
-        mMessageRecycler.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setReverseLayout(true);
+        mMessageRecycler.setLayoutManager(layoutManager);
         mMessageRecycler.setAdapter(mMessageAdapter);
     }
 
@@ -86,7 +87,6 @@ public class MessageActivity extends BasePermissionAppCompatActivity {
         // throw new RuntimeException("You have no SMS");
         // }
         c.close();
-        Collections.reverse(messagesList);
         return messagesList;
     }
 }

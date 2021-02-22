@@ -8,35 +8,26 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_gchat"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@id/text_gchat_indicator"
-         />
-
-    <TextView
-        android:id="@+id/text_gchat_indicator"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:visibility="gone"
+        android:paddingTop="28dp"
+        android:paddingBottom="20dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@id/view"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginLeft="16dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#e0e0e0"
-        app:layout_constraintBottom_toTopOf="@+id/layout_gchat_chatbox" />
+        app:layout_constraintBottom_toTopOf="@+id/layout_gchat_chatbox"/>
 
     <RelativeLayout
         android:id="@+id/layout_gchat_chatbox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
+        app:layout_constraintLeft_toLeftOf="parent">
 
         <EditText
             android:layout_marginStart="16dp"
