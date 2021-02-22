@@ -1,81 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:layout_marginEnd="8dp"
+android:layout_marginTop="16dp"
+    android:layout_marginRight="8dp">
+
+<TextView
+    android:id="@+id/text_gchat_date_me"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginTop="16dp"
-    android:layout_marginRight="8dp"
-    android:orientation="vertical"
-    >
+    android:layout_marginTop="22dp"
+    android:paddingStart="8dp"
+    android:paddingTop="4dp"
+    android:paddingEnd="8dp"
+    android:paddingBottom="4dp"
+    android:text="June 10"
+    android:textColor="#C0C0C0"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Date -->
-    <TextView
-        android:id="@+id/text_gchat_date_me"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="22dp"
-        android:gravity="center"
-        android:paddingStart="8dp"
-        android:paddingTop="4dp"
-        android:paddingEnd="8dp"
-        android:paddingBottom="4dp"
-        android:text="June 10"
-        android:textColor="#C0C0C0" />
-
-    <!-- Time and message -->
+<!-- Message -->
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:id="@+id/card_gchat_message_me"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_gchat_date_me"
+        >
 
-        <!-- time -->
-        <TextView
-            android:id="@+id/text_gchat_timestamp_me"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="10:00"
-            android:textColor="#C0C0C0"
-            android:textSize="10sp" />
-
-        <!-- Message -->
         <LinearLayout
             android:id="@+id/layout_gchat_container_me"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/card_gchat_message_me"
-                android:layout_width="fill_parent"
+            <TextView
+                android:id="@+id/text_gchat_message_me"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginBottom="8dp"
+                android:background="@color/colorAccent"
+                android:ellipsize="none"
+                android:fadingEdge="horizontal|vertical"
+                android:maxWidth="260dp"
+                android:paddingLeft="12dp"
+                android:paddingTop="8dp"
 
-                <TextView
-                    android:id="@+id/text_gchat_message_me"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:background="@color/colorAccent"
-                    android:ellipsize="none"
-                    android:fadingEdge="horizontal|vertical"
-                    android:maxWidth="260dp"
-                    android:paddingLeft="12dp"
-                    android:paddingTop="8dp"
-
-                    android:paddingRight="12dp"
-                    android:text="This is a Message"
-                    android:textColor="#ffffff"
-                    android:textSize="16sp" />
-            </LinearLayout>
+                android:paddingRight="12dp"
+                android:text="This is a Message"
+                android:textColor="#ffffff"
+                android:textSize="16sp" />
         </LinearLayout>
-
     </LinearLayout>
 
-    <!--app:cardBackgroundColor="#774df2"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="0dp"
-        app:cardPreventCornerOverlap="false"
-        app:cardUseCompatPadding="true"-->
+    <TextView
+        android:id="@+id/text_gchat_timestamp_me"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="10:00"
+        android:textColor="#C0C0C0"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="@id/card_gchat_message_me"
+        app:layout_constraintEnd_toStartOf="@id/card_gchat_message_me"
+        tools:ignore="NotSibling" />
 
-</LinearLayout>
+
+</android.support.constraint.ConstraintLayout>
