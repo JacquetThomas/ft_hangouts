@@ -1,10 +1,12 @@
 package com.cjacquet.ft.hangouts;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
@@ -56,6 +58,7 @@ public class ContactCursorAdapter extends CursorAdapter {
         // Find fields to populate in inflated template
         TextView tvFullName = (TextView) view.findViewById(R.id.name);
         TextView tvPhone = (TextView) view.findViewById(R.id.summary);
+        Button smsButton = view.findViewById(R.id.button_sms);
         // Extract properties from cursor
         String name = cursor.getString(cursor.getColumnIndexOrThrow(ContactContract.ContactEntry.COLUMN_CONTACT_NAME));
         String lastname = cursor.getString(cursor.getColumnIndexOrThrow(ContactContract.ContactEntry.COLUMN_CONTACT_LASTNAME));
@@ -63,5 +66,13 @@ public class ContactCursorAdapter extends CursorAdapter {
         // Populate fields with extracted properties
         tvFullName.setText(name + " " + lastname);
         tvPhone.setText(String.valueOf(phone));
+        smsButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), MessageActivity.class);
+                View parentView = v.getRootView();
+                intent.putExtra("phoneNumber", ((TextView)parentView.findViewById(R.id.summary)).getText().toString());
+                v.getContext().startActivity(intent);
+            }
+        });
     }
 }
