@@ -28,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -56,7 +57,24 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     /** EditText field to enter the contact's mail */
     private EditText mMailEditText;
 
+    /** TextView field to display the contact's name */
+    private TextView mNameTextView;
+
+    /** TextView field to display the contact's lastname */
+    private TextView mLastnameTextView;
+
+    /** TextView field to display the contact's phone */
+    private TextView mPhoneTextView;
+
+    /** TextView field to display the contact's birthday */
+    private TextView mBDayTextView;
+
+    /** TextView field to display the contact's mail */
+    private TextView mMailTextView;
+
     private FloatingActionButton fab;
+
+    private Menu menu;
 
     private final static int EXISTING_CONTACT_LOADER = 0;
 
@@ -72,11 +90,11 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         Intent intent = getIntent();
         mCurrentContactUri = intent.getData();
 
-
-
         // Find all relevant views that we will need to read user input from
         mNameEditText = (EditText) findViewById(R.id.edit_contact_name);
         mLastnameEditText = (EditText) findViewById(R.id.edit_contact_lastname);
+        mNameTextView = (TextView) findViewById(R.id.edit_contact_name);
+        mLastnameTextView = (TextView) findViewById(R.id.edit_contact_lastname);
         mPhoneEditText = (EditText) findViewById(R.id.edit_contact_phone);
         mBDayEditText = (EditText) findViewById(R.id.edit_contact_bday);
         mMailEditText = (EditText) findViewById(R.id.edit_contact_mail);
@@ -91,7 +109,8 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 public void onClick(View view) {
                     Intent intent = new Intent(EditorActivity.this, MessageActivity.class);
                     intent.putExtra("phoneNumber", mPhoneEditText.getText().toString());
-                    intent.putExtra("contactName", mNameEditText.getText().toString());
+                    intent.putExtra("contactName", mNameEditText.getText().toString() + " " + mLastnameEditText.getText().toString());
+                    intent.putExtra("contactId", mCurrentContactUri.getLastPathSegment());
                     startActivity(intent);
                 }
             });
@@ -99,14 +118,21 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             setTitle(getString(R.string.editor_activity_title_new_contact));
             fab.setVisibility(View.GONE);
         }
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu options from the res/menu/menu_editor.xml file.
         // This adds menu items to the app bar.
+        this.menu = menu;
         getMenuInflater().inflate(R.menu.menu_editor, menu);
+        if (mCurrentContactUri != null) {
+            this.showOption(R.id.action_edit);
+            this.hideOption(R.id.action_save);
+        } else {
+            this.showOption(R.id.action_save);
+            this.hideOption(R.id.action_edit);
+        }
         return true;
     }
 
@@ -128,13 +154,61 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 toast.show();
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
+            case R.id.action_edit:
+                this.showOption(R.id.action_save);
+                this.hideOption(R.id.action_edit);
+                this.switchMenuToEdit();
+                this.switchFieldToEdit();
+                return true;
             // Respond to a click on the "Up" arrow button in the app bar
             case android.R.id.home:
+                if (menu.findItem(R.id.action_save).isVisible()) {
+                    this.switchMenuToShow();
+                    this.hideOption(R.id.action_save);
+                }else {
                 // Navigate back to parent activity (CatalogActivity)
                 NavUtils.navigateUpFromSameTask(this);
+            }
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void hideOption(int id) {
+        MenuItem item = menu.findItem(id);
+        item.setVisible(false);
+    }
+
+    private void showOption(int id) {
+        MenuItem item = menu.findItem(id);
+        item.setVisible(true);
+    }
+
+
+    private void switchFieldToShow() {
+        this.mNameTextView.setVisibility(View.VISIBLE);
+        this.mNameEditText.setVisibility(View.GONE);
+        this.mLastnameTextView.setVisibility(View.VISIBLE);
+        this.mLastnameEditText.setVisibility(View.GONE);
+    }
+
+    private void switchFieldToEdit() {
+        this.mNameTextView.setVisibility(View.GONE);
+        this.mNameEditText.setVisibility(View.VISIBLE);
+        this.mLastnameTextView.setVisibility(View.GONE);
+        this.mLastnameEditText.setVisibility(View.VISIBLE);
+    }
+
+    private void switchMenuToShow() {
+        this.showOption(R.id.action_edit);
+        this.hideOption(R.id.action_save);
+        setTitle(this.mNameTextView.getText().toString() + " " + this.mLastnameTextView.getText().toString());
+    }
+
+    private void switchMenuToEdit() {
+        this.showOption(R.id.action_save);
+        this.hideOption(R.id.action_edit);
+        setTitle(R.string.editor_activity_title_edit_contact);
     }
 
     private void saveContacts() {
@@ -222,9 +296,14 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             // Update the views on the screen with the values from the database
             mNameEditText.setText(name);
             mLastnameEditText.setText(lastname);
+            mNameTextView.setText(name);
+            mLastnameTextView.setText(lastname);
             mPhoneEditText.setText(phone);
             mBDayEditText.setText(bday);
             mMailEditText.setText(mail);
+
+            this.switchFieldToShow();
+            setTitle(this.mNameTextView.getText().toString() + " " + this.mLastnameTextView.getText().toString());
         }
     }
 

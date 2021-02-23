@@ -1,10 +1,14 @@
 package com.cjacquet.ft.hangouts;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MenuItem;
 
+import androidx.core.app.NavUtils;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,6 +18,8 @@ import com.cjacquet.ft.hangouts.messages.MessageType;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.cjacquet.ft.hangouts.data.ContactContract.ContactEntry.CONTENT_URI;
 
 public class MessageActivity extends BasePermissionAppCompatActivity {
     private RecyclerView mMessageRecycler;
@@ -87,5 +93,21 @@ public class MessageActivity extends BasePermissionAppCompatActivity {
         }
         c.close();
         return messagesList;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // User clicked on a menu option in the app bar overflow menu
+        switch (item.getItemId()) {
+            // Respond to a click on the "Up" arrow button in the app bar
+            case android.R.id.home:
+                    // Navigate back to parent activity (EditorActivity)
+                Intent intent = new Intent(MessageActivity.this, EditorActivity.class);
+                Uri currentContactUri = ContentUris.withAppendedId(CONTENT_URI, Integer.valueOf(getIntent().getExtras().get("contactId").toString()));
+                intent.setData(currentContactUri);
+                    NavUtils.navigateUpTo(this, intent);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

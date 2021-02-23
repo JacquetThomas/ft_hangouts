@@ -60,4 +60,5 @@
     <string name="language_en">english</string>
     <string name="validate_choice">validate</string>
     <string name="message_activity_title">contact\'s name</string>
+    <string name="action_edit">edit</string>
 </resources>

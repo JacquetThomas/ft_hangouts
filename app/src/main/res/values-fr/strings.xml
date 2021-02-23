@@ -24,4 +24,6 @@
     <string name="language_fr">Français</string>
     <string name="language_en">Anglais</string>
     <string name="validate_choice">Valider</string>
+    <string name="message_activity_title">Contacts</string>
+    <string name="action_edit">Editer</string>
 </resources>
