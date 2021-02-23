@@ -58,6 +58,9 @@ public class MessageActivity extends BasePermissionAppCompatActivity {
         Uri messageUri = Uri.parse("content://sms/");
         ContentResolver cr = this.getContentResolver();
 
+        if (this.otherNumber == null || this.otherNumber.isEmpty())
+            return messagesList;
+
         Cursor c = cr.query(messageUri, null, null, null, null);
         this.startManagingCursor(c);
         int totalSMS = c.getCount();

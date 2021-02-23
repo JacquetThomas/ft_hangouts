@@ -56,6 +56,8 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     /** EditText field to enter the contact's mail */
     private EditText mMailEditText;
 
+    private FloatingActionButton fab;
+
     private final static int EXISTING_CONTACT_LOADER = 0;
 
     /** Content URI for the existing contact (null if it's a new contact) */
@@ -70,12 +72,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         Intent intent = getIntent();
         mCurrentContactUri = intent.getData();
 
-        if (mCurrentContactUri != null) {
-            setTitle(getString(R.string.editor_activity_title_edit_contact));
-            getLoaderManager().initLoader(EXISTING_CONTACT_LOADER, null, this);
-        } else {
-            setTitle(getString(R.string.editor_activity_title_new_contact));
-        }
+
 
         // Find all relevant views that we will need to read user input from
         mNameEditText = (EditText) findViewById(R.id.edit_contact_name);
@@ -83,18 +80,26 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mPhoneEditText = (EditText) findViewById(R.id.edit_contact_phone);
         mBDayEditText = (EditText) findViewById(R.id.edit_contact_bday);
         mMailEditText = (EditText) findViewById(R.id.edit_contact_mail);
+        fab = (FloatingActionButton) findViewById(R.id.fab_sms);
 
-        // Setup FAB to open MessageActivity
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_sms);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(EditorActivity.this, MessageActivity.class);
-                intent.putExtra("phoneNumber", mPhoneEditText.getText().toString());
-                intent.putExtra("contactName", mNameEditText.getText().toString());
-                startActivity(intent);
-            }
-        });
+        if (mCurrentContactUri != null) {
+            setTitle(getString(R.string.editor_activity_title_edit_contact));
+            getLoaderManager().initLoader(EXISTING_CONTACT_LOADER, null, this);
+            // Setup FAB to open MessageActivity
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(EditorActivity.this, MessageActivity.class);
+                    intent.putExtra("phoneNumber", mPhoneEditText.getText().toString());
+                    intent.putExtra("contactName", mNameEditText.getText().toString());
+                    startActivity(intent);
+                }
+            });
+        } else {
+            setTitle(getString(R.string.editor_activity_title_new_contact));
+            fab.setVisibility(View.GONE);
+        }
+
     }
 
     @Override
