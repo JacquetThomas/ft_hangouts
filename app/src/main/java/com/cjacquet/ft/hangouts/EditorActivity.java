@@ -23,6 +23,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -83,6 +84,18 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mPhoneEditText = (EditText) findViewById(R.id.edit_contact_phone);
         mBDayEditText = (EditText) findViewById(R.id.edit_contact_bday);
         mMailEditText = (EditText) findViewById(R.id.edit_contact_mail);
+
+        // Setup FAB to open MessageActivity
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_sms);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(EditorActivity.this, MessageActivity.class);
+                intent.putExtra("phoneNumber", mPhoneEditText.getText().toString());
+                intent.putExtra("contactName", mNameEditText.getText().toString());
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

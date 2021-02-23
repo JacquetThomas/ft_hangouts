@@ -8,9 +8,9 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_gchat"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="28dp"
-        android:paddingBottom="20dp"
+        android:layout_height="match_parent"
+        android:paddingTop="0dp"
+        android:paddingBottom="40dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@id/view"
         app:layout_constraintTop_toTopOf="parent" />

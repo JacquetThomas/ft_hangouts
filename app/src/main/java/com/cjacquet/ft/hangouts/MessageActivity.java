@@ -62,7 +62,7 @@ public class MessageActivity extends BasePermissionAppCompatActivity {
         int totalSMS = c.getCount();
 
         if (c.moveToFirst()) {
-            for (int i = 0; i < totalSMS; i++) {
+            do {
                 if (c.getString(c
                         .getColumnIndexOrThrow("address")).contains(this.otherNumber)) {
                     message = new Message();
@@ -77,15 +77,10 @@ public class MessageActivity extends BasePermissionAppCompatActivity {
                     } else {
                         message.setType(MessageType.SENT);
                     }
-
                     messagesList.add(message);
-                    c.moveToNext();
                 }
-            }
+            } while (c.moveToNext());
         }
-        // else {
-        // throw new RuntimeException("You have no SMS");
-        // }
         c.close();
         return messagesList;
     }
