@@ -18,6 +18,7 @@ package com.cjacquet.ft.hangouts;
 import android.app.LoaderManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -60,11 +61,23 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
 
     ContactCursorAdapter mCursorAdapter;
 
+    private static CatalogActivity instance;
+
+    public static CatalogActivity getInstance() {
+        return instance;
+    }
+
+    public static Context getContext(){
+        return instance.getApplicationContext();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         LocaleHelper.setLocale(this, getResources().getConfiguration().locale.getLanguage());
+        instance = this;
         setContentView(R.layout.activity_catalog);
 
 
@@ -181,6 +194,7 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
                             getBaseContext().getResources().getDisplayMetrics());
 
                     popupWindow.dismiss();
+                    instance = getInstance();
                     recreate();
                 }
             }
