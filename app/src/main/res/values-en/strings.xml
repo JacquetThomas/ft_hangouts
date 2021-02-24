@@ -26,4 +26,9 @@
     <string name="validate_choice">Validate</string>
     <string name="message_activity_title">Contacts</string>
     <string name="action_edit">Edit</string>
+    <string name="popup_permission_title">Required permission</string>
+    <string name="popup_permission_message">We need permission to access your SMS in order to display your SMS. You can allow us in settings.</string>
+    <string name="popup_permission_ok">OK</string>
+    <string name="popup_permission_ko">Cancel</string>
+    <string name="on_resume_text">"Last connection at: "</string>
 </resources>

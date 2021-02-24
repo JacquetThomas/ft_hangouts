@@ -61,4 +61,10 @@
     <string name="validate_choice">validate</string>
     <string name="message_activity_title">contact\'s name</string>
     <string name="action_edit">edit</string>
+    <string name="popup_permission_title">required permission</string>
+    <string name="popup_permission_message">we need permission to acces and send sms, please activate in settings or this window will stay blank</string>
+    <string name="popup_permission_ok">ok</string>
+    <string name="popup_permission_ko">cancel</string>
+    <string name="on_resume_text">"last connection at: "</string>
+    <string name="no_sms_permission">no sms permission, no sms</string>
 </resources>

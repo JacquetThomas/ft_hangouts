@@ -2,6 +2,7 @@ package com.cjacquet.ft.hangouts;
 
 import android.app.DatePickerDialog;
 import android.app.LoaderManager;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -18,7 +19,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
 
 import com.cjacquet.ft.hangouts.data.ContactContract.ContactEntry;
@@ -26,10 +26,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Calendar;
 
+import static com.cjacquet.ft.hangouts.data.ContactContract.ContactEntry.CONTENT_URI;
+
 /**
  * Allows user to create a new contact or edit an existing one.
  */
-public class EditorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class EditorActivity extends BasePausableAppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    private String contactId;
 
     /** EditText field to enter the contact's name */
     private EditText mNameEditText;
@@ -62,6 +66,34 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
     /** Content URI for the existing contact (null if it's a new contact) */
     private Uri mCurrentContactUri;
+
+    @Override
+    public void recreate() {
+        super.recreate();
+        setupActivity();
+    }
+
+    private void setupActivity() {
+        if (mCurrentContactUri != null) {
+            contactId = mCurrentContactUri.getLastPathSegment();
+            setTitle(getString(R.string.editor_activity_title_edit_contact));
+            getLoaderManager().initLoader(EXISTING_CONTACT_LOADER, null, this);
+            // Setup FAB to open MessageActivity
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(EditorActivity.this, MessageActivity.class);
+                    intent.putExtra("phoneNumber", mPhoneEditText.getText().toString());
+                    intent.putExtra("contactName", contactName);
+                    intent.putExtra("contactId", contactId);
+                    startActivity(intent);
+                }
+            });
+        } else {
+            setTitle(getString(R.string.editor_activity_title_new_contact));
+            fab.setVisibility(View.GONE);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,25 +131,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 picker.show();
             }
         });
-
-        if (mCurrentContactUri != null) {
-            setTitle(getString(R.string.editor_activity_title_edit_contact));
-            getLoaderManager().initLoader(EXISTING_CONTACT_LOADER, null, this);
-            // Setup FAB to open MessageActivity
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(EditorActivity.this, MessageActivity.class);
-                    intent.putExtra("phoneNumber", mPhoneEditText.getText().toString());
-                    intent.putExtra("contactName", contactName);
-                    intent.putExtra("contactId", mCurrentContactUri.getLastPathSegment());
-                    startActivity(intent);
-                }
-            });
-        } else {
-            setTitle(getString(R.string.editor_activity_title_new_contact));
-            fab.setVisibility(View.GONE);
-        }
+        setupActivity();
     }
 
     @Override
@@ -143,7 +157,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
                 saveContacts();
-                finish();
+                if (contactId != null && !contactId.isEmpty())
+                    mCurrentContactUri = ContentUris.withAppendedId(CONTENT_URI, Long.parseLong(contactId));
+                recreate();
                 return true;
             // Respond to a click on the "Delete" menu option
             case R.id.action_delete:
@@ -166,7 +182,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                     this.resetUnsavedFields();
                     this.switchMenuToShow();
                     this.switchFieldToShow();
-                }else {
+                } else {
                 // Navigate back to parent activity (CatalogActivity)
                 NavUtils.navigateUpFromSameTask(this);
             }
@@ -174,6 +190,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         }
         return super.onOptionsItemSelected(item);
     }
+
 
     private void hideOption(int id) {
         MenuItem item = menu.findItem(id);
@@ -194,6 +211,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         this.mPhoneEditText.setEnabled(false);
         this.mMailEditText.setEnabled(false);
         this.mBDayEditText.setEnabled(false);
+        this.fab.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -205,6 +223,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         this.mPhoneEditText.setEnabled(true);
         this.mMailEditText.setEnabled(true);
         this.mBDayEditText.setEnabled(true);
+        this.fab.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -271,8 +290,10 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         }
 
         CharSequence text;
-        if (res == null && updateRows != 1)
+        if (res == null && updateRows != 1) {
+            contactId = res.getLastPathSegment();
             text = getString(R.string.editor_insert_contact_failed);
+        }
         else
             text = getString(R.string.editor_insert_contact_success);
 

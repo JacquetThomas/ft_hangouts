@@ -25,8 +25,6 @@ import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.cjacquet.ft.hangouts.data.ContactContract.ContactEntry;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -41,7 +39,7 @@ import static com.cjacquet.ft.hangouts.data.ContactContract.ContactEntry._ID;
 /**
  * Displays list of contacts that were entered and stored in the app.
  */
-public class CatalogActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class CatalogActivity extends BasePausableAppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private final static int CONTACT_LOADER = 0;
 
