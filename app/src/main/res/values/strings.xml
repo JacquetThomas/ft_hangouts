@@ -11,42 +11,18 @@
      limitations under the License.
 -->
 <resources>
-    <!-- Name for the application [CHAR LIMIT=12] -->
     <string name="app_name">Contacts</string>
-
-    <!-- Label for overflow menu option that inserts fake contact data into the app [CHAR LIMIT=20] -->
     <string name="action_insert_dummy_data">Insert Dummy Data</string>
-
-    <!-- Label for overflow menu option that deletes all contact data in the app [CHAR LIMIT=20] -->
     <string name="action_delete_all_entries">Delete All Contacts</string>
-
-    <!-- Title for the activity to add a new contact [CHAR LIMIT=20] -->
     <string name="editor_activity_title_new_contact">Add a Contact</string>
-
-    <!-- Title for the activity to edit a contact [CHAR LIMIT=20] -->
     <string name="editor_activity_title_edit_contact">Edit Contact</string>
-
-    <!-- Label for editor menu option to save contact and leave editor [CHAR LIMIT=20] -->
-
-    <!-- Label for editor overflow menu option that deletes the current contact [CHAR LIMIT=20] -->
     <string name="action_delete">delete</string>
-
-    <!-- Label for overview category of attributes in the editor [CHAR LIMIT=30] -->
     <string name="category_overview">overview</string>
-
-    <!-- Label for measurement information in the editor [CHAR LIMIT=30] -->
     <string name="category_favContactSwitch">favorite contact</string>
-
-    <!-- Text hint for name field in the editor [CHAR LIMIT=30] -->
     <string name="hint_contact_name">name</string>
-
     <string name="editor_insert_contact_success">contact saved!</string>
     <string name="editor_insert_contact_failed">error with saving contact</string>
-
-    <!-- Title text for the empty view, which describes the empty dog house image [CHAR LIMIT=50] -->
-    <string name="empty_view_title_text">it\'s a bit lonely here...</string>
-
-    <!-- Subtitle text for the empty view that prompts the user to add a contact [CHAR LIMIT=50] -->
+    <string name="empty_view_title_text">it\'s a bit lonely here…</string>
     <string name="empty_view_subtitle_text">get started by adding a contact</string>
     <string name="hint_contact_lastname">lastname</string>
     <string name="category_contacts">contacts</string>

@@ -4,10 +4,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class Utils {
-    private static String getLocaleString() {
-        return LocaleHelper.getLanguage(CatalogActivity.getContext());
-    }
+public final class Utils {
+
+    private Utils(){}
 
     public static String toHoursMinutes(Long time) {
         Date date = new Date(time);
@@ -39,5 +38,9 @@ public class Utils {
         if (dayOfMonth < 10)
             extraZeroDay = "0";
         return extraZeroDay + dayOfMonth + "/" + extraZeroMonth + monthOfYear + "/" + year;
+    }
+
+    private static String getLocaleString() {
+        return LocaleHelper.getLanguage(CatalogActivity.getContext());
     }
 }

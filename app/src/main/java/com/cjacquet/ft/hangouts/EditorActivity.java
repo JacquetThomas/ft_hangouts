@@ -185,10 +185,11 @@ public class EditorActivity extends BasePausableAppCompatActivity implements Loa
                 } else {
                 // Navigate back to parent activity (CatalogActivity)
                 NavUtils.navigateUpFromSameTask(this);
-            }
+                }
                 return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
 
@@ -289,14 +290,13 @@ public class EditorActivity extends BasePausableAppCompatActivity implements Loa
             res = getContentResolver().insert(ContactEntry.CONTENT_URI, contentValues);
         }
 
-        CharSequence text;
-        if (res == null && updateRows != 1) {
-            contactId = res.getLastPathSegment();
+        CharSequence text = "";
+        if (res == null && updateRows != 1)
             text = getString(R.string.editor_insert_contact_failed);
-        }
-        else
+        else if (res != null){
+            contactId = res.getLastPathSegment();
             text = getString(R.string.editor_insert_contact_success);
-
+        }
         Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
         toast.show();
     }

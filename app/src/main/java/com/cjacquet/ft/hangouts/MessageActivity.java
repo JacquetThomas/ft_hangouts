@@ -33,10 +33,8 @@ public class MessageActivity extends BasePausableAppCompatActivity {
     private String otherNumber;
     private static boolean permission;
     private static List<Message> messages;
-    private final static int REQUEST_READ_SMS_PERMISSION = 3004;
-    private final static String APP_NAME = "ft_hangouts";
-    public final static String READ_SMS_PERMISSION_NOT_GRANTED = "Please allow " + APP_NAME + " to access your SMS from setting";
-
+    private static final int REQUEST_READ_SMS_PERMISSION = 3004;
+    private static final String APP_NAME = "ft_hangouts";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +60,7 @@ public class MessageActivity extends BasePausableAppCompatActivity {
     }
 
     public static List<Message> getAllMessages(String otherNumber) {
-        List<Message> messagesList = new ArrayList<Message>();
+        List<Message> messagesList = new ArrayList<>();
         Message message;
         Uri messageUri = Uri.parse("content://sms/");
         ContentResolver cr = CatalogActivity.getContext().getContentResolver();
@@ -71,8 +69,6 @@ public class MessageActivity extends BasePausableAppCompatActivity {
             return messagesList;
 
         Cursor c = cr.query(messageUri, null, null, null, null);
-        int totalSMS = c.getCount();
-
         if (c.moveToFirst()) {
             do {
                 if (c.getString(c
@@ -82,7 +78,7 @@ public class MessageActivity extends BasePausableAppCompatActivity {
                     message.setAddress(c.getString(c
                             .getColumnIndexOrThrow("address")));
                     message.setText(c.getString(c.getColumnIndexOrThrow("body")));
-                    message.setRead(Boolean.valueOf(c.getString(c.getColumnIndex("read"))));
+                    message.setRead(Boolean.parseBoolean(c.getString(c.getColumnIndex("read"))));
                     message.setTime(Long.parseLong(c.getString(c.getColumnIndexOrThrow("date"))));
                     if (c.getString(c.getColumnIndexOrThrow("type")).contains("1")) {
                         message.setType(MessageType.RECEIVED);
@@ -105,7 +101,7 @@ public class MessageActivity extends BasePausableAppCompatActivity {
             case android.R.id.home:
                     // Navigate back to parent activity (EditorActivity)
                 Intent intent = new Intent(MessageActivity.this, EditorActivity.class);
-                Uri currentContactUri = ContentUris.withAppendedId(CONTENT_URI, Integer.valueOf(getIntent().getExtras().get("contactId").toString()));
+                Uri currentContactUri = ContentUris.withAppendedId(CONTENT_URI, Integer.parseInt(getIntent().getExtras().get("contactId").toString()));
                 intent.setData(currentContactUri);
                     NavUtils.navigateUpTo(this, intent);
                 return true;
@@ -116,10 +112,12 @@ public class MessageActivity extends BasePausableAppCompatActivity {
 
     /* --------------------------- Handle permission -------------------------------- */
 
+    /**
+     * Check if we have read permission on SMS and request if not.
+     */
     public void getReadSMSPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!(checkSelfPermission(Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED)) {
-                System.out.println("getReadPermission: Permission not granted yet, make a request");
+            if (checkSelfPermission(Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.READ_SMS}, REQUEST_READ_SMS_PERMISSION);
                 return;
             }
@@ -132,9 +130,7 @@ public class MessageActivity extends BasePausableAppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        System.out.println("onRequestPermissionsResult: result of permission is bacl");
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            System.out.println("onRequestPermissionsResult: permission is granted ");
             if (REQUEST_READ_SMS_PERMISSION == requestCode) {
                 MessageActivity.permission = true;
                 messages = MessageActivity.getAllMessages(otherNumber);
@@ -142,11 +138,7 @@ public class MessageActivity extends BasePausableAppCompatActivity {
             }
 
         } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-            System.out.println("onRequestPermissionsResult: permission is denied");
             if (REQUEST_READ_SMS_PERMISSION == requestCode) {
-                System.out.println("onRequestPermissionsResult: REQUEST_READ_SMS_PERMISSION Permission Denied");
-                System.out.println("onRequestPermissionsResult: Will open settings to grant sms from there");
-
                 // setup the alert builder
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle(R.string.popup_permission_title);

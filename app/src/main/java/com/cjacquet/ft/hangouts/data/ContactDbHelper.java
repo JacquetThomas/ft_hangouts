@@ -32,6 +32,7 @@ public class ContactDbHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_CONTACTS_TABLE);
         onCreate(db);
     }
+    @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
     }

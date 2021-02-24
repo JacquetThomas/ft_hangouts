@@ -125,8 +125,9 @@ public class CatalogActivity extends BasePausableAppCompatActivity implements Lo
             case R.id.action_language_change:
                 this.showPopupWindow();
                 return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     public void showPopupWindow() {
@@ -167,6 +168,8 @@ public class CatalogActivity extends BasePausableAppCompatActivity implements Lo
                     case R.id.radioButtonFr:
                         selectedLocale = Locale.FRANCE;
                         break;
+                    default:
+                        break;
                 }
                 if (selectedLocale != null) {
                     LocaleHelper.setLocale(getApplicationContext(), selectedLocale.getLanguage());
@@ -206,6 +209,8 @@ public class CatalogActivity extends BasePausableAppCompatActivity implements Lo
             case "en":
                 switcherEn.setChecked(true);
                 switcherFr.setChecked(false);
+                break;
+            default:
                 break;
         }
     }

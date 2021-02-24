@@ -15,7 +15,7 @@ public final class ContactContract {
 
     public static final class ContactEntry implements BaseColumns {
 
-        public final static String TABLE_NAME = "contacts";
+        public static final String TABLE_NAME = "contacts";
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_CONTACTS);
         /**
          * The MIME type of the {@link #CONTENT_URI} for a list of contacts.
@@ -29,13 +29,13 @@ public final class ContactContract {
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CONTACTS;
 
-        public final static String _ID = BaseColumns._ID;
-        public final static String COLUMN_CONTACT_NAME ="name";
-        public final static String COLUMN_CONTACT_LASTNAME = "lastname";
-        public final static String COLUMN_CONTACT_PHONE = "phone";
-        public final static String COLUMN_CONTACT_BDAY = "birthday";
-        public final static String COLUMN_CONTACT_MAIL = "mail";
-        public final static String COLUMN_CONTACT_FAV = "fav";
+        public static final String _ID = BaseColumns._ID;
+        public static final String COLUMN_CONTACT_NAME ="name";
+        public static final String COLUMN_CONTACT_LASTNAME = "lastname";
+        public static final String COLUMN_CONTACT_PHONE = "phone";
+        public static final String COLUMN_CONTACT_BDAY = "birthday";
+        public static final String COLUMN_CONTACT_MAIL = "mail";
+        public static final String COLUMN_CONTACT_FAV = "fav";
     }
 
 }
