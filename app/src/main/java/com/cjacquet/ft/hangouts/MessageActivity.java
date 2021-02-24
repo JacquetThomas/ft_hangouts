@@ -25,6 +25,8 @@ public class MessageActivity extends BasePermissionAppCompatActivity {
     private RecyclerView mMessageRecycler;
     private MessageListAdapter mMessageAdapter;
     private String otherNumber;
+    private static boolean permission;
+    private static List<Message> messages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,23 +34,12 @@ public class MessageActivity extends BasePermissionAppCompatActivity {
         setContentView(R.layout.activity_message_list);
         setTitle(this.getIntent().getExtras().get("contactName").toString());
 
-        this.getReadSMSPermission(new BasePermissionAppCompatActivity.RequestPermissionAction() {
-            @Override
-            public void permissionDenied() {
-                // TODO, task after permission is not granted
-                // Show toast no sms permission
-            }
-
-            @Override
-            public void permissionGranted() {
-                // TODO, task after permission is granted
-                // Show toast
-            }
-        });
+        this.permission = false;
 
         otherNumber = this.getIntent().getExtras().get("phoneNumber").toString();
-        List<Message> messages = new ArrayList<>();
-        messages.addAll(this.getAllMessages());
+        messages = new ArrayList<>();
+        if (permission)
+            messages.addAll(this.getAllMessages(otherNumber));
 
         mMessageRecycler = (RecyclerView) findViewById(R.id.recycler_gchat);
         mMessageAdapter = new MessageListAdapter(this, messages);
@@ -56,25 +47,43 @@ public class MessageActivity extends BasePermissionAppCompatActivity {
         layoutManager.setReverseLayout(true);
         mMessageRecycler.setLayoutManager(layoutManager);
         mMessageRecycler.setAdapter(mMessageAdapter);
+
+        this.getReadSMSPermission(new BasePermissionAppCompatActivity.RequestPermissionAction() {
+            @Override
+            public void permissionDenied() {
+                // TODO, task after permission is not granted
+                System.out.println("Callback permission denied");
+                // Show toast no sms permission
+            }
+
+            @Override
+            public void permissionGranted() {
+                System.out.println("Callback permission granted");
+                MessageActivity.permission = true;
+                messages = MessageActivity.getAllMessages(otherNumber);
+                mMessageAdapter.notifyDataSetChanged();
+            }
+        });
+
+
     }
 
-    public List<Message> getAllMessages() {
+    public static List<Message> getAllMessages(String otherNumber) {
         List<Message> messagesList = new ArrayList<Message>();
         Message message;
         Uri messageUri = Uri.parse("content://sms/");
-        ContentResolver cr = this.getContentResolver();
+        ContentResolver cr = CatalogActivity.getContext().getContentResolver();
 
-        if (this.otherNumber == null || this.otherNumber.isEmpty())
+        if (otherNumber == null || otherNumber.isEmpty())
             return messagesList;
 
         Cursor c = cr.query(messageUri, null, null, null, null);
-        this.startManagingCursor(c);
         int totalSMS = c.getCount();
 
         if (c.moveToFirst()) {
             do {
                 if (c.getString(c
-                        .getColumnIndexOrThrow("address")).contains(this.otherNumber)) {
+                        .getColumnIndexOrThrow("address")).contains(otherNumber)) {
                     message = new Message();
                     message.setId(c.getString(c.getColumnIndexOrThrow("_id")));
                     message.setAddress(c.getString(c

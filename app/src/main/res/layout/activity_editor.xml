@@ -107,9 +107,8 @@
                 <EditText
                     android:id="@+id/edit_contact_bday"
                     android:hint="@string/hint_contact_bday"
-                    android:inputType="date"
-                    style="@style/EditorFieldStyle" />
-                <!--android:onClick="showDatePickerDialog"-->
+                    android:inputType=""
+                    style="@style/EditorFieldStyle"/>
             </LinearLayout>
         </LinearLayout>
 

@@ -1,5 +1,6 @@
 package com.cjacquet.ft.hangouts;
 
+import android.app.DatePickerDialog;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
@@ -8,10 +9,12 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -20,6 +23,8 @@ import androidx.core.app.NavUtils;
 
 import com.cjacquet.ft.hangouts.data.ContactContract.ContactEntry;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.Calendar;
 
 /**
  * Allows user to create a new contact or edit an existing one.
@@ -41,6 +46,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     /** EditText field to enter the contact's birthday */
     private EditText mBDayEditText;
     private String mBDay;
+    private DatePickerDialog picker;
 
     /** EditText field to enter the contact's mail */
     private EditText mMailEditText;
@@ -73,6 +79,26 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mBDayEditText = (EditText) findViewById(R.id.edit_contact_bday);
         mMailEditText = (EditText) findViewById(R.id.edit_contact_mail);
         fab = (FloatingActionButton) findViewById(R.id.fab_sms);
+
+        mBDayEditText.setInputType(InputType.TYPE_NULL);
+        mBDayEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar cldr = Calendar.getInstance();
+                int day = cldr.get(Calendar.DAY_OF_MONTH);
+                int month = cldr.get(Calendar.MONTH);
+                int year = cldr.get(Calendar.YEAR);
+                // date picker dialog
+                picker = new DatePickerDialog(EditorActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                mBDayEditText.setText(Utils.setFormattedDate(year, monthOfYear, dayOfMonth));
+                            }
+                        }, year, month, day);
+                picker.show();
+            }
+        });
 
         if (mCurrentContactUri != null) {
             setTitle(getString(R.string.editor_activity_title_edit_contact));
@@ -308,8 +334,8 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             mNameEditText.setText(this.mName);
             mLastnameEditText.setText(this.mLastname);
             mPhoneEditText.setText(this.mPhone);
-            mBDayEditText.setText(this.mMail);
-            mMailEditText.setText(this.mBDay);
+            mBDayEditText.setText(this.mBDay);
+            mMailEditText.setText(this.mMail);
 
             this.switchFieldToShow();
             this.contactName = this.mNameEditText.getText().toString() + " " + this.mLastnameEditText.getText().toString();
