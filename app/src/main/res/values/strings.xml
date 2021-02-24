@@ -66,5 +66,4 @@
     <string name="popup_permission_ok">ok</string>
     <string name="popup_permission_ko">cancel</string>
     <string name="on_resume_text">"last connection at: "</string>
-    <string name="no_sms_permission">no sms permission, no sms</string>
 </resources>
