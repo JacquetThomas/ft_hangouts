@@ -26,7 +26,6 @@
 
             <!-- Input fields -->
             <LinearLayout
-                android:id="@+id/overview_layout"
                 android:layout_height="wrap_content"
                 android:layout_width="0dp"
                 android:layout_weight="2"
@@ -38,7 +37,6 @@
                     android:id="@+id/edit_contact_name"
                     android:hint="@string/hint_contact_name"
                     android:inputType="textCapWords"
-                    android:visibility="gone"
                     style="@style/EditorFieldStyle" />
 
                 <!-- Lastname field -->
@@ -46,21 +44,6 @@
                     android:id="@+id/edit_contact_lastname"
                     android:hint="@string/hint_contact_lastname"
                     android:inputType="textCapWords"
-                    android:visibility="gone"
-                    style="@style/EditorFieldStyle" />
-
-                <!-- Name field -->
-                <TextView
-                    android:id="@+id/show_contact_name"
-                    android:inputType="textCapWords"
-                    android:visibility="gone"
-                    style="@style/EditorFieldStyle" />
-
-                <!-- Lastname field -->
-                <TextView
-                    android:id="@+id/show_contact_lastname"
-                    android:inputType="textCapWords"
-                    android:visibility="gone"
                     style="@style/EditorFieldStyle" />
             </LinearLayout>
         </LinearLayout>

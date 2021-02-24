@@ -1,18 +1,3 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.cjacquet.ft.hangouts;
 
 import android.app.LoaderManager;
@@ -28,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,37 +28,29 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
     /** EditText field to enter the contact's name */
     private EditText mNameEditText;
+    private String mName;
 
     /** EditText field to enter the contact's lastname */
     private EditText mLastnameEditText;
+    private String mLastname;
 
     /** EditText field to enter the contact's phone */
     private EditText mPhoneEditText;
+    private String mPhone;
 
     /** EditText field to enter the contact's birthday */
     private EditText mBDayEditText;
+    private String mBDay;
 
     /** EditText field to enter the contact's mail */
     private EditText mMailEditText;
-
-    /** TextView field to display the contact's name */
-    private TextView mNameTextView;
-
-    /** TextView field to display the contact's lastname */
-    private TextView mLastnameTextView;
-
-    /** TextView field to display the contact's phone */
-    private TextView mPhoneTextView;
-
-    /** TextView field to display the contact's birthday */
-    private TextView mBDayTextView;
-
-    /** TextView field to display the contact's mail */
-    private TextView mMailTextView;
+    private String mMail;
 
     private FloatingActionButton fab;
 
     private Menu menu;
+
+    private String contactName;
 
     private final static int EXISTING_CONTACT_LOADER = 0;
 
@@ -93,8 +69,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         // Find all relevant views that we will need to read user input from
         mNameEditText = (EditText) findViewById(R.id.edit_contact_name);
         mLastnameEditText = (EditText) findViewById(R.id.edit_contact_lastname);
-        mNameTextView = (TextView) findViewById(R.id.edit_contact_name);
-        mLastnameTextView = (TextView) findViewById(R.id.edit_contact_lastname);
         mPhoneEditText = (EditText) findViewById(R.id.edit_contact_phone);
         mBDayEditText = (EditText) findViewById(R.id.edit_contact_bday);
         mMailEditText = (EditText) findViewById(R.id.edit_contact_mail);
@@ -109,7 +83,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 public void onClick(View view) {
                     Intent intent = new Intent(EditorActivity.this, MessageActivity.class);
                     intent.putExtra("phoneNumber", mPhoneEditText.getText().toString());
-                    intent.putExtra("contactName", mNameEditText.getText().toString() + " " + mLastnameEditText.getText().toString());
+                    intent.putExtra("contactName", contactName);
                     intent.putExtra("contactId", mCurrentContactUri.getLastPathSegment());
                     startActivity(intent);
                 }
@@ -163,8 +137,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             // Respond to a click on the "Up" arrow button in the app bar
             case android.R.id.home:
                 if (menu.findItem(R.id.action_save).isVisible()) {
+                    this.resetUnsavedFields();
                     this.switchMenuToShow();
-                    this.hideOption(R.id.action_save);
+                    this.switchFieldToShow();
                 }else {
                 // Navigate back to parent activity (CatalogActivity)
                 NavUtils.navigateUpFromSameTask(this);
@@ -184,33 +159,65 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         item.setVisible(true);
     }
 
-
+    /**
+     * Disable all editable fields to enter in show mode.
+     */
     private void switchFieldToShow() {
-        this.mNameTextView.setVisibility(View.VISIBLE);
-        this.mNameEditText.setVisibility(View.GONE);
-        this.mLastnameTextView.setVisibility(View.VISIBLE);
-        this.mLastnameEditText.setVisibility(View.GONE);
+        this.mNameEditText.setEnabled(false);
+        this.mLastnameEditText.setEnabled(false);
+        this.mPhoneEditText.setEnabled(false);
+        this.mMailEditText.setEnabled(false);
+        this.mBDayEditText.setEnabled(false);
     }
 
+    /**
+     * Enable all editable fields to enter in edit mode.
+     */
     private void switchFieldToEdit() {
-        this.mNameTextView.setVisibility(View.GONE);
-        this.mNameEditText.setVisibility(View.VISIBLE);
-        this.mLastnameTextView.setVisibility(View.GONE);
-        this.mLastnameEditText.setVisibility(View.VISIBLE);
+        this.mNameEditText.setEnabled(true);
+        this.mLastnameEditText.setEnabled(true);
+        this.mPhoneEditText.setEnabled(true);
+        this.mMailEditText.setEnabled(true);
+        this.mBDayEditText.setEnabled(true);
     }
 
+    /**
+     * Change menu's icons visibility pass in show mode.
+     */
     private void switchMenuToShow() {
         this.showOption(R.id.action_edit);
         this.hideOption(R.id.action_save);
-        setTitle(this.mNameTextView.getText().toString() + " " + this.mLastnameTextView.getText().toString());
+        setTitle(this.mNameEditText.getText().toString() + " " + this.mLastnameEditText.getText().toString());
     }
 
+    /**
+     * Change menu's icons visibility pass in edit mode.
+     */
     private void switchMenuToEdit() {
         this.showOption(R.id.action_save);
         this.hideOption(R.id.action_edit);
         setTitle(R.string.editor_activity_title_edit_contact);
     }
 
+    /**
+     * Method call to reset field whom change but has got savec.
+     */
+    private void resetUnsavedFields() {
+        if (!this.mName.equals(this.mNameEditText.getText().toString()))
+            this.mNameEditText.setText("");
+        if (!this.mLastname.equals(this.mLastnameEditText.getText().toString()))
+            this.mLastnameEditText.setText("");
+        if (!this.mPhone.equals(this.mPhoneEditText.getText().toString()))
+            this.mPhoneEditText.setText("");
+        if (!this.mMail.equals(this.mMailEditText.getText().toString()))
+            this.mMailEditText.setText("");
+        if (!this.mBDay.equals(this.mBDayEditText.getText().toString()))
+            this.mBDayEditText.setText("");
+    }
+
+    /**
+     * Method call to save Contact's informations.
+     */
     private void saveContacts() {
         Uri res = null;
         int updateRows = 0;
@@ -247,6 +254,10 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         toast.show();
     }
 
+    /**
+     * Method to delete a Contact.
+     * @return
+     */
     private int deleteContact() {
         return (getContentResolver().delete(mCurrentContactUri, null, null));
     }
@@ -286,24 +297,23 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             int favColumnIndex = cursor.getColumnIndex(ContactEntry.COLUMN_CONTACT_FAV);
 
             // Extract out the value from the Cursor for the given column index
-            String name = cursor.getString(nameColumnIndex);
-            String lastname = cursor.getString(lastnameColumnIndex);
-            String phone = cursor.getString(phoneColumnIndex);
-            String mail = cursor.getString(mailColumnIndex);
-            String bday = cursor.getString(bdayColumnIndex);
+            this.mName = cursor.getString(nameColumnIndex);
+            this.mLastname = cursor.getString(lastnameColumnIndex);
+            this.mPhone = cursor.getString(phoneColumnIndex);
+            this.mMail = cursor.getString(mailColumnIndex);
+            this.mBDay = cursor.getString(bdayColumnIndex);
             String fav = cursor.getString(favColumnIndex);
 
             // Update the views on the screen with the values from the database
-            mNameEditText.setText(name);
-            mLastnameEditText.setText(lastname);
-            mNameTextView.setText(name);
-            mLastnameTextView.setText(lastname);
-            mPhoneEditText.setText(phone);
-            mBDayEditText.setText(bday);
-            mMailEditText.setText(mail);
+            mNameEditText.setText(this.mName);
+            mLastnameEditText.setText(this.mLastname);
+            mPhoneEditText.setText(this.mPhone);
+            mBDayEditText.setText(this.mMail);
+            mMailEditText.setText(this.mBDay);
 
             this.switchFieldToShow();
-            setTitle(this.mNameTextView.getText().toString() + " " + this.mLastnameTextView.getText().toString());
+            this.contactName = this.mNameEditText.getText().toString() + " " + this.mLastnameEditText.getText().toString();
+            setTitle(this.contactName);
         }
     }
 
