@@ -39,7 +39,7 @@ import static com.cjacquet.ft.hangouts.data.ContactContract.ContactEntry._ID;
 /**
  * Displays list of contacts that were entered and stored in the app.
  */
-public class CatalogActivity extends BasePausableAppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class CatalogActivity extends BaseAppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private final static int CONTACT_LOADER = 0;
 
@@ -63,7 +63,6 @@ public class CatalogActivity extends BasePausableAppCompatActivity implements Lo
         LocaleHelper.setLocale(this, getResources().getConfiguration().locale.getLanguage());
         instance = this;
         setContentView(R.layout.activity_catalog);
-
 
         // Setup FAB to open EditorActivity
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -124,6 +123,24 @@ public class CatalogActivity extends BasePausableAppCompatActivity implements Lo
             // Respond to a click on the "Change language" menu option
             case R.id.action_language_change:
                 this.showPopupWindow();
+                return true;
+            // Respond to a click on the "Change to orange" menu option
+            case R.id.action_orange_theme:
+                colorTheme = Theme.ORANGE;
+                setTheme(colorTheme.getValue());
+                recreate();
+                return true;
+            // Respond to a click on the "Change to blue" menu option
+            case R.id.action_blue_theme:
+                colorTheme = Theme.BLUE;
+                setTheme(colorTheme.getValue());
+                recreate();
+                return true;
+            // Respond to a click on the "Change to green" menu option
+            case R.id.action_green_theme:
+                colorTheme = Theme.GREEN;
+                setTheme(colorTheme.getValue());
+                recreate();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

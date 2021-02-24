@@ -29,4 +29,16 @@
         android:id="@+id/action_delete_all_entries"
         android:title="@string/action_delete_all_entries"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_orange_theme"
+        android:title="@string/action_orange_theme"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_blue_theme"
+        android:title="@string/action_blue_theme"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_green_theme"
+        android:title="@string/action_green_theme"
+        app:showAsAction="never" />
 </menu>

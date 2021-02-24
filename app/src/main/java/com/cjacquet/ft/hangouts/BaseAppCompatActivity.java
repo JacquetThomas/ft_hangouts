@@ -9,14 +9,16 @@ import androidx.core.app.NavUtils;
 
 import java.util.Date;
 
-public class BasePausableAppCompatActivity extends AppCompatActivity {
+public class BaseAppCompatActivity extends AppCompatActivity {
     private Date pausedDate;
     private boolean paused;
+    public static Theme colorTheme = Theme.ORANGE;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         paused = false;
+        setTheme(colorTheme.getValue());
     }
 
     @Override

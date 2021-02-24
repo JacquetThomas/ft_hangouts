@@ -31,4 +31,7 @@
     <string name="popup_permission_ok">ok</string>
     <string name="popup_permission_ko">cancel</string>
     <string name="on_resume_text">"last connection at: "</string>
+    <string name="action_orange_theme">change to orange theme</string>
+    <string name="action_blue_theme">change to blue theme</string>
+    <string name="action_green_theme">chqnge to green theme</string>
 </resources>

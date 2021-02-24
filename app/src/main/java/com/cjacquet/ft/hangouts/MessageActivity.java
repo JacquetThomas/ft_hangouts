@@ -27,9 +27,9 @@ import java.util.List;
 
 import static com.cjacquet.ft.hangouts.data.ContactContract.ContactEntry.CONTENT_URI;
 
-public class MessageActivity extends BasePausableAppCompatActivity {
+public class MessageActivity extends BaseAppCompatActivity {
     private RecyclerView mMessageRecycler;
-    private MessageListAdapter mMessageAdapter;
+    private static MessageListAdapter mMessageAdapter;
     private String otherNumber;
     private static boolean permission;
     private static List<Message> messages;
@@ -46,8 +46,6 @@ public class MessageActivity extends BasePausableAppCompatActivity {
 
         otherNumber = this.getIntent().getExtras().get("phoneNumber").toString();
         messages = new ArrayList<>();
-        if (permission)
-            messages.addAll(this.getAllMessages(otherNumber));
 
         mMessageRecycler = (RecyclerView) findViewById(R.id.recycler_gchat);
         mMessageAdapter = new MessageListAdapter(this, messages);
@@ -56,7 +54,9 @@ public class MessageActivity extends BasePausableAppCompatActivity {
         mMessageRecycler.setLayoutManager(layoutManager);
         mMessageRecycler.setAdapter(mMessageAdapter);
 
-        this.getReadSMSPermission();
+        permission = this.getReadSMSPermission();
+        if (permission)
+            messages.addAll(this.getAllMessages(otherNumber));
     }
 
     public static List<Message> getAllMessages(String otherNumber) {
@@ -109,22 +109,30 @@ public class MessageActivity extends BasePausableAppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        Bundle bundle = getIntent().getExtras();
+        Intent intent = new Intent(MessageActivity.this, EditorActivity.class);
+        Uri currentContactUri = ContentUris.withAppendedId(CONTENT_URI, Integer.parseInt(bundle.get("contactId").toString()));
+        intent.setData(currentContactUri);
+        NavUtils.navigateUpTo(this, intent);
+    }
 
     /* --------------------------- Handle permission -------------------------------- */
 
     /**
      * Check if we have read permission on SMS and request if not.
      */
-    public void getReadSMSPermission() {
+    public boolean getReadSMSPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.READ_SMS}, REQUEST_READ_SMS_PERMISSION);
-                return;
+                return false;
+            } else {
+                return true;
             }
-            MessageActivity.permission = true;
-            messages = MessageActivity.getAllMessages(otherNumber);
-            mMessageAdapter.notifyDataSetChanged();
         }
+        return false;
     }
 
     @Override
