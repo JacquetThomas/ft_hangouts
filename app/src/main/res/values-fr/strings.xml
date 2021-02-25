@@ -31,4 +31,7 @@
     <string name="popup_permission_ok">OK</string>
     <string name="popup_permission_ko">Retour</string>
     <string name="on_resume_text">"Dernière connexion à: "</string>
+    <string name="action_green_theme">Thème vert</string>
+    <string name="action_blue_theme">Thème bleu</string>
+    <string name="action_orange_theme">Thème orange</string>
 </resources>
