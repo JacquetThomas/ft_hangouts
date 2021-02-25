@@ -26,13 +26,10 @@
     <string name="validate_choice">Valider</string>
     <string name="message_activity_title">Contacts</string>
     <string name="action_edit">Editer</string>
-    <string name="popup_permission_title">Permission demandée</string>
-    <string name="popup_permission_message">Nous avons besoin de votre permission pour accéder à vos SMS afin de pouvoir vous les afficher, vous pouvez nous l\'autoriser dans les paramètres.</string>
-    <string name="popup_permission_ok">OK</string>
-    <string name="popup_permission_ko">Retour</string>
     <string name="on_resume_text">"Dernière connexion à: "</string>
     <string name="action_green_theme">Thème vert</string>
     <string name="action_blue_theme">Thème bleu</string>
     <string name="action_orange_theme">Thème orange</string>
     <string name="no_sms_permission">Permission SMS requise pour accéder à la page messages.</string>
+    <string name="enter_message">Ecrire un message</string>
 </resources>

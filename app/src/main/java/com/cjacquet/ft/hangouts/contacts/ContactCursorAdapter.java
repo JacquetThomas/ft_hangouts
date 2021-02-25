@@ -1,4 +1,4 @@
-package com.cjacquet.ft.hangouts;
+package com.cjacquet.ft.hangouts.contacts;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -8,7 +8,8 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
-import com.cjacquet.ft.hangouts.data.ContactContract;
+import com.cjacquet.ft.hangouts.R;
+import com.cjacquet.ft.hangouts.database.ContactContract;
 
 /**
  * {@link ContactCursorAdapter} is an adapter for a list or grid view

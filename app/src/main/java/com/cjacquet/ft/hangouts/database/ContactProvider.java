@@ -1,4 +1,4 @@
-package com.cjacquet.ft.hangouts.data;
+package com.cjacquet.ft.hangouts.database;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;

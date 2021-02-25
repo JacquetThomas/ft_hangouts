@@ -1,4 +1,4 @@
-package com.cjacquet.ft.hangouts;
+package com.cjacquet.ft.hangouts.contacts;
 
 import android.app.DatePickerDialog;
 import android.app.LoaderManager;
@@ -21,12 +21,16 @@ import android.widget.Toast;
 
 import androidx.core.app.NavUtils;
 
-import com.cjacquet.ft.hangouts.data.ContactContract.ContactEntry;
+import com.cjacquet.ft.hangouts.BaseAppCompatActivity;
+import com.cjacquet.ft.hangouts.messages.MessageActivity;
+import com.cjacquet.ft.hangouts.R;
+import com.cjacquet.ft.hangouts.utils.Utils;
+import com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Calendar;
 
-import static com.cjacquet.ft.hangouts.data.ContactContract.ContactEntry.CONTENT_URI;
+import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.CONTENT_URI;
 
 /**
  * Allows user to create a new contact or edit an existing one.

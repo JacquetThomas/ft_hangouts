@@ -31,4 +31,6 @@
     <string name="action_blue_theme">change to blue theme</string>
     <string name="action_green_theme">chqnge to green theme</string>
     <string name="no_sms_permission">SMS permission not granted, you can\'t see messages.</string>
+    <string name="enter_message">enter message</string>
+    <string name="send_button_text" translatable="false"><![CDATA[>>]]></string>
 </resources>

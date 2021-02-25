@@ -10,9 +10,9 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.cjacquet.ft.hangouts.CatalogActivity;
+import com.cjacquet.ft.hangouts.MainActivity;
 import com.cjacquet.ft.hangouts.R;
-import com.cjacquet.ft.hangouts.Utils;
+import com.cjacquet.ft.hangouts.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,7 +112,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             timeText.setText(Utils.toHoursMinutes(message.getTime()));
             dateText.setText(Utils.toDay(message.getTime()));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                cardview.setCardBackgroundColor(CatalogActivity.getContext().getResources().getColor(colorTheme.getPrimaryColorId(), CatalogActivity.getInstance().getTheme()));
+                cardview.setCardBackgroundColor(MainActivity.getContext().getResources().getColor(colorTheme.getPrimaryColorId(), MainActivity.getInstance().getTheme()));
             }
         }
     }

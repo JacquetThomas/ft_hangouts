@@ -1,6 +1,7 @@
-package com.cjacquet.ft.hangouts;
+package com.cjacquet.ft.hangouts.messages;
 
 import android.Manifest;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Intent;
@@ -20,14 +21,18 @@ import androidx.core.app.NavUtils;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.cjacquet.ft.hangouts.messages.Message;
-import com.cjacquet.ft.hangouts.messages.MessageListAdapter;
-import com.cjacquet.ft.hangouts.messages.MessageType;
+import com.cjacquet.ft.hangouts.BaseAppCompatActivity;
+import com.cjacquet.ft.hangouts.MainActivity;
+import com.cjacquet.ft.hangouts.R;
+import com.cjacquet.ft.hangouts.utils.Utils;
+import com.cjacquet.ft.hangouts.contacts.EditorActivity;
+import com.cjacquet.ft.hangouts.receiver.SmsDeliveredReceiver;
+import com.cjacquet.ft.hangouts.receiver.SmsSentReceiver;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.cjacquet.ft.hangouts.data.ContactContract.ContactEntry.CONTENT_URI;
+import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.CONTENT_URI;
 
 public class MessageActivity extends BaseAppCompatActivity {
     private RecyclerView mMessageRecycler;
@@ -37,7 +42,6 @@ public class MessageActivity extends BaseAppCompatActivity {
     private static List<Message> messages;
     private static EditText messageToSend;
     private static final int REQUEST_READ_SMS_PERMISSION = 3004;
-    private static final String APP_NAME = "ft_hangouts";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,21 +55,40 @@ public class MessageActivity extends BaseAppCompatActivity {
         messages = new ArrayList<>();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            ((Button)findViewById(R.id.button_gchat_send)).setTextColor(getResources().getColor(colorTheme.getPrimaryColorId(), CatalogActivity.getInstance().getTheme()));
+            ((Button)findViewById(R.id.button_gchat_send)).setTextColor(getResources().getColor(colorTheme.getPrimaryColorId(), MainActivity.getInstance().getTheme()));
         }
+
         messageToSend = findViewById(R.id.edit_gchat_message);
+
         Button sendButton = findViewById(R.id.button_gchat_send);
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (messageToSend.getText().toString().isEmpty())
+                    return ;
                 Message newMessage = new Message(messageToSend.getText().toString(), Utils.formatNumber(otherNumber));
                 mMessageAdapter.updateData(messages, newMessage);
                 mMessageAdapter.notifyDataSetChanged();
                 messageToSend.setText("");
                 SmsManager smsManager = SmsManager.getDefault();
-                smsManager.sendTextMessage(newMessage.getAddress(), null, newMessage.getText(), null, null);
+                ArrayList<String> dividedMessages = smsManager.divideMessage(newMessage.getText());
+                ArrayList<PendingIntent> sentPendingIntents = new ArrayList<>();
+                ArrayList<PendingIntent> deliveredPendingIntents = new ArrayList<>();
+                PendingIntent sentPI = PendingIntent.getBroadcast(MainActivity.getContext(), 0,
+                        new Intent(MainActivity.getContext(), SmsSentReceiver.class), 0);
+
+                PendingIntent deliveredPI = PendingIntent.getBroadcast(MainActivity.getContext(), 0,
+                        new Intent(MainActivity.getContext(), SmsDeliveredReceiver.class), 0);
+                for (int i = 0; i < dividedMessages.size(); i++) {
+                    sentPendingIntents.add(i, sentPI);
+
+                    deliveredPendingIntents.add(i, deliveredPI);
+                }
+                smsManager.sendMultipartTextMessage(newMessage.getAddress(), null, dividedMessages, sentPendingIntents, deliveredPendingIntents);
+
             }
         });
+
         mMessageRecycler = findViewById(R.id.recycler_gchat);
         mMessageAdapter = new MessageListAdapter(this, messages);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -82,7 +105,7 @@ public class MessageActivity extends BaseAppCompatActivity {
         List<Message> messagesList = new ArrayList<>();
         Message message;
         Uri messageUri = Uri.parse("content://sms/");
-        ContentResolver cr = CatalogActivity.getContext().getContentResolver();
+        ContentResolver cr = MainActivity.getContext().getContentResolver();
 
         if (otherNumber == null || otherNumber.isEmpty())
             return messagesList;

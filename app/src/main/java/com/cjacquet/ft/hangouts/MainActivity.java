@@ -24,28 +24,32 @@ import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.cjacquet.ft.hangouts.contacts.ContactCursorAdapter;
+import com.cjacquet.ft.hangouts.contacts.EditorActivity;
+import com.cjacquet.ft.hangouts.utils.LocaleHelper;
+import com.cjacquet.ft.hangouts.utils.Theme;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Locale;
 
-import static com.cjacquet.ft.hangouts.data.ContactContract.ContactEntry.COLUMN_CONTACT_LASTNAME;
-import static com.cjacquet.ft.hangouts.data.ContactContract.ContactEntry.COLUMN_CONTACT_NAME;
-import static com.cjacquet.ft.hangouts.data.ContactContract.ContactEntry.COLUMN_CONTACT_PHONE;
-import static com.cjacquet.ft.hangouts.data.ContactContract.ContactEntry.CONTENT_URI;
-import static com.cjacquet.ft.hangouts.data.ContactContract.ContactEntry._ID;
+import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.COLUMN_CONTACT_LASTNAME;
+import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.COLUMN_CONTACT_NAME;
+import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.COLUMN_CONTACT_PHONE;
+import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.CONTENT_URI;
+import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry._ID;
 
 /**
  * Displays list of contacts that were entered and stored in the app.
  */
-public class CatalogActivity extends BaseAppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends BaseAppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private final static int CONTACT_LOADER = 0;
 
     ContactCursorAdapter mCursorAdapter;
 
-    private static CatalogActivity instance;
+    private static MainActivity instance;
 
-    public static CatalogActivity getInstance() {
+    public static MainActivity getInstance() {
         return instance;
     }
 
@@ -67,7 +71,7 @@ public class CatalogActivity extends BaseAppCompatActivity implements LoaderMana
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(CatalogActivity.this, EditorActivity.class);
+                Intent intent = new Intent(MainActivity.this, EditorActivity.class);
                 startActivity(intent);
             }
         });
@@ -85,7 +89,7 @@ public class CatalogActivity extends BaseAppCompatActivity implements LoaderMana
         contactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Intent intent = new Intent(CatalogActivity.this, EditorActivity.class);
+                Intent intent = new Intent(MainActivity.this, EditorActivity.class);
 
                 Uri currentContactUri = ContentUris.withAppendedId(CONTENT_URI, id);
                 intent.setData(currentContactUri);

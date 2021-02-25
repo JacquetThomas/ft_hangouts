@@ -1,4 +1,4 @@
-package com.cjacquet.ft.hangouts;
+package com.cjacquet.ft.hangouts.utils;
 
 import android.annotation.TargetApi;
 import android.content.Context;

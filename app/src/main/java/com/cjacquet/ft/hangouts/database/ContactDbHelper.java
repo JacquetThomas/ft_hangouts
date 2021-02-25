@@ -1,4 +1,4 @@
-package com.cjacquet.ft.hangouts.data;
+package com.cjacquet.ft.hangouts.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

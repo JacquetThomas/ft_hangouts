@@ -1,4 +1,6 @@
-package com.cjacquet.ft.hangouts;
+package com.cjacquet.ft.hangouts.utils;
+
+import com.cjacquet.ft.hangouts.MainActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -47,6 +49,6 @@ public final class Utils {
     }
 
     private static String getLocaleString() {
-        return LocaleHelper.getLanguage(CatalogActivity.getContext());
+        return LocaleHelper.getLanguage(MainActivity.getContext());
     }
 }

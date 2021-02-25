@@ -1,4 +1,6 @@
-package com.cjacquet.ft.hangouts;
+package com.cjacquet.ft.hangouts.utils;
+
+import com.cjacquet.ft.hangouts.R;
 
 public enum Theme {
     DEFAULT(R.style.AppTheme, R.color.colorPrimary),

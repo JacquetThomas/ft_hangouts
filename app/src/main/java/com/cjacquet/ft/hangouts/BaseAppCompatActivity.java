@@ -9,6 +9,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
 
+import com.cjacquet.ft.hangouts.utils.Theme;
+import com.cjacquet.ft.hangouts.utils.Utils;
+
 import java.util.Date;
 
 public class BaseAppCompatActivity extends AppCompatActivity {
