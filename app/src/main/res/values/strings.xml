@@ -12,7 +12,7 @@
     <string name="editor_insert_contact_success">contact saved!</string>
     <string name="editor_insert_contact_failed">error with saving contact</string>
     <string name="empty_view_title_text">it\'s a bit lonely here…</string>
-    <string name="empty_view_subtitle_text">get started by adding a contact</string>
+    <string name="empty_view_subtitle_text">get started by adding a contact with the "+" button down there!</string>
     <string name="hint_contact_lastname">lastname</string>
     <string name="category_contacts">contacts</string>
     <string name="hint_contact_phone">phone number</string>
@@ -29,7 +29,7 @@
     <string name="on_resume_text">"last connection at: "</string>
     <string name="action_orange_theme">change to orange theme</string>
     <string name="action_blue_theme">change to blue theme</string>
-    <string name="action_green_theme">chqnge to green theme</string>
+    <string name="action_green_theme">change to green theme</string>
     <string name="no_sms_permission">SMS permission not granted, you can\'t see messages.</string>
     <string name="enter_message">enter message</string>
     <string name="send_button_text" translatable="false"><![CDATA[>>]]></string>

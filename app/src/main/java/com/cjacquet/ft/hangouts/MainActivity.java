@@ -64,7 +64,7 @@ public class MainActivity extends BaseAppCompatActivity implements LoaderManager
 
         LocaleHelper.setLocale(this, getResources().getConfiguration().locale.getLanguage());
         instance = this;
-        setContentView(R.layout.activity_catalog);
+        setContentView(R.layout.activity_main_list);
 
         // Setup FAB to open EditorActivity
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

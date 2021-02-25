@@ -13,7 +13,7 @@
     <string name="editor_insert_contact_success">Contact saved!</string>
     <string name="editor_insert_contact_failed">Error with saving contact</string>
     <string name="empty_view_title_text">It\'s a bit lonely here...</string>
-    <string name="empty_view_subtitle_text">Get started by adding a contect</string>
+    <string name="empty_view_subtitle_text">Get started by adding a contact with the \"+\" button down there!</string>
     <string name="hint_contact_lastname">Lastname</string>
     <string name="category_contacts">Contacts</string>
     <string name="hint_contact_phone">Phone number</string>
