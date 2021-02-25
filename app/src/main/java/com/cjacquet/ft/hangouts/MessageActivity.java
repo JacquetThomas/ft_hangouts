@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.MenuItem;
+import android.widget.Button;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.NavUtils;
@@ -47,6 +48,9 @@ public class MessageActivity extends BaseAppCompatActivity {
         otherNumber = this.getIntent().getExtras().get("phoneNumber").toString();
         messages = new ArrayList<>();
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            ((Button)findViewById(R.id.button_gchat_send)).setTextColor(getResources().getColor(colorTheme.getPrimaryColorId(), CatalogActivity.getInstance().getTheme()));
+        }
         mMessageRecycler = (RecyclerView) findViewById(R.id.recycler_gchat);
         mMessageAdapter = new MessageListAdapter(this, messages);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);

@@ -1,17 +1,22 @@
 package com.cjacquet.ft.hangouts.messages;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.cjacquet.ft.hangouts.CatalogActivity;
 import com.cjacquet.ft.hangouts.R;
 import com.cjacquet.ft.hangouts.Utils;
 
 import java.util.List;
+
+import static com.cjacquet.ft.hangouts.BaseAppCompatActivity.colorTheme;
 
 public class MessageListAdapter extends RecyclerView.Adapter {
     private static final int VIEW_TYPE_MESSAGE_SENT = 1;
@@ -81,6 +86,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
     private class SentMessageHolder extends RecyclerView.ViewHolder {
         TextView messageText, timeText, dateText;
+        CardView cardview;
 
         SentMessageHolder(View itemView) {
             super(itemView);
@@ -88,6 +94,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             messageText = (TextView) itemView.findViewById(R.id.text_gchat_message_me);
             timeText = (TextView) itemView.findViewById(R.id.text_gchat_timestamp_me);
             dateText = (TextView) itemView.findViewById(R.id.text_gchat_date_me);
+            cardview = (CardView) itemView.findViewById(R.id.card_gchat_message_me);
         }
 
         void bind(Message message) {
@@ -96,6 +103,9 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             // Format the stored timestamp into a readable String using method.
             timeText.setText(Utils.toHoursMinutes(message.getTime()));
             dateText.setText(Utils.toDay(message.getTime()));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                cardview.setCardBackgroundColor(CatalogActivity.getContext().getResources().getColor(colorTheme.getPrimaryColorId(), CatalogActivity.getInstance().getTheme()));
+            }
         }
     }
 

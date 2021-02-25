@@ -2,7 +2,6 @@ package com.cjacquet.ft.hangouts;
 
 import android.app.LoaderManager;
 import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -25,7 +24,6 @@ import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.cjacquet.ft.hangouts.data.ContactContract.ContactEntry;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Locale;
@@ -112,10 +110,6 @@ public class CatalogActivity extends BaseAppCompatActivity implements LoaderMana
     public boolean onOptionsItemSelected(MenuItem item) {
         // User clicked on a menu option in the app bar overflow menu
         switch (item.getItemId()) {
-            // Respond to a click on the "Insert dummy data" menu option
-            case R.id.action_insert_dummy_data:
-                this.insertContacts();
-                return true;
             // Respond to a click on the "Delete all entries" menu option
             case R.id.action_delete_all_entries:
                 this.deleteContacts();
@@ -126,20 +120,17 @@ public class CatalogActivity extends BaseAppCompatActivity implements LoaderMana
                 return true;
             // Respond to a click on the "Change to orange" menu option
             case R.id.action_orange_theme:
-                colorTheme = Theme.ORANGE;
-                setTheme(colorTheme.getValue());
+                setTheme(Theme.ORANGE.getThemeId());
                 recreate();
                 return true;
             // Respond to a click on the "Change to blue" menu option
             case R.id.action_blue_theme:
-                colorTheme = Theme.BLUE;
-                setTheme(colorTheme.getValue());
+                setTheme(Theme.BLUE.getThemeId());
                 recreate();
                 return true;
             // Respond to a click on the "Change to green" menu option
             case R.id.action_green_theme:
-                colorTheme = Theme.GREEN;
-                setTheme(colorTheme.getValue());
+                setTheme(Theme.GREEN.getThemeId());
                 recreate();
                 return true;
             default:
@@ -230,14 +221,6 @@ public class CatalogActivity extends BaseAppCompatActivity implements LoaderMana
             default:
                 break;
         }
-    }
-
-    private void insertContacts() {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_CONTACT_NAME, "Toto");
-        contentValues.put(COLUMN_CONTACT_LASTNAME, "Terrier");
-        contentValues.put(ContactEntry.COLUMN_CONTACT_PHONE, "000-000-000");
-        getContentResolver().insert(ContactEntry.CONTENT_URI, contentValues);
     }
 
     private void deleteContacts() {
