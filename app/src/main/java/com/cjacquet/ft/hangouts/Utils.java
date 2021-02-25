@@ -8,6 +8,12 @@ public final class Utils {
 
     private Utils(){}
 
+    public static String formatNumber(String number) {
+        // TODO: find the right way to format the number
+        String s = "18005551234";
+        return number;
+    }
+
     public static String toHoursMinutes(Long time) {
         Date date = new Date(time);
         if (getLocaleString().equalsIgnoreCase(Locale.FRENCH.toString()))

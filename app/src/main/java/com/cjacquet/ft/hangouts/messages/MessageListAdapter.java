@@ -14,6 +14,7 @@ import com.cjacquet.ft.hangouts.CatalogActivity;
 import com.cjacquet.ft.hangouts.R;
 import com.cjacquet.ft.hangouts.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.cjacquet.ft.hangouts.BaseAppCompatActivity.colorTheme;
@@ -84,8 +85,11 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         }
     }
 
-    public void updateData(List<Message> messages) {
-        mMessageList = messages;
+    public void updateData(List<Message> messages, Message newMessage) {
+        List<Message> oldMessages = mMessageList;
+        mMessageList = new ArrayList<>();
+        mMessageList.add(newMessage);
+        mMessageList.addAll(oldMessages);
     }
 
     private class SentMessageHolder extends RecyclerView.ViewHolder {

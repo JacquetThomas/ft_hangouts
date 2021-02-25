@@ -9,8 +9,11 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.core.app.NavUtils;
@@ -32,6 +35,7 @@ public class MessageActivity extends BaseAppCompatActivity {
     private String otherNumber;
     private static boolean permission;
     private static List<Message> messages;
+    private static EditText messageToSend;
     private static final int REQUEST_READ_SMS_PERMISSION = 3004;
     private static final String APP_NAME = "ft_hangouts";
 
@@ -49,7 +53,20 @@ public class MessageActivity extends BaseAppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             ((Button)findViewById(R.id.button_gchat_send)).setTextColor(getResources().getColor(colorTheme.getPrimaryColorId(), CatalogActivity.getInstance().getTheme()));
         }
-        mMessageRecycler = (RecyclerView) findViewById(R.id.recycler_gchat);
+        messageToSend = findViewById(R.id.edit_gchat_message);
+        Button sendButton = findViewById(R.id.button_gchat_send);
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Message newMessage = new Message(messageToSend.getText().toString(), Utils.formatNumber(otherNumber));
+                mMessageAdapter.updateData(messages, newMessage);
+                mMessageAdapter.notifyDataSetChanged();
+                messageToSend.setText("");
+                SmsManager smsManager = SmsManager.getDefault();
+                smsManager.sendTextMessage(newMessage.getAddress(), null, newMessage.getText(), null, null);
+            }
+        });
+        mMessageRecycler = findViewById(R.id.recycler_gchat);
         mMessageAdapter = new MessageListAdapter(this, messages);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setReverseLayout(true);
@@ -144,7 +161,7 @@ public class MessageActivity extends BaseAppCompatActivity {
             if (REQUEST_READ_SMS_PERMISSION == requestCode) {
                 MessageActivity.permission = true;
                 messages = MessageActivity.getAllMessages(otherNumber);
-                mMessageAdapter.updateData(messages);
+                mMessageAdapter.updateData(messages, null);
                 mMessageAdapter.notifyDataSetChanged();
             }
 

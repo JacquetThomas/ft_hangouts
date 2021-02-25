@@ -1,5 +1,7 @@
 package com.cjacquet.ft.hangouts.messages;
 
+import java.util.Date;
+
 public class Message{
     private String id;
     private String address;
@@ -7,6 +9,16 @@ public class Message{
     private boolean read;
     private Long time;
     private MessageType type;
+
+    public Message(){}
+
+    public Message(String text, String address) {
+        this.address = address;
+        this.text = text;
+        this.read = true;
+        this.time = new Date().getTime();
+        this.type = MessageType.SENT;
+    }
 
     public String getId() {
         return id;
