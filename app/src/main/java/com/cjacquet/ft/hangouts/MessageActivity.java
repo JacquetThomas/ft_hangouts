@@ -3,18 +3,16 @@ package com.cjacquet.ft.hangouts;
 import android.Manifest;
 import android.content.ContentResolver;
 import android.content.ContentUris;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.NavUtils;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -146,36 +144,16 @@ public class MessageActivity extends BaseAppCompatActivity {
             if (REQUEST_READ_SMS_PERMISSION == requestCode) {
                 MessageActivity.permission = true;
                 messages = MessageActivity.getAllMessages(otherNumber);
+                mMessageAdapter.updateData(messages);
                 mMessageAdapter.notifyDataSetChanged();
             }
 
         } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
             if (REQUEST_READ_SMS_PERMISSION == requestCode) {
-                // setup the alert builder
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(R.string.popup_permission_title);
-                builder.setMessage(R.string.popup_permission_message);
-
-                // add the buttons
-                builder.setPositiveButton(R.string.popup_permission_ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // This code is for get permission from setting.
-                        final Intent i = new Intent();
-                        i.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                        i.addCategory(Intent.CATEGORY_DEFAULT);
-                        i.setData(Uri.parse("package:" + getPackageName()));
-                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                        i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                        startActivity(i);
-                    }
-                });
-                builder.setNegativeButton(R.string.popup_permission_ko, null);
-
-                // create and show the alert dialog
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                String text = getResources().getString(R.string.no_sms_permission);
+                Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
+                toast.show();
+                onBackPressed();
             }
         }
     }

@@ -84,6 +84,10 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         }
     }
 
+    public void updateData(List<Message> messages) {
+        mMessageList = messages;
+    }
+
     private class SentMessageHolder extends RecyclerView.ViewHolder {
         TextView messageText, timeText, dateText;
         CardView cardview;

@@ -34,4 +34,5 @@
     <string name="action_orange_theme">Orange theme</string>
     <string name="action_blue_theme">Blue theme</string>
     <string name="action_green_theme">Green theme</string>
+    <string name="no_sms_permission">SMS permission not granted, you can\'t see messages.</string>
 </resources>

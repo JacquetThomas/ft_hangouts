@@ -34,4 +34,5 @@
     <string name="action_green_theme">Thème vert</string>
     <string name="action_blue_theme">Thème bleu</string>
     <string name="action_orange_theme">Thème orange</string>
+    <string name="no_sms_permission">Permission SMS requise pour accéder à la page messages.</string>
 </resources>
