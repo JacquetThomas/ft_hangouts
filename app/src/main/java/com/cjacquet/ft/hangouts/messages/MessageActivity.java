@@ -2,9 +2,12 @@ package com.cjacquet.ft.hangouts.messages;
 
 import android.Manifest;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -13,6 +16,7 @@ import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -24,10 +28,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.cjacquet.ft.hangouts.BaseAppCompatActivity;
 import com.cjacquet.ft.hangouts.MainActivity;
 import com.cjacquet.ft.hangouts.R;
-import com.cjacquet.ft.hangouts.utils.Utils;
 import com.cjacquet.ft.hangouts.contacts.EditorActivity;
 import com.cjacquet.ft.hangouts.receiver.SmsDeliveredReceiver;
 import com.cjacquet.ft.hangouts.receiver.SmsSentReceiver;
+import com.cjacquet.ft.hangouts.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +46,21 @@ public class MessageActivity extends BaseAppCompatActivity {
     private static List<Message> messages;
     private static EditText messageToSend;
     private static final int REQUEST_READ_SMS_PERMISSION = 3004;
+    IntentFilter intentFilter;
+    private final int position = 0;
+
+    private BroadcastReceiver intentReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (permission && intent.getExtras().get("number").toString().equals(otherNumber)) {
+                Message newMessage = new Message(intent.getExtras().get("message").toString(), Utils.formatNumber(intent.getExtras().get("number").toString()), MessageType.RECEIVED);
+                mMessageAdapter.updateData(messages, newMessage);
+                mMessageAdapter.notifyDataSetChanged();
+                mMessageRecycler.scrollToPosition(position);
+            }
+            onResume();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +69,6 @@ public class MessageActivity extends BaseAppCompatActivity {
         setTitle(this.getIntent().getExtras().get("contactName").toString());
 
         this.permission = false;
-
         otherNumber = this.getIntent().getExtras().get("phoneNumber").toString();
         messages = new ArrayList<>();
 
@@ -58,7 +76,14 @@ public class MessageActivity extends BaseAppCompatActivity {
             ((Button)findViewById(R.id.button_gchat_send)).setTextColor(getResources().getColor(colorTheme.getPrimaryColorId(), MainActivity.getInstance().getTheme()));
         }
 
+        /* --------------- Handle message textview --------------- */
         messageToSend = findViewById(R.id.edit_gchat_message);
+        messageToSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMessageRecycler.scrollToPosition(position);
+            }
+        });
 
         Button sendButton = findViewById(R.id.button_gchat_send);
         sendButton.setOnClickListener(new View.OnClickListener() {
@@ -66,10 +91,15 @@ public class MessageActivity extends BaseAppCompatActivity {
             public void onClick(View view) {
                 if (messageToSend.getText().toString().isEmpty())
                     return ;
-                Message newMessage = new Message(messageToSend.getText().toString(), Utils.formatNumber(otherNumber));
+                Message newMessage = new Message(messageToSend.getText().toString(), Utils.formatNumber(otherNumber), MessageType.SENT);
+                messageToSend.setText("");
+                // Close keyboard
+                getWindow().setSoftInputMode(
+                        WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+                );
                 mMessageAdapter.updateData(messages, newMessage);
                 mMessageAdapter.notifyDataSetChanged();
-                messageToSend.setText("");
+                mMessageRecycler.scrollToPosition(position);
                 SmsManager smsManager = SmsManager.getDefault();
                 ArrayList<String> dividedMessages = smsManager.divideMessage(newMessage.getText());
                 ArrayList<PendingIntent> sentPendingIntents = new ArrayList<>();
@@ -96,9 +126,13 @@ public class MessageActivity extends BaseAppCompatActivity {
         mMessageRecycler.setLayoutManager(layoutManager);
         mMessageRecycler.setAdapter(mMessageAdapter);
 
-        permission = this.getReadSMSPermission();
+        permission = this.getSMSPermission();
         if (permission)
             messages.addAll(this.getAllMessages(otherNumber));
+
+        intentFilter = new IntentFilter();
+        intentFilter.addAction("RECEIVED_SMS");
+        registerReceiver(intentReceiver, intentFilter);
     }
 
     public static List<Message> getAllMessages(String otherNumber) {
@@ -145,7 +179,7 @@ public class MessageActivity extends BaseAppCompatActivity {
                 Intent intent = new Intent(MessageActivity.this, EditorActivity.class);
                 Uri currentContactUri = ContentUris.withAppendedId(CONTENT_URI, Integer.parseInt(getIntent().getExtras().get("contactId").toString()));
                 intent.setData(currentContactUri);
-                    NavUtils.navigateUpTo(this, intent);
+                NavUtils.navigateUpTo(this, intent);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -160,12 +194,18 @@ public class MessageActivity extends BaseAppCompatActivity {
         NavUtils.navigateUpTo(this, intent);
     }
 
+    @Override
+    protected void onPause() {
+        unregisterReceiver(intentReceiver);
+        super.onPause();
+    }
+
     /* --------------------------- Handle permission -------------------------------- */
 
     /**
      * Check if we have read permission on SMS and request if not.
      */
-    public boolean getReadSMSPermission() {
+    public boolean getSMSPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.READ_SMS}, REQUEST_READ_SMS_PERMISSION);
@@ -186,6 +226,7 @@ public class MessageActivity extends BaseAppCompatActivity {
                 messages = MessageActivity.getAllMessages(otherNumber);
                 mMessageAdapter.updateData(messages, null);
                 mMessageAdapter.notifyDataSetChanged();
+                mMessageRecycler.scrollToPosition(position);
             }
 
         } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {

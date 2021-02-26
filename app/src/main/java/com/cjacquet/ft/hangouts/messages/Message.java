@@ -12,12 +12,12 @@ public class Message{
 
     public Message(){}
 
-    public Message(String text, String address) {
+    public Message(String text, String address, MessageType type) {
         this.address = address;
         this.text = text;
         this.read = true;
         this.time = new Date().getTime();
-        this.type = MessageType.SENT;
+        this.type = type;
     }
 
     public String getId() {

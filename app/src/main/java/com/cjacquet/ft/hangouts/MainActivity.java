@@ -6,11 +6,13 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -59,10 +61,14 @@ public class MainActivity extends BaseAppCompatActivity implements LoaderManager
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-
-        LocaleHelper.setLocale(this, getResources().getConfiguration().locale.getLanguage());
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        String lang = pref.getString(getSpPrefLang(), null);
+        if (lang != null) {
+            LocaleHelper.setLocale(this, lang);
+        } else {
+            LocaleHelper.setLocale(this, getResources().getConfiguration().locale.getLanguage());
+        }
         instance = this;
         setContentView(R.layout.activity_main_list);
 

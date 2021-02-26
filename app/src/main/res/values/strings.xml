@@ -33,4 +33,5 @@
     <string name="no_sms_permission">SMS permission not granted, you can\'t see messages.</string>
     <string name="enter_message">enter message</string>
     <string name="send_button_text" translatable="false"><![CDATA[>>]]></string>
+    <string name="reply_name">reply</string>
 </resources>

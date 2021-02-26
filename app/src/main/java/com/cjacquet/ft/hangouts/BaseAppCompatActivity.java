@@ -7,8 +7,9 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NavUtils;
 
+import com.cjacquet.ft.hangouts.receiver.SmsReceiver;
+import com.cjacquet.ft.hangouts.utils.LocaleHelper;
 import com.cjacquet.ft.hangouts.utils.Theme;
 import com.cjacquet.ft.hangouts.utils.Utils;
 
@@ -16,13 +17,25 @@ import java.util.Date;
 
 public class BaseAppCompatActivity extends AppCompatActivity {
     private static final String SP_THEME_COLOR_ID = "colorThemeId";
+    private static final String SP_PREF_LANG = "prefLang";
     private Date pausedDate;
     private boolean paused;
     public static Theme colorTheme = Theme.ORANGE;
+    private SmsReceiver receiver = new SmsReceiver();
+
+    public static String getSpPrefLang() {
+        return SP_PREF_LANG;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        String lang = pref.getString(SP_PREF_LANG, null);
+        if (lang != null) {
+            LocaleHelper.setLocale(this, lang);
+        } else {
+            LocaleHelper.setLocale(this, getResources().getConfiguration().locale.getLanguage());
+        }
         paused = false;
         int themeSaved = pref.getInt(SP_THEME_COLOR_ID, -1);
         if (themeSaved != 0) {
@@ -52,11 +65,6 @@ public class BaseAppCompatActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        NavUtils.navigateUpFromSameTask(this);
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         if (paused) {
@@ -65,5 +73,14 @@ public class BaseAppCompatActivity extends AppCompatActivity {
             toast.show();
         }
         paused = false;
+    }
+
+    @Override
+    protected void onStop() {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString(SP_PREF_LANG, getResources().getConfiguration().locale.getLanguage());
+        editor.apply();
+        super.onStop();
     }
 }

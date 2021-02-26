@@ -367,4 +367,9 @@ public class EditorActivity extends BaseAppCompatActivity implements LoaderManag
     public void onLoaderReset(Loader<Cursor> loader) {
 
     }
+
+    @Override
+    public void onBackPressed() {
+        NavUtils.navigateUpFromSameTask(this);
+    }
 }
