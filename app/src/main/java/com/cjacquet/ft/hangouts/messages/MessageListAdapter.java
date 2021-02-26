@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -53,19 +54,19 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     }
 
     // Inflates the appropriate layout according to the ViewType.
+    @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
-
-        if (viewType == VIEW_TYPE_MESSAGE_SENT) {
-            view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.my_message_item, parent, false);
-            return new SentMessageHolder(view);
-        } else if (viewType == VIEW_TYPE_MESSAGE_RECEIVED) {
-            view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.other_message_item, parent, false);
-            return new ReceivedMessageHolder(view);
-        }
+            if (viewType == VIEW_TYPE_MESSAGE_SENT) {
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.my_message_item, parent, false);
+                return new SentMessageHolder(view);
+            } else if (viewType == VIEW_TYPE_MESSAGE_RECEIVED) {
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.other_message_item, parent, false);
+                return new ReceivedMessageHolder(view);
+            }
 
         return null;
     }
@@ -88,7 +89,12 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     }
 
     public void updateData(List<Message> messages, Message newMessage) {
-        List<Message> oldMessages = mMessageList;
+        List<Message> oldMessages;
+        if (newMessage == null) {
+            oldMessages = messages;
+        } else {
+            oldMessages = mMessageList;
+        }
         mMessageList = new ArrayList<>();
         mMessageList.add(newMessage);
         mMessageList.addAll(oldMessages);
@@ -101,16 +107,14 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         SentMessageHolder(View itemView) {
             super(itemView);
 
-            messageText = (TextView) itemView.findViewById(R.id.text_gchat_message_me);
-            timeText = (TextView) itemView.findViewById(R.id.text_gchat_timestamp_me);
-            dateText = (TextView) itemView.findViewById(R.id.text_gchat_date_me);
-            cardview = (CardView) itemView.findViewById(R.id.card_gchat_message_me);
+            messageText =  itemView.findViewById(R.id.text_gchat_message_me);
+            timeText =  itemView.findViewById(R.id.text_gchat_timestamp_me);
+            dateText =  itemView.findViewById(R.id.text_gchat_date_me);
+            cardview = itemView.findViewById(R.id.card_gchat_message_me);
         }
 
         void bind(Message message) {
             messageText.setText(message.getText());
-
-            // Format the stored timestamp into a readable String using method.
             timeText.setText(Utils.toHoursMinutes(message.getTime()));
             dateText.setText(Utils.toDay(message.getTime()));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -125,9 +129,9 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         ReceivedMessageHolder(View itemView) {
             super(itemView);
 
-            messageText = (TextView) itemView.findViewById(R.id.text_gchat_message_other);
-            timeText = (TextView) itemView.findViewById(R.id.text_gchat_timestamp_other);
-            dateText = (TextView) itemView.findViewById(R.id.text_gchat_date_other);
+            messageText =  itemView.findViewById(R.id.text_gchat_message_other);
+            timeText =  itemView.findViewById(R.id.text_gchat_timestamp_other);
+            dateText =  itemView.findViewById(R.id.text_gchat_date_other);
         }
 
         void bind(Message message) {

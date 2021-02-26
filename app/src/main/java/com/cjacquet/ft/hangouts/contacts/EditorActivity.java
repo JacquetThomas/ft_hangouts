@@ -1,5 +1,6 @@
 package com.cjacquet.ft.hangouts.contacts;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.LoaderManager;
 import android.content.ContentUris;
@@ -7,8 +8,10 @@ import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -22,10 +25,10 @@ import android.widget.Toast;
 import androidx.core.app.NavUtils;
 
 import com.cjacquet.ft.hangouts.BaseAppCompatActivity;
-import com.cjacquet.ft.hangouts.messages.MessageActivity;
 import com.cjacquet.ft.hangouts.R;
-import com.cjacquet.ft.hangouts.utils.Utils;
 import com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry;
+import com.cjacquet.ft.hangouts.messages.MessageActivity;
+import com.cjacquet.ft.hangouts.utils.Utils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Calendar;
@@ -36,8 +39,9 @@ import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.CON
  * Allows user to create a new contact or edit an existing one.
  */
 public class EditorActivity extends BaseAppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
-
+    private static final int REQUEST_READ_SMS_PERMISSION = 3004;
     private String contactId;
+    private boolean permission;
 
     /** EditText field to enter the contact's name */
     private EditText mNameEditText;
@@ -119,11 +123,15 @@ public class EditorActivity extends BaseAppCompatActivity implements LoaderManag
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(EditorActivity.this, MessageActivity.class);
-                    intent.putExtra("phoneNumber", mPhoneEditText.getText().toString());
-                    intent.putExtra("contactName", contactName);
-                    intent.putExtra("contactId", contactId);
-                    startActivity(intent);
+                    permission = getSMSPermission();
+                    if (permission) {
+                        Intent intent = new Intent(EditorActivity.this, MessageActivity.class);
+                        intent.putExtra("phoneNumber", mPhoneEditText.getText().toString());
+                        intent.putExtra("contactName", contactName);
+                        intent.putExtra("contactId", contactId);
+                        intent.putExtra("permission", permission);
+                        startActivity(intent);
+                    }
                 }
             });
         } else {
@@ -371,5 +379,46 @@ public class EditorActivity extends BaseAppCompatActivity implements LoaderManag
     @Override
     public void onBackPressed() {
         NavUtils.navigateUpFromSameTask(this);
+    }
+
+    /* --------------------------- Handle permission -------------------------------- */
+
+    /**
+     * Check if we have read permission on SMS and request if not.
+     */
+    public boolean getSMSPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.READ_SMS}, REQUEST_READ_SMS_PERMISSION);
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults == null || grantResults.length == 0)
+            return ;
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (REQUEST_READ_SMS_PERMISSION == requestCode) {
+                permission = true;
+                Intent intent = new Intent(EditorActivity.this, MessageActivity.class);
+                intent.putExtra("phoneNumber", mPhoneEditText.getText().toString());
+                intent.putExtra("contactName", contactName);
+                intent.putExtra("contactId", contactId);
+                startActivity(intent);
+            }
+
+        } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+            if (REQUEST_READ_SMS_PERMISSION == requestCode) {
+//                String text = getResources().getString(R.string.no_sms_permission);
+//                Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
+//                toast.show();
+            }
+        }
     }
 }

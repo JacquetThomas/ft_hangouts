@@ -44,17 +44,8 @@
             android:name=".database.ContactProvider"
             android:authorities="com.cjacquet.ft.hangouts"
             android:exported="false" />
-       <!-- <receiver android:name=".SmsReceiver">
-            <intent-filter android:priority="1000">
-                <action android:name="android.intent.action.PHONE_STATE" />
-                <action android:name="PACKAGE_NAME.android.action.broadcast"/>
-                <action android:name="android.provider.Telephony.SMS_RECEIVED"></action>
-            </intent-filter>
-        </receiver>-->
-        <receiver android:name=".receiver.SmsSentReceiver" >
-        </receiver>
-        <receiver android:name=".receiver.SmsDeliveredReceiver" >
-        </receiver>
+        <receiver android:name=".receiver.SmsSentReceiver" />
+        <receiver android:name=".receiver.SmsDeliveredReceiver" />
         <receiver android:name=".receiver.SmsReceiver">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />

@@ -48,6 +48,7 @@ public class MainActivity extends BaseAppCompatActivity implements LoaderManager
     private final static int CONTACT_LOADER = 0;
 
     ContactCursorAdapter mCursorAdapter;
+    public boolean permission;
 
     private static MainActivity instance;
 
