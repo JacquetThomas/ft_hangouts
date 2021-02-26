@@ -2,7 +2,6 @@ package com.cjacquet.ft.hangouts;
 
 import android.app.LoaderManager;
 import android.content.ContentUris;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -48,17 +47,6 @@ public class MainActivity extends BaseAppCompatActivity implements LoaderManager
     private final static int CONTACT_LOADER = 0;
 
     ContactCursorAdapter mCursorAdapter;
-    public boolean permission;
-
-    private static MainActivity instance;
-
-    public static MainActivity getInstance() {
-        return instance;
-    }
-
-    public static Context getContext(){
-        return instance.getApplicationContext();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +58,6 @@ public class MainActivity extends BaseAppCompatActivity implements LoaderManager
         } else {
             LocaleHelper.setLocale(this, getResources().getConfiguration().locale.getLanguage());
         }
-        instance = this;
         setContentView(R.layout.activity_main_list);
 
         // Setup FAB to open EditorActivity
@@ -200,7 +187,6 @@ public class MainActivity extends BaseAppCompatActivity implements LoaderManager
                             getBaseContext().getResources().getDisplayMetrics());
 
                     popupWindow.dismiss();
-                    instance = getInstance();
                     recreate();
                 }
             }

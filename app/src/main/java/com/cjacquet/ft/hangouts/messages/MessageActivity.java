@@ -1,6 +1,5 @@
 package com.cjacquet.ft.hangouts.messages;
 
-import android.Manifest;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -8,7 +7,6 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -20,13 +18,13 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.core.app.NavUtils;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cjacquet.ft.hangouts.BaseAppCompatActivity;
-import com.cjacquet.ft.hangouts.MainActivity;
 import com.cjacquet.ft.hangouts.R;
 import com.cjacquet.ft.hangouts.contacts.EditorActivity;
 import com.cjacquet.ft.hangouts.receiver.SmsDeliveredReceiver;
@@ -49,7 +47,7 @@ public class MessageActivity extends BaseAppCompatActivity {
     private BroadcastReceiver intentReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (MainActivity.getInstance().permission && intent.getExtras().get("number").toString().equals(otherNumber)) {
+            if (Utils.getSMSPermission(getApplicationContext()) && intent.getExtras().get("number").toString().equals(otherNumber)) {
                 Message newMessage = new Message(intent.getExtras().get("message").toString(), Utils.formatNumber(intent.getExtras().get("number").toString()), MessageType.RECEIVED);
                 mMessageAdapter.updateData(messages, newMessage);
                 mMessageAdapter.notifyDataSetChanged();
@@ -60,14 +58,20 @@ public class MessageActivity extends BaseAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!Utils.getSMSPermission(getApplicationContext())) {
+            onBackPressed();
+            String text = getResources().getString(R.string.no_sms_permission);
+            Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
+            toast.show();
+            return ;
+        }
         setContentView(R.layout.activity_message_list);
         setTitle(this.getIntent().getExtras().get("contactName").toString());
-        MainActivity.getInstance().permission = getSMSPermission();
         otherNumber = this.getIntent().getExtras().get("phoneNumber").toString();
         messages = new ArrayList<>();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            ((Button)findViewById(R.id.button_gchat_send)).setTextColor(getResources().getColor(colorTheme.getPrimaryColorId(), MainActivity.getInstance().getTheme()));
+            ((Button)findViewById(R.id.button_gchat_send)).setTextColor(getResources().getColor(colorTheme.getPrimaryColorId(), super.getTheme()));
         }
 
         /* --------------- Register the receiver --------------- */
@@ -101,11 +105,11 @@ public class MessageActivity extends BaseAppCompatActivity {
                 ArrayList<String> dividedMessages = smsManager.divideMessage(newMessage.getText());
                 ArrayList<PendingIntent> sentPendingIntents = new ArrayList<>();
                 ArrayList<PendingIntent> deliveredPendingIntents = new ArrayList<>();
-                PendingIntent sentPI = PendingIntent.getBroadcast(MainActivity.getContext(), 0,
-                        new Intent(MainActivity.getContext(), SmsSentReceiver.class), 0);
+                PendingIntent sentPI = PendingIntent.getBroadcast(getApplicationContext(), 0,
+                        new Intent(getApplicationContext(), SmsSentReceiver.class), 0);
 
-                PendingIntent deliveredPI = PendingIntent.getBroadcast(MainActivity.getContext(), 0,
-                        new Intent(MainActivity.getContext(), SmsDeliveredReceiver.class), 0);
+                PendingIntent deliveredPI = PendingIntent.getBroadcast(getApplicationContext(), 0,
+                        new Intent(getApplicationContext(), SmsDeliveredReceiver.class), 0);
                 for (int i = 0; i < dividedMessages.size(); i++) {
                     sentPendingIntents.add(i, sentPI);
 
@@ -121,18 +125,14 @@ public class MessageActivity extends BaseAppCompatActivity {
         layoutManager.setReverseLayout(true);
         mMessageRecycler.setLayoutManager(layoutManager);
         mMessageRecycler.setAdapter(mMessageAdapter);
-
-        if (MainActivity.getInstance().permission)
-            messages.addAll(this.getAllMessages(otherNumber));
-        else
-            onBackPressed();
+        messages.addAll(this.getAllMessages(otherNumber));
     }
 
-    public static List<Message> getAllMessages(String otherNumber) {
+    public List<Message> getAllMessages(String otherNumber) {
         List<Message> messagesList = new ArrayList<>();
         Message message;
         Uri messageUri = Uri.parse("content://sms/");
-        ContentResolver cr = MainActivity.getContext().getContentResolver();
+        ContentResolver cr = this.getApplicationContext().getContentResolver();
 
         if (otherNumber == null || otherNumber.isEmpty())
             return messagesList;
@@ -203,16 +203,5 @@ public class MessageActivity extends BaseAppCompatActivity {
         intentFilter = new IntentFilter();
         intentFilter.addAction("RECEIVED_SMS");
         registerReceiver(intentReceiver, intentFilter);
-    }
-
-    public boolean getSMSPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
-                return false;
-            } else {
-                return true;
-            }
-        }
-        return false;
     }
 }

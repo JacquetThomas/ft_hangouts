@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.cjacquet.ft.hangouts.MainActivity;
 import com.cjacquet.ft.hangouts.R;
 import com.cjacquet.ft.hangouts.utils.Utils;
 
@@ -115,10 +114,10 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
         void bind(Message message) {
             messageText.setText(message.getText());
-            timeText.setText(Utils.toHoursMinutes(message.getTime()));
-            dateText.setText(Utils.toDay(message.getTime()));
+            timeText.setText(Utils.toHoursMinutes(itemView.getContext(), message.getTime()));
+            dateText.setText(Utils.toDay(itemView.getContext(), message.getTime()));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                cardview.setCardBackgroundColor(MainActivity.getContext().getResources().getColor(colorTheme.getPrimaryColorId(), MainActivity.getInstance().getTheme()));
+                cardview.setCardBackgroundColor(itemView.getContext().getResources().getColor(colorTheme.getPrimaryColorId(), itemView.getContext().getTheme()));
             }
         }
     }
@@ -138,8 +137,8 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             messageText.setText(message.getText());
 
             // Format the stored timestamp into a readable String using method.
-            timeText.setText(Utils.toHoursMinutes(message.getTime()));
-            dateText.setText(Utils.toDay(message.getTime()));
+            timeText.setText(Utils.toHoursMinutes(itemView.getContext(), message.getTime()));
+            dateText.setText(Utils.toDay(itemView.getContext(), message.getTime()));
         }
     }
 }

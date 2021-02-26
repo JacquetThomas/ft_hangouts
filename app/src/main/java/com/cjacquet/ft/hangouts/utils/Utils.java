@@ -1,6 +1,9 @@
 package com.cjacquet.ft.hangouts.utils;
 
-import com.cjacquet.ft.hangouts.MainActivity;
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Build;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,15 +19,15 @@ public final class Utils {
         return number;
     }
 
-    public static String toHoursMinutes(Long time) {
+    public static String toHoursMinutes(Context context, Long time) {
         Date date = new Date(time);
-        if (getLocaleString().equalsIgnoreCase(Locale.FRENCH.toString()))
+        if (getLocaleString(context).equalsIgnoreCase(Locale.FRENCH.toString()))
             return new SimpleDateFormat("HH:mm", Locale.FRANCE).format(date);
         else
             return new SimpleDateFormat("hh:mm a", Locale.US).format(date);
     }
 
-    public static String toDay(Long time) {
+    public static String toDay(Context context, Long time) {
         Date date = new Date(time);
         String year = "";
 
@@ -32,7 +35,7 @@ public final class Utils {
                 < Integer.parseInt(new SimpleDateFormat("yyyy", Locale.FRANCE).format(new Date()))) {
             year = "yyyy";
         }
-        if (getLocaleString().equalsIgnoreCase(Locale.FRENCH.toString()))
+        if (getLocaleString(context).equalsIgnoreCase(Locale.FRENCH.toString()))
             return new SimpleDateFormat("EEE d MMM " + year, Locale.FRANCE).format(date);
         else
             return new SimpleDateFormat("EEE, MMM d " + year, Locale.US).format(date);
@@ -48,7 +51,14 @@ public final class Utils {
         return extraZeroDay + dayOfMonth + "/" + extraZeroMonth + monthOfYear + "/" + year;
     }
 
-    private static String getLocaleString() {
-        return LocaleHelper.getLanguage(MainActivity.getContext());
+    private static String getLocaleString(Context context) {
+        return LocaleHelper.getLanguage(context);
+    }
+
+    public static boolean getSMSPermission(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return (context.checkSelfPermission(Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED);
+        }
+        return false;
     }
 }

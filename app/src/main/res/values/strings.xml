@@ -33,5 +33,8 @@
     <string name="no_sms_permission">SMS permission not granted, you can\'t see messages.</string>
     <string name="enter_message">enter message</string>
     <string name="send_button_text" translatable="false"><![CDATA[>>]]></string>
-    <string name="reply_name">reply</string>
+    <string name="popup_permission_title">required permission</string>
+    <string name="popup_permission_message">we need permission to acces and send sms, please activate in settings or this window will stay blank</string>
+    <string name="popup_permission_ok">ok</string>
+    <string name="popup_permission_ko">cancel</string>
 </resources>

@@ -6,6 +6,7 @@ import android.app.LoaderManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.pm.PackageManager;
@@ -13,6 +14,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -22,6 +24,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.NavUtils;
 
 import com.cjacquet.ft.hangouts.BaseAppCompatActivity;
@@ -41,7 +44,6 @@ import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.CON
 public class EditorActivity extends BaseAppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final int REQUEST_READ_SMS_PERMISSION = 3004;
     private String contactId;
-    private boolean permission;
 
     /** EditText field to enter the contact's name */
     private EditText mNameEditText;
@@ -123,14 +125,14 @@ public class EditorActivity extends BaseAppCompatActivity implements LoaderManag
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    permission = getSMSPermission();
-                    if (permission) {
+                    if (Utils.getSMSPermission(getApplicationContext())) {
                         Intent intent = new Intent(EditorActivity.this, MessageActivity.class);
                         intent.putExtra("phoneNumber", mPhoneEditText.getText().toString());
                         intent.putExtra("contactName", contactName);
                         intent.putExtra("contactId", contactId);
-                        intent.putExtra("permission", permission);
                         startActivity(intent);
+                    } else {
+                        getSMSPermission();
                     }
                 }
             });
@@ -386,16 +388,13 @@ public class EditorActivity extends BaseAppCompatActivity implements LoaderManag
     /**
      * Check if we have read permission on SMS and request if not.
      */
-    public boolean getSMSPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.READ_SMS}, REQUEST_READ_SMS_PERMISSION);
-                return false;
-            } else {
-                return true;
-            }
+    public void getSMSPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && checkSelfPermission(Manifest.permission.READ_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
+                    new String[]{Manifest.permission.READ_SMS}, REQUEST_READ_SMS_PERMISSION);
         }
-        return false;
     }
 
     @Override
@@ -405,19 +404,46 @@ public class EditorActivity extends BaseAppCompatActivity implements LoaderManag
             return ;
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             if (REQUEST_READ_SMS_PERMISSION == requestCode) {
-                permission = true;
                 Intent intent = new Intent(EditorActivity.this, MessageActivity.class);
                 intent.putExtra("phoneNumber", mPhoneEditText.getText().toString());
                 intent.putExtra("contactName", contactName);
                 intent.putExtra("contactId", contactId);
                 startActivity(intent);
             }
-
         } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
             if (REQUEST_READ_SMS_PERMISSION == requestCode) {
-//                String text = getResources().getString(R.string.no_sms_permission);
-//                Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
-//                toast.show();
+                // setup the alert builder
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(R.string.popup_permission_title);
+                builder.setMessage(R.string.popup_permission_message);
+
+                // add the buttons
+                builder.setPositiveButton(R.string.popup_permission_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // This code is for get permission from setting.
+                        final Intent i = new Intent();
+                        i.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        i.addCategory(Intent.CATEGORY_DEFAULT);
+                        i.setData(Uri.parse("package:" + getPackageName()));
+                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                        i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                        startActivity(i);
+                        dialog.cancel();
+                    }
+                });
+                builder.setNegativeButton(R.string.popup_permission_ko, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        String text = getResources().getString(R.string.no_sms_permission);
+                        Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG);
+                        toast.show();
+                    }
+                });
+                // create and show the alert dialog
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         }
     }
