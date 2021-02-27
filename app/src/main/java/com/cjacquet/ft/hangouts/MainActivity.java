@@ -1,10 +1,7 @@
 package com.cjacquet.ft.hangouts;
 
-import android.app.LoaderManager;
 import android.content.ContentUris;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -19,11 +16,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
 
 import com.cjacquet.ft.hangouts.contacts.ContactCursorAdapter;
 import com.cjacquet.ft.hangouts.contacts.EditorActivity;
@@ -33,6 +33,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Locale;
 
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.COLUMN_CONTACT_LASTNAME;
 import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.COLUMN_CONTACT_NAME;
 import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.COLUMN_CONTACT_PHONE;
@@ -42,9 +43,9 @@ import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry._ID
 /**
  * Displays list of contacts that were entered and stored in the app.
  */
-public class MainActivity extends BaseAppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends BaseAppCompatActivity {
 
-    private final static int CONTACT_LOADER = 0;
+    private static final int CONTACT_LOADER = 0;
 
     ContactCursorAdapter mCursorAdapter;
 
@@ -93,7 +94,24 @@ public class MainActivity extends BaseAppCompatActivity implements LoaderManager
         });
 
         // Init Loader
-        getLoaderManager().initLoader(CONTACT_LOADER, null, this);
+        LoaderManager.LoaderCallbacks<Cursor> mCallbacks = new LoaderManager.LoaderCallbacks<Cursor>() {
+            @Override
+            public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+                String[] projection = {_ID, COLUMN_CONTACT_NAME, COLUMN_CONTACT_LASTNAME, COLUMN_CONTACT_PHONE};
+                return new CursorLoader(getApplicationContext(), CONTENT_URI, projection, null, null, null);
+            }
+
+            @Override
+            public void onLoadFinished(androidx.loader.content.Loader<Cursor> loader, Cursor cursor) {
+                mCursorAdapter.swapCursor(cursor);
+            }
+
+            @Override
+            public void onLoaderReset(androidx.loader.content.Loader<Cursor> loader) {
+                mCursorAdapter.swapCursor(null);
+            }
+        };
+        LoaderManager.getInstance(this).initLoader(CONTACT_LOADER, null, mCallbacks);
     }
 
     @Override
@@ -107,33 +125,31 @@ public class MainActivity extends BaseAppCompatActivity implements LoaderManager
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // User clicked on a menu option in the app bar overflow menu
-        switch (item.getItemId()) {
-            // Respond to a click on the "Delete all entries" menu option
-            case R.id.action_delete_all_entries:
-                this.deleteContacts();
-                return true;
+        int itemId = item.getItemId();// Respond to a click on the "Delete all entries" menu option
+        if (itemId == R.id.action_delete_all_entries) {
+            this.deleteContacts();
+            return true;
             // Respond to a click on the "Change language" menu option
-            case R.id.action_language_change:
-                this.showPopupWindow();
-                return true;
+        } else if (itemId == R.id.action_language_change) {
+            this.showPopupWindow();
+            return true;
             // Respond to a click on the "Change to orange" menu option
-            case R.id.action_orange_theme:
-                setTheme(Theme.ORANGE.getThemeId());
-                recreate();
-                return true;
+        } else if (itemId == R.id.action_orange_theme) {
+            setTheme(Theme.ORANGE.getThemeId());
+            recreate();
+            return true;
             // Respond to a click on the "Change to blue" menu option
-            case R.id.action_blue_theme:
-                setTheme(Theme.BLUE.getThemeId());
-                recreate();
-                return true;
+        } else if (itemId == R.id.action_blue_theme) {
+            setTheme(Theme.BLUE.getThemeId());
+            recreate();
+            return true;
             // Respond to a click on the "Change to green" menu option
-            case R.id.action_green_theme:
-                setTheme(Theme.GREEN.getThemeId());
-                recreate();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        } else if (itemId == R.id.action_green_theme) {
+            setTheme(Theme.GREEN.getThemeId());
+            recreate();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     public void showPopupWindow() {
@@ -144,9 +160,7 @@ public class MainActivity extends BaseAppCompatActivity implements LoaderManager
         View popupView = inflater.inflate(R.layout.popup_window, null);
 
         // create the popup window
-        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, false);
+        final PopupWindow popupWindow = new PopupWindow(popupView, WRAP_CONTENT, WRAP_CONTENT, false);
 
         // show the popup window
         // which view you pass in doesn't matter, it is only used for the window tolken
@@ -167,16 +181,14 @@ public class MainActivity extends BaseAppCompatActivity implements LoaderManager
             public void onClick(View v) {
                 RadioGroup changeLang = popupView.findViewById(R.id.language_radio_group);
                 Locale selectedLocale = null;
-                switch (changeLang.getCheckedRadioButtonId()) {
-                    case R.id.radioButtonEn:
-                        selectedLocale = Locale.ENGLISH;
-                        break;
-                    case R.id.radioButtonFr:
-                        selectedLocale = Locale.FRANCE;
-                        break;
-                    default:
-                        break;
+                int checkedRadioButtonId = changeLang.getCheckedRadioButtonId();
+
+                if (checkedRadioButtonId == R.id.radioButtonEn) {
+                    selectedLocale = Locale.ENGLISH;
+                } else if (checkedRadioButtonId == R.id.radioButtonFr) {
+                    selectedLocale = Locale.FRANCE;
                 }
+
                 if (selectedLocale != null) {
                     LocaleHelper.setLocale(getApplicationContext(), selectedLocale.getLanguage());
 
@@ -222,21 +234,5 @@ public class MainActivity extends BaseAppCompatActivity implements LoaderManager
 
     private void deleteContacts() {
         getContentResolver().delete(CONTENT_URI, null, null);
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        String[] projection = {_ID, COLUMN_CONTACT_NAME, COLUMN_CONTACT_LASTNAME, COLUMN_CONTACT_PHONE};
-        return new CursorLoader(this, CONTENT_URI, projection, null, null, null);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        mCursorAdapter.swapCursor(cursor);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        mCursorAdapter.swapCursor(null);
     }
 }

@@ -15,6 +15,8 @@ public final class ContactContract {
 
     public static final class ContactEntry implements BaseColumns {
 
+        private ContactEntry() {}
+
         public static final String TABLE_NAME = "contacts";
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_CONTACTS);
         /**

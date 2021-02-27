@@ -37,11 +37,10 @@ import java.util.List;
 import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.CONTENT_URI;
 
 public class MessageActivity extends BaseAppCompatActivity {
-    private RecyclerView mMessageRecycler;
-    private static MessageListAdapter mMessageAdapter;
+    private MessageListAdapter mMessageAdapter;
     private String otherNumber;
-    private static List<Message> messages;
-    private static EditText messageToSend;
+    private List<Message> messages;
+    private EditText messageToSend;
     IntentFilter intentFilter;
 
     private BroadcastReceiver intentReceiver = new BroadcastReceiver() {
@@ -71,7 +70,7 @@ public class MessageActivity extends BaseAppCompatActivity {
         messages = new ArrayList<>();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            ((Button)findViewById(R.id.button_gchat_send)).setTextColor(getResources().getColor(colorTheme.getPrimaryColorId(), super.getTheme()));
+            ((Button)findViewById(R.id.button_gchat_send)).setTextColor(getResources().getColor(getColorTheme().getPrimaryColorId(), super.getTheme()));
         }
 
         /* --------------- Register the receiver --------------- */
@@ -114,8 +113,8 @@ public class MessageActivity extends BaseAppCompatActivity {
             }
         });
 
-        mMessageRecycler = findViewById(R.id.recycler_gchat);
-        mMessageAdapter = new MessageListAdapter(this, messages);
+        RecyclerView mMessageRecycler = findViewById(R.id.recycler_gchat);
+        mMessageAdapter = new MessageListAdapter(messages);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setReverseLayout(true);
         mMessageRecycler.setLayoutManager(layoutManager);
@@ -158,16 +157,13 @@ public class MessageActivity extends BaseAppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // User clicked on a menu option in the app bar overflow menu
-        switch (item.getItemId()) {
-            // Respond to a click on the "Up" arrow button in the app bar
-            case android.R.id.home:
-                // Navigate back to parent activity (EditorActivity)
-                Intent intent = new Intent(MessageActivity.this, EditorActivity.class);
-                Uri currentContactUri = ContentUris.withAppendedId(CONTENT_URI, Integer.parseInt(getIntent().getExtras().get("contactId").toString()));
-                intent.setData(currentContactUri);
-                NavUtils.navigateUpTo(this, intent);
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            // Navigate back to parent activity (EditorActivity)
+            Intent intent = new Intent(MessageActivity.this, EditorActivity.class);
+            Uri currentContactUri = ContentUris.withAppendedId(CONTENT_URI, Integer.parseInt(getIntent().getExtras().get("contactId").toString()));
+            intent.setData(currentContactUri);
+            NavUtils.navigateUpTo(this, intent);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

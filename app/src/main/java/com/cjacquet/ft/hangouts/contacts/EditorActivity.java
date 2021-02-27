@@ -72,7 +72,7 @@ public class EditorActivity extends BaseAppCompatActivity {
 
     private String contactName;
 
-    private final static int EXISTING_CONTACT_LOADER = 0;
+    private static final int EXISTING_CONTACT_LOADER = 0;
 
     /** Content URI for the existing contact (null if it's a new contact) */
     private Uri mCurrentContactUri;
@@ -178,6 +178,7 @@ public class EditorActivity extends BaseAppCompatActivity {
 
                 @Override
                 public void onLoaderReset(Loader<Cursor> loader) {
+                    // No need to swap cursor, the change is already handle
                 }
             };
 
@@ -222,45 +223,49 @@ public class EditorActivity extends BaseAppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // User clicked on a menu option in the app bar overflow menu
-        switch (item.getItemId()) {
-            // Respond to a click on the "Save" menu option
-            case R.id.action_save:
-                saveContacts();
-                if (contactId != null && !contactId.isEmpty())
-                    mCurrentContactUri = ContentUris.withAppendedId(CONTENT_URI, Long.parseLong(contactId));
-                setupActivity();
-                switchFieldToShow();
-                switchMenuToShow();
-                return true;
-            // Respond to a click on the "Delete" menu option
-            case R.id.action_delete:
-                String text = "Error, cannot delete contact.";
-                if (this.deleteContact() == 1)
-                    text = "Contact successfully deleted.";
-                Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-                toast.show();
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
-            case R.id.action_edit:
-                this.showOption(R.id.action_save);
-                this.hideOption(R.id.action_edit);
-                this.switchMenuToEdit();
-                this.switchFieldToEdit();
-                return true;
-            // Respond to a click on the "Up" arrow button in the app bar
-            case android.R.id.home:
-                if (menu.findItem(R.id.action_save).isVisible()) {
-                    this.resetUnsavedFields();
-                    this.switchMenuToShow();
-                    this.switchFieldToShow();
-                } else {
+        int itemId = item.getItemId();
+        // Respond to a click on the "Save" menu option
+        if (itemId == R.id.action_save) {
+            saveContacts();
+            if (contactId != null && !contactId.isEmpty())
+                mCurrentContactUri = ContentUris.withAppendedId(CONTENT_URI, Long.parseLong(contactId));
+            setupActivity();
+            switchFieldToShow();
+            switchMenuToShow();
+            return true;
+        }
+        // Respond to a click on the "Delete" menu option
+        else if (itemId == R.id.action_delete) {
+            String text = "Error, cannot delete contact.";
+            if (this.deleteContact() == 1)
+                text = "Contact successfully deleted.";
+            Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+            toast.show();
+            NavUtils.navigateUpFromSameTask(this);
+            return true;
+        }
+        // Respond to a click on the "Edit" menu option
+        else if (itemId == R.id.action_edit) {
+            this.showOption(R.id.action_save);
+            this.hideOption(R.id.action_edit);
+            this.switchMenuToEdit();
+            this.switchFieldToEdit();
+            return true;
+        }
+        // Respond to a click on the "Up" arrow button in the app bar
+        else if (itemId == android.R.id.home) {
+            // If we are in edit mode we clear the unsaved fields
+            if (menu.findItem(R.id.action_save).isVisible()) {
+                this.resetUnsavedFields();
+                this.switchMenuToShow();
+                this.switchFieldToShow();
+            } else {
                 // Navigate back to parent activity (CatalogActivity)
                 NavUtils.navigateUpFromSameTask(this);
-                }
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+            }
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     private void hideOption(int id) {
@@ -411,41 +416,39 @@ public class EditorActivity extends BaseAppCompatActivity {
                 intent.putExtra("contactId", contactId);
                 startActivity(intent);
             }
-        } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-            if (REQUEST_READ_SMS_PERMISSION == requestCode) {
-                // setup the alert builder
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(R.string.popup_permission_title);
-                builder.setMessage(R.string.popup_permission_message);
+        } else if (grantResults[0] == PackageManager.PERMISSION_DENIED && REQUEST_READ_SMS_PERMISSION == requestCode) {
+            // setup the alert builder
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.popup_permission_title);
+            builder.setMessage(R.string.popup_permission_message);
 
-                // add the buttons
-                builder.setPositiveButton(R.string.popup_permission_ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // This code is for get permission from setting.
-                        final Intent i = new Intent();
-                        i.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                        i.addCategory(Intent.CATEGORY_DEFAULT);
-                        i.setData(Uri.parse("package:" + getPackageName()));
-                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                        i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                        startActivity(i);
-                        dialog.cancel();
-                    }
-                });
-                builder.setNegativeButton(R.string.popup_permission_ko, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                        String text = getResources().getString(R.string.no_sms_permission);
-                        Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG);
-                        toast.show();
-                    }
-                });
-                // create and show the alert dialog
-                AlertDialog dialog = builder.create();
-                dialog.show();
-            }
+            // add the buttons
+            builder.setPositiveButton(R.string.popup_permission_ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // This code is for get permission from setting.
+                    final Intent i = new Intent();
+                    i.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    i.addCategory(Intent.CATEGORY_DEFAULT);
+                    i.setData(Uri.parse("package:" + getPackageName()));
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                    i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                    startActivity(i);
+                    dialog.cancel();
+                }
+            });
+            builder.setNegativeButton(R.string.popup_permission_ko, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
+                    String text = getResources().getString(R.string.no_sms_permission);
+                    Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG);
+                    toast.show();
+                }
+            });
+            // create and show the alert dialog
+            AlertDialog dialog = builder.create();
+            dialog.show();
         }
     }
 }

@@ -15,7 +15,6 @@ public final class Utils {
 
     public static String formatNumber(String number) {
         // TODO: find the right way to format the number
-        String s = "18005551234";
         return number;
     }
 

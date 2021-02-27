@@ -3,13 +3,14 @@ package com.cjacquet.ft.hangouts.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Telephony;
 import android.telephony.SmsMessage;
+import android.util.Log;
 import android.widget.Toast;
 
 public class SmsReceiver extends BroadcastReceiver {
+    private static final String TAG = "SmsReceiver";
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -20,20 +21,16 @@ public class SmsReceiver extends BroadcastReceiver {
             String messageBody = "";
             if (bundle != null){
                 try{
-                    if (Build.VERSION.SDK_INT >= 19) {
-                        messages = Telephony.Sms.Intents.getMessagesFromIntent(intent);
-                    } else {
-                        Object[] pdus = (Object[]) bundle.get("pdus");
-                        messages = new SmsMessage[pdus.length];
-                        for (int i = 0; i < messages.length; i++) {
-                            messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
-                        }
-                    }
+                    messages = Telephony.Sms.Intents.getMessagesFromIntent(intent);
+                    StringBuilder messageBodyBuilder = new StringBuilder();
                     for (int i = 0; i < messages.length; i++) {
                         messageAddress = messages[i].getOriginatingAddress();
-                        messageBody += messages[i].getMessageBody();
+                        messageBodyBuilder.append(messages[i].getMessageBody());
                     }
-                } catch (Exception e) {}
+                    messageBody = messageBodyBuilder.toString();
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage());
+                }
             }
             Toast.makeText(context, "Message: " + messageAddress, Toast.LENGTH_SHORT).show();
             Intent broadcastReceiver = new Intent();

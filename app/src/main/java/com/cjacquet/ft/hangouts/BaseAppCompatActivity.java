@@ -20,7 +20,7 @@ public class BaseAppCompatActivity extends AppCompatActivity {
     private static final String SP_PREF_LANG = "prefLang";
     private Date pausedDate;
     private boolean paused;
-    public static Theme colorTheme = Theme.ORANGE;
+    private static Theme colorTheme = Theme.ORANGE;
     private SmsReceiver receiver = new SmsReceiver();
 
     public static String getSpPrefLang() {
@@ -55,6 +55,10 @@ public class BaseAppCompatActivity extends AppCompatActivity {
             editor.apply();
         }
         super.setTheme(resId);
+    }
+
+    public static Theme getColorTheme() {
+        return colorTheme;
     }
 
     @Override

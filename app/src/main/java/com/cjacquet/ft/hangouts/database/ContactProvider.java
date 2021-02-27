@@ -100,10 +100,9 @@ public class ContactProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
         final int match = sUriMatcher.match(uri);
-        switch (match) {
-            case CONTACTS:
-                return insertContact(uri, contentValues);
-            default:
+        if (match == CONTACTS) {
+            return insertContact(uri, contentValues);
+        } else {
                 throw new IllegalArgumentException("Insertion is not supported for " + uri);
         }
     }
