@@ -2,13 +2,10 @@ package com.cjacquet.ft.hangouts.contacts;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
-import android.app.LoaderManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -26,6 +23,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.NavUtils;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
 
 import com.cjacquet.ft.hangouts.BaseAppCompatActivity;
 import com.cjacquet.ft.hangouts.R;
@@ -41,7 +41,7 @@ import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.CON
 /**
  * Allows user to create a new contact or edit an existing one.
  */
-public class EditorActivity extends BaseAppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class EditorActivity extends BaseAppCompatActivity {
     private static final int REQUEST_READ_SMS_PERMISSION = 3004;
     private String contactId;
 
@@ -87,12 +87,12 @@ public class EditorActivity extends BaseAppCompatActivity implements LoaderManag
         mCurrentContactUri = intent.getData();
 
         // Find all relevant views that we will need to read user input from
-        mNameEditText = (EditText) findViewById(R.id.edit_contact_name);
-        mLastnameEditText = (EditText) findViewById(R.id.edit_contact_lastname);
-        mPhoneEditText = (EditText) findViewById(R.id.edit_contact_phone);
-        mBDayEditText = (EditText) findViewById(R.id.edit_contact_bday);
-        mMailEditText = (EditText) findViewById(R.id.edit_contact_mail);
-        fab = (FloatingActionButton) findViewById(R.id.fab_sms);
+        mNameEditText = findViewById(R.id.edit_contact_name);
+        mLastnameEditText = findViewById(R.id.edit_contact_lastname);
+        mPhoneEditText = findViewById(R.id.edit_contact_phone);
+        mBDayEditText = findViewById(R.id.edit_contact_bday);
+        mMailEditText = findViewById(R.id.edit_contact_mail);
+        fab = findViewById(R.id.fab_sms);
 
         mBDayEditText.setInputType(InputType.TYPE_NULL);
         mBDayEditText.setOnClickListener(new View.OnClickListener() {
@@ -119,8 +119,69 @@ public class EditorActivity extends BaseAppCompatActivity implements LoaderManag
     private void setupActivity() {
         if (mCurrentContactUri != null) {
             contactId = mCurrentContactUri.getLastPathSegment();
-            setTitle(getString(R.string.editor_activity_title_edit_contact));
-            getLoaderManager().initLoader(EXISTING_CONTACT_LOADER, null, this);
+            setTitle(getResources().getString(R.string.editor_activity_title_edit_contact));
+            LoaderManager.LoaderCallbacks<Cursor> mCallbacks = new LoaderManager.LoaderCallbacks<Cursor>() {
+                @Override
+                public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+                    // Since the editor shows all contact attributes, define a projection that contains
+                    // all columns from the contact table
+                    String[] projection = {
+                            ContactEntry._ID,
+                            ContactEntry.COLUMN_CONTACT_NAME,
+                            ContactEntry.COLUMN_CONTACT_LASTNAME,
+                            ContactEntry.COLUMN_CONTACT_PHONE,
+                            ContactEntry.COLUMN_CONTACT_MAIL,
+                            ContactEntry.COLUMN_CONTACT_BDAY,
+                            ContactEntry.COLUMN_CONTACT_FAV
+                    };
+
+                    // This loader will execute the ContentProvider's query method on a background thread
+                    return new CursorLoader(getApplicationContext(),   // Parent activity context
+                            mCurrentContactUri,         // Query the content URI for the current contact
+                            projection,             // Columns to include in the resulting Cursor
+                            null,                   // No selection clause
+                            null,                   // No selection arguments
+                            null);                  // Default sort order
+                }
+
+                @Override
+                public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+                    if (cursor.moveToFirst()) {
+                        // Find the columns of contact attributes that we're interested in
+                        int nameColumnIndex = cursor.getColumnIndex(ContactEntry.COLUMN_CONTACT_NAME);
+                        int lastnameColumnIndex = cursor.getColumnIndex(ContactEntry.COLUMN_CONTACT_LASTNAME);
+                        int phoneColumnIndex = cursor.getColumnIndex(ContactEntry.COLUMN_CONTACT_PHONE);
+                        int mailColumnIndex = cursor.getColumnIndex(ContactEntry.COLUMN_CONTACT_MAIL);
+                        int bdayColumnIndex = cursor.getColumnIndex(ContactEntry.COLUMN_CONTACT_BDAY);
+                        int favColumnIndex = cursor.getColumnIndex(ContactEntry.COLUMN_CONTACT_FAV);
+
+                        // Extract out the value from the Cursor for the given column index
+                        mName = cursor.getString(nameColumnIndex);
+                        mLastname = cursor.getString(lastnameColumnIndex);
+                        mPhone = cursor.getString(phoneColumnIndex);
+                        mMail = cursor.getString(mailColumnIndex);
+                        mBDay = cursor.getString(bdayColumnIndex);
+                        String fav = cursor.getString(favColumnIndex);
+
+                        // Update the views on the screen with the values from the database
+                        mNameEditText.setText(mName);
+                        mLastnameEditText.setText(mLastname);
+                        mPhoneEditText.setText(mPhone);
+                        mBDayEditText.setText(mBDay);
+                        mMailEditText.setText(mMail);
+
+                        switchFieldToShow();
+                        contactName = mNameEditText.getText().toString() + " " + mLastnameEditText.getText().toString();
+                        setTitle(contactName);
+                    }
+                }
+
+                @Override
+                public void onLoaderReset(Loader<Cursor> loader) {
+                }
+            };
+
+            LoaderManager.getInstance(this).initLoader(EXISTING_CONTACT_LOADER, null, mCallbacks);
             // Setup FAB to open MessageActivity
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -316,66 +377,6 @@ public class EditorActivity extends BaseAppCompatActivity implements LoaderManag
      */
     private int deleteContact() {
         return (getContentResolver().delete(mCurrentContactUri, null, null));
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        // Since the editor shows all contact attributes, define a projection that contains
-        // all columns from the contact table
-        String[] projection = {
-                ContactEntry._ID,
-                ContactEntry.COLUMN_CONTACT_NAME,
-                ContactEntry.COLUMN_CONTACT_LASTNAME,
-                ContactEntry.COLUMN_CONTACT_PHONE,
-                ContactEntry.COLUMN_CONTACT_MAIL,
-                ContactEntry.COLUMN_CONTACT_BDAY,
-                ContactEntry.COLUMN_CONTACT_FAV
-        };
-
-        // This loader will execute the ContentProvider's query method on a background thread
-        return new CursorLoader(this,   // Parent activity context
-                mCurrentContactUri,         // Query the content URI for the current contact
-                projection,             // Columns to include in the resulting Cursor
-                null,                   // No selection clause
-                null,                   // No selection arguments
-                null);                  // Default sort order
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        if (cursor.moveToFirst()) {
-            // Find the columns of contact attributes that we're interested in
-            int nameColumnIndex = cursor.getColumnIndex(ContactEntry.COLUMN_CONTACT_NAME);
-            int lastnameColumnIndex = cursor.getColumnIndex(ContactEntry.COLUMN_CONTACT_LASTNAME);
-            int phoneColumnIndex = cursor.getColumnIndex(ContactEntry.COLUMN_CONTACT_PHONE);
-            int mailColumnIndex = cursor.getColumnIndex(ContactEntry.COLUMN_CONTACT_MAIL);
-            int bdayColumnIndex = cursor.getColumnIndex(ContactEntry.COLUMN_CONTACT_BDAY);
-            int favColumnIndex = cursor.getColumnIndex(ContactEntry.COLUMN_CONTACT_FAV);
-
-            // Extract out the value from the Cursor for the given column index
-            this.mName = cursor.getString(nameColumnIndex);
-            this.mLastname = cursor.getString(lastnameColumnIndex);
-            this.mPhone = cursor.getString(phoneColumnIndex);
-            this.mMail = cursor.getString(mailColumnIndex);
-            this.mBDay = cursor.getString(bdayColumnIndex);
-            String fav = cursor.getString(favColumnIndex);
-
-            // Update the views on the screen with the values from the database
-            mNameEditText.setText(this.mName);
-            mLastnameEditText.setText(this.mLastname);
-            mPhoneEditText.setText(this.mPhone);
-            mBDayEditText.setText(this.mBDay);
-            mMailEditText.setText(this.mMail);
-
-            this.switchFieldToShow();
-            this.contactName = this.mNameEditText.getText().toString() + " " + this.mLastnameEditText.getText().toString();
-            setTitle(this.contactName);
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
     }
 
     @Override
