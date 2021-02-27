@@ -15,6 +15,7 @@ import com.cjacquet.ft.hangouts.R;
 import com.cjacquet.ft.hangouts.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.cjacquet.ft.hangouts.BaseAppCompatActivity.colorTheme;
@@ -29,6 +30,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     public MessageListAdapter(Context context, List<Message> messageList) {
         mContext = context;
         mMessageList = messageList;
+        mMessageList.removeAll(Collections.singleton(null));
     }
 
     @Override
@@ -55,7 +57,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     // Inflates the appropriate layout according to the ViewType.
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
             if (viewType == VIEW_TYPE_MESSAGE_SENT) {
                 view = LayoutInflater.from(parent.getContext())
@@ -66,7 +68,6 @@ public class MessageListAdapter extends RecyclerView.Adapter {
                         .inflate(R.layout.other_message_item, parent, false);
                 return new ReceivedMessageHolder(view);
             }
-
         return null;
     }
 
@@ -97,6 +98,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         mMessageList = new ArrayList<>();
         mMessageList.add(newMessage);
         mMessageList.addAll(oldMessages);
+        mMessageList.removeAll(Collections.singleton(null));
     }
 
     private class SentMessageHolder extends RecyclerView.ViewHolder {

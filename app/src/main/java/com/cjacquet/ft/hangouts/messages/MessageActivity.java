@@ -79,14 +79,8 @@ public class MessageActivity extends BaseAppCompatActivity {
         intentFilter.addAction("RECEIVED_SMS");
         registerReceiver(intentReceiver, intentFilter);
 
-        /* --------------- Handle message textview --------------- */
+        /* --------------- Handle message to send --------------- */
         messageToSend = findViewById(R.id.edit_gchat_message);
-        messageToSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
-        });
-
         Button sendButton = findViewById(R.id.button_gchat_send);
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,6 +93,7 @@ public class MessageActivity extends BaseAppCompatActivity {
                 getWindow().setSoftInputMode(
                         WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
                 );
+                messages.add(newMessage);
                 mMessageAdapter.updateData(messages, newMessage);
                 mMessageAdapter.notifyDataSetChanged();
                 SmsManager smsManager = SmsManager.getDefault();
@@ -125,7 +120,6 @@ public class MessageActivity extends BaseAppCompatActivity {
         layoutManager.setReverseLayout(true);
         mMessageRecycler.setLayoutManager(layoutManager);
         mMessageRecycler.setAdapter(mMessageAdapter);
-        messages.addAll(this.getAllMessages(otherNumber));
     }
 
     public List<Message> getAllMessages(String otherNumber) {
@@ -203,5 +197,9 @@ public class MessageActivity extends BaseAppCompatActivity {
         intentFilter = new IntentFilter();
         intentFilter.addAction("RECEIVED_SMS");
         registerReceiver(intentReceiver, intentFilter);
+        messages.clear();
+        messages.addAll(this.getAllMessages(otherNumber));
+        mMessageAdapter.updateData(messages, null);
+        mMessageAdapter.notifyDataSetChanged();
     }
 }
