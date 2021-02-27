@@ -8,7 +8,7 @@
 
     <!-- MainActivity strings -->
     <string name="empty_view_title_text">it\'s a bit lonely here…</string>
-    <string name="empty_view_subtitle_text">get started by adding a contact with the "+" button down there!</string>
+    <string name="empty_view_subtitle_text">get started by adding a contactSummary with the "+" button down there!</string>
     <string name="language_change">change language</string>
     <string name="language_fr">french</string>
     <string name="language_en">english</string>
@@ -23,7 +23,7 @@
     <string name="editor_activity_title_new_contact">Add a Contact</string>
     <string name="editor_activity_title_edit_contact">Edit Contact</string>
     <string name="category_overview">overview</string>
-    <string name="category_favContactSwitch">favorite contact</string>
+    <string name="category_favContactSwitch">favorite contactSummary</string>
     <string name="hint_contact_name">name</string>
     <string name="hint_contact_lastname">lastname</string>
     <string name="category_contacts">contacts</string>
@@ -34,18 +34,18 @@
     <string name="action_save">save</string>
     <string name="action_edit">edit</string>
     <string name="action_delete">delete</string>
-    <string name="editor_insert_contact_success">contact saved!</string>
-    <string name="editor_insert_contact_failed">error with saving contact</string>
-    <string name="editor_error_contact_minimum_info">error: a contact need at least a name</string>
-    <string name="editor_delete_contact_ko">error, cannot delete contact.</string>
-    <string name="editor_delete_contact_ok">contact successfully deleted.</string>
+    <string name="editor_insert_contact_success">contactSummary saved!</string>
+    <string name="editor_insert_contact_failed">error with saving contactSummary</string>
+    <string name="editor_error_contact_minimum_info">error: a contactSummary need at least a name</string>
+    <string name="editor_delete_contact_ko">error, cannot delete contactSummary.</string>
+    <string name="editor_delete_contact_ok">contactSummary successfully deleted.</string>
     <string name="popup_permission_title">required permission</string>
     <string name="popup_permission_message">we need permission to access and send sms, please activate in settings or this window will stay blank</string>
     <string name="popup_permission_ok">ok</string>
     <string name="popup_permission_ko">cancel</string>
 
     <!-- MessageActivity strings -->
-    <string name="message_activity_title">contact\'s name</string>
+    <string name="message_activity_title">contactSummary\'s name</string>
     <string name="enter_message">enter message</string>
     <string name="send_button_text" translatable="false"><![CDATA[>>]]></string>
     <string name="sms_send">sms send</string>

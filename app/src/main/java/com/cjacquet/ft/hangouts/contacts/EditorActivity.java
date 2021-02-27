@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -59,6 +60,9 @@ public class EditorActivity extends BaseAppCompatActivity {
     private EditText mMailEditText;
     private String mMail;
 
+    private Switch favSwith;
+    private boolean favContact;
+
     private FloatingActionButton fab;
 
     private Menu menu;
@@ -84,6 +88,7 @@ public class EditorActivity extends BaseAppCompatActivity {
         mPhoneEditText = findViewById(R.id.edit_contact_phone);
         mBDayEditText = findViewById(R.id.edit_contact_bday);
         mMailEditText = findViewById(R.id.edit_contact_mail);
+        favSwith = findViewById(R.id.favContact);
         fab = findViewById(R.id.fab_sms);
 
         setupActivity();
@@ -127,6 +132,7 @@ public class EditorActivity extends BaseAppCompatActivity {
                 picker.show();
             }
         });
+
         if (mCurrentContactUri != null) {
             contactId = mCurrentContactUri.getLastPathSegment();
             setTitle(getResources().getString(R.string.editor_activity_title_edit_contact));
@@ -171,7 +177,7 @@ public class EditorActivity extends BaseAppCompatActivity {
                         mPhone = cursor.getString(phoneColumnIndex);
                         mMail = cursor.getString(mailColumnIndex);
                         mBDay = cursor.getString(bdayColumnIndex);
-                        String fav = cursor.getString(favColumnIndex);
+                        favContact = "1".equals(cursor.getString(favColumnIndex));
 
                         // Update the views on the screen with the values from the database
                         mNameEditText.setText(mName);
@@ -179,6 +185,7 @@ public class EditorActivity extends BaseAppCompatActivity {
                         mPhoneEditText.setText(mPhone);
                         mBDayEditText.setText(mBDay);
                         mMailEditText.setText(mMail);
+                        favSwith.setChecked(favContact);
 
                         switchFieldToShow();
                         contactName = mNameEditText.getText().toString() + " " + mLastnameEditText.getText().toString();
@@ -193,6 +200,7 @@ public class EditorActivity extends BaseAppCompatActivity {
             };
 
             LoaderManager.getInstance(this).initLoader(EXISTING_CONTACT_LOADER, null, mCallbacks);
+
             // Setup FAB to open MessageActivity
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -298,6 +306,7 @@ public class EditorActivity extends BaseAppCompatActivity {
         this.mPhoneEditText.setFocusable(false);
         this.mMailEditText.setFocusable(false);
         this.mBDayEditText.setFocusable(false);
+        this.favSwith.setClickable(false);
         this.fab.setVisibility(View.VISIBLE);
     }
 
@@ -315,6 +324,7 @@ public class EditorActivity extends BaseAppCompatActivity {
         this.mMailEditText.setFocusableInTouchMode(true);
         this.mBDayEditText.setFocusable(true);
         this.mBDayEditText.setFocusableInTouchMode(true);
+        this.favSwith.setClickable(true);
         this.fab.setVisibility(View.INVISIBLE);
     }
 
@@ -350,6 +360,8 @@ public class EditorActivity extends BaseAppCompatActivity {
             this.mMailEditText.setText("");
         if (!this.mBDay.equals(this.mBDayEditText.getText().toString()))
             this.mBDayEditText.setText("");
+        if (this.favContact != this.favSwith.isChecked())
+            this.favSwith.setChecked(favContact);
     }
 
     /**
@@ -364,6 +376,7 @@ public class EditorActivity extends BaseAppCompatActivity {
         String phone = mPhoneEditText.getText().toString().trim();
         String mail = mMailEditText.getText().toString().trim();
         String bday = mBDayEditText.getText().toString().trim();
+        boolean fav = favSwith.isChecked();
 
         if (mCurrentContactUri == null && TextUtils.isEmpty(name)) {
             Toast.makeText(this, getResources().getString(R.string.editor_error_contact_minimum_info), Toast.LENGTH_SHORT).show();
@@ -376,6 +389,7 @@ public class EditorActivity extends BaseAppCompatActivity {
         contentValues.put(ContactEntry.COLUMN_CONTACT_PHONE, phone);
         contentValues.put(ContactEntry.COLUMN_CONTACT_MAIL, mail);
         contentValues.put(ContactEntry.COLUMN_CONTACT_BDAY, bday);
+        contentValues.put(ContactEntry.COLUMN_CONTACT_FAV, fav);
 
         if (mCurrentContactUri != null) {
             updateRows = getContentResolver().update(mCurrentContactUri, contentValues, null, null);

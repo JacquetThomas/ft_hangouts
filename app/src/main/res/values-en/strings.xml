@@ -7,12 +7,12 @@
     <string name="action_save">Save</string>
     <string name="action_delete">Delete</string>
     <string name="category_overview">Overview</string>
-    <string name="category_favContactSwitch">Favorite contact</string>
+    <string name="category_favContactSwitch">Favorite contactSummary</string>
     <string name="hint_contact_name">Name</string>
     <string name="editor_insert_contact_success">Contact saved!</string>
-    <string name="editor_insert_contact_failed">Error with saving contact</string>
+    <string name="editor_insert_contact_failed">Error with saving contactSummary</string>
     <string name="empty_view_title_text">It\'s a bit lonely here...</string>
-    <string name="empty_view_subtitle_text">Get started by adding a contact with the \"+\" button down there!</string>
+    <string name="empty_view_subtitle_text">Get started by adding a contactSummary with the \"+\" button down there!</string>
     <string name="hint_contact_lastname">Lastname</string>
     <string name="category_contacts">Contacts</string>
     <string name="hint_contact_phone">Phone number</string>
@@ -36,8 +36,8 @@
     <string name="popup_permission_ok">OK</string>
     <string name="popup_permission_ko">Cancel</string>
     <string name="cancel_choice">Cancel</string>
-    <string name="editor_error_contact_minimum_info">Error: A contact need at least a name.</string>
-    <string name="editor_delete_contact_ko">Error: Cannot delet contact.</string>
+    <string name="editor_error_contact_minimum_info">Error: A contactSummary need at least a name.</string>
+    <string name="editor_delete_contact_ko">Error: Cannot delet contactSummary.</string>
     <string name="editor_delete_contact_ok">Contact successfully deleted</string>
     <string name="sms_send">SMS send</string>
     <string name="sms_send_generic_failure">SMS not send, generic failure.</string>

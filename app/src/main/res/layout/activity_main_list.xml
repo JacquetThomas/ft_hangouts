@@ -48,11 +48,26 @@
             android:textColor="#A2AAB0"
             android:gravity="center_horizontal" />
     </RelativeLayout>
-
-    <ListView
-        android:id="@+id/lvItems"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/side_index"
+            android:layout_width="60dp"
+            android:layout_height="fill_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listview_contact"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"

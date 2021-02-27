@@ -1,11 +1,9 @@
 package com.cjacquet.ft.hangouts;
 
-import android.content.ContentUris;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -14,26 +12,36 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSmoothScroller;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.cjacquet.ft.hangouts.contacts.ContactCursorAdapter;
+import com.cjacquet.ft.hangouts.contacts.ContactListAdapter;
+import com.cjacquet.ft.hangouts.contacts.ContactSummary;
 import com.cjacquet.ft.hangouts.contacts.EditorActivity;
 import com.cjacquet.ft.hangouts.utils.LocaleHelper;
 import com.cjacquet.ft.hangouts.utils.Theme;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.COLUMN_CONTACT_FAV;
 import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.COLUMN_CONTACT_LASTNAME;
 import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.COLUMN_CONTACT_NAME;
 import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.COLUMN_CONTACT_PHONE;
@@ -47,7 +55,12 @@ public class MainActivity extends BaseAppCompatActivity {
 
     private static final int CONTACT_LOADER = 0;
 
-    ContactCursorAdapter mCursorAdapter;
+    private List<ContactSummary> contactSummaries = new ArrayList<>();
+    private ContactListAdapter mContactAdapter;
+    private HashMap<String, Integer> mapIndex = new LinkedHashMap<>();
+    private RecyclerView contactRecyclerView;
+    private RecyclerView.SmoothScroller smoothScroller;
+    private LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,47 +84,104 @@ public class MainActivity extends BaseAppCompatActivity {
             }
         });
 
-        // Find the ListView which will be populated with the contact data
-        ListView contactListView = (ListView) findViewById(R.id.lvItems);
-
         // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
         View emptyView = findViewById(R.id.empty_view);
-        contactListView.setEmptyView(emptyView);
+        emptyView.setVisibility(View.GONE);
+        //contactListView.setEmptyView(emptyView);
 
-        mCursorAdapter = new ContactCursorAdapter(this, null);
-        contactListView.setAdapter(mCursorAdapter);
-
-        contactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Intent intent = new Intent(MainActivity.this, EditorActivity.class);
-
-                Uri currentContactUri = ContentUris.withAppendedId(CONTENT_URI, id);
-                intent.setData(currentContactUri);
-
-                startActivity(intent);
+        // Find the ListView which will be populated with the contact data
+        contactRecyclerView = findViewById(R.id.listview_contact);
+        mContactAdapter = new ContactListAdapter(contactSummaries);
+        contactRecyclerView.setLayoutManager(layoutManager);
+        contactRecyclerView.setAdapter(mContactAdapter);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(contactRecyclerView.getContext(),
+                layoutManager.getOrientation());
+        contactRecyclerView.addItemDecoration(dividerItemDecoration);
+        smoothScroller = new LinearSmoothScroller(this) {
+            @Override protected int getVerticalSnapPreference() {
+                return LinearSmoothScroller.SNAP_TO_START;
             }
-        });
+        };
 
         // Init Loader
         LoaderManager.LoaderCallbacks<Cursor> mCallbacks = new LoaderManager.LoaderCallbacks<Cursor>() {
             @Override
             public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-                String[] projection = {_ID, COLUMN_CONTACT_NAME, COLUMN_CONTACT_LASTNAME, COLUMN_CONTACT_PHONE};
-                return new CursorLoader(getApplicationContext(), CONTENT_URI, projection, null, null, null);
+                mapIndex.clear();
+                contactSummaries.clear();
+                mContactAdapter.updateData(contactSummaries);
+                String orderBy = COLUMN_CONTACT_FAV + " DESC, " + "upper(" + COLUMN_CONTACT_NAME + ") ASC";
+                String[] projection = {_ID, COLUMN_CONTACT_NAME, COLUMN_CONTACT_LASTNAME, COLUMN_CONTACT_PHONE, COLUMN_CONTACT_FAV};
+
+                return new CursorLoader(getApplicationContext(), CONTENT_URI, projection, null, null,  orderBy);
             }
 
             @Override
             public void onLoadFinished(androidx.loader.content.Loader<Cursor> loader, Cursor cursor) {
-                mCursorAdapter.swapCursor(cursor);
+                contactSummaries.clear();
+                mapIndex.clear();
+                LinearLayout indexLayout = findViewById(R.id.side_index);
+                indexLayout.removeAllViews();
+                cursor.moveToFirst();
+                int i = 0;
+                while(!cursor.isAfterLast()) {
+                    int id = cursor.getInt(cursor.getColumnIndex(_ID));
+                    String name = cursor.getString(cursor.getColumnIndex(COLUMN_CONTACT_NAME));
+                    String lastname = cursor.getString(cursor.getColumnIndex(COLUMN_CONTACT_LASTNAME));
+                    String phoneNumber = cursor.getString(cursor.getColumnIndex(COLUMN_CONTACT_PHONE));
+                    boolean fav = "1".equals(cursor.getString(cursor.getColumnIndex(COLUMN_CONTACT_FAV)));
+                    String index = null;
+                    if (fav)
+                        index = "*";
+                    else
+                        index = name.substring(0, 1).toUpperCase();
+                    if (mapIndex.get(index) == null) {
+                        mapIndex.put(index, i++);
+                        contactSummaries.add(new ContactSummary(index, -1, index, null, null, fav));
+                    }
+                    i++;
+                    contactSummaries.add(new ContactSummary(null, id, name, lastname, phoneNumber, fav));
+                    cursor.moveToNext();
+                }
+                displayIndex();
+                mContactAdapter.updateData(contactSummaries);
+                mContactAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onLoaderReset(androidx.loader.content.Loader<Cursor> loader) {
-                mCursorAdapter.swapCursor(null);
+
+                loader.reset();
             }
         };
         LoaderManager.getInstance(this).initLoader(CONTACT_LOADER, null, mCallbacks);
+    }
+
+    private void displayIndex() {
+        LinearLayout indexLayout = findViewById(R.id.side_index);
+
+        List<String> indexList = new ArrayList<>(mapIndex.keySet());
+        for (String index : indexList) {
+            TextView textView = (TextView) getLayoutInflater().inflate(
+                    R.layout.side_idex_item, null);
+            textView.setText(index);
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    TextView tv = v.findViewById(R.id.side_index_item);
+                    Integer index = mapIndex.get(tv.getText());
+                    if (index != null) {
+                        smoothScroller.setTargetPosition(index);
+                        layoutManager.startSmoothScroll(smoothScroller);
+
+                    }
+
+                }
+            });
+            textView.setClickable(true);
+            indexLayout.addView(textView);
+        }
     }
 
     @Override
@@ -150,6 +220,11 @@ public class MainActivity extends BaseAppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     public void showPopupWindow() {

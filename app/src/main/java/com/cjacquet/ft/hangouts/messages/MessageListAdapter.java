@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -96,7 +97,7 @@ public class MessageListAdapter extends Adapter<ViewHolder> {
         mMessageList.removeAll(Collections.singleton(null));
     }
 
-    private static class SentMessageHolder extends ViewHolder {
+    private static class SentMessageHolder extends RecyclerView.ViewHolder {
         TextView messageText;
         TextView timeText;
         TextView dateText;
@@ -121,7 +122,7 @@ public class MessageListAdapter extends Adapter<ViewHolder> {
         }
     }
 
-    private static class ReceivedMessageHolder extends ViewHolder {
+    private static class ReceivedMessageHolder extends RecyclerView.ViewHolder {
         TextView messageText;
         TextView timeText;
         TextView dateText;
