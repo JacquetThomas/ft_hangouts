@@ -72,13 +72,14 @@
                     android:id="@+id/edit_contact_phone"
                     android:hint="@string/hint_contact_phone"
                     android:inputType="phone"
+                    android:digits="0123456789+"
                     style="@style/EditorFieldStyle" />
 
                 <!-- Mail field -->
                 <EditText
                     android:id="@+id/edit_contact_mail"
                     android:hint="@string/hint_contact_mail"
-                    android:inputType="textCapWords"
+                    android:inputType="textEmailAddress"
                     style="@style/EditorFieldStyle" />
             </LinearLayout>
         </LinearLayout>

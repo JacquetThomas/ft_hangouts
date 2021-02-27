@@ -8,6 +8,4 @@ public enum MessageType {
     MessageType(final int value) {
         this.value = value;
     }
-
-    public int getValue() { return this.value; }
 }

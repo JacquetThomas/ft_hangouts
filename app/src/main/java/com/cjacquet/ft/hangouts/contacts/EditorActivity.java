@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -38,31 +39,23 @@ import java.util.Calendar;
 
 import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.CONTENT_URI;
 
-/**
- * Allows user to create a new contact or edit an existing one.
- */
 public class EditorActivity extends BaseAppCompatActivity {
-    private static final int REQUEST_READ_SMS_PERMISSION = 3004;
+    private static final int REQUEST_SMS_PERMISSION = 3004;
     private String contactId;
 
-    /** EditText field to enter the contact's name */
     private EditText mNameEditText;
     private String mName;
 
-    /** EditText field to enter the contact's lastname */
     private EditText mLastnameEditText;
     private String mLastname;
 
-    /** EditText field to enter the contact's phone */
     private EditText mPhoneEditText;
     private String mPhone;
 
-    /** EditText field to enter the contact's birthday */
     private EditText mBDayEditText;
     private String mBDay;
     private DatePickerDialog picker;
 
-    /** EditText field to enter the contact's mail */
     private EditText mMailEditText;
     private String mMail;
 
@@ -74,7 +67,6 @@ public class EditorActivity extends BaseAppCompatActivity {
 
     private static final int EXISTING_CONTACT_LOADER = 0;
 
-    /** Content URI for the existing contact (null if it's a new contact) */
     private Uri mCurrentContactUri;
 
     @Override
@@ -94,10 +86,32 @@ public class EditorActivity extends BaseAppCompatActivity {
         mMailEditText = findViewById(R.id.edit_contact_mail);
         fab = findViewById(R.id.fab_sms);
 
+        setupActivity();
+    }
+
+    private void setupActivity() {
+
+        mPhoneEditText.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+        mMailEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!mMailEditText.isFocusable()) {
+                    if (mMailEditText.getText().toString().length() > 0) {
+                        Intent intent = new Intent(Intent.ACTION_SENDTO);
+                        intent.setData(Uri.parse("mailto:" + mMailEditText.getText().toString()));
+                        if (intent.resolveActivity(getPackageManager()) != null) {
+                            startActivity(intent);
+                        }
+                    }
+                }
+            }
+        });
         mBDayEditText.setInputType(InputType.TYPE_NULL);
         mBDayEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!mBDayEditText.isFocusable())
+                    return ;
                 final Calendar cldr = Calendar.getInstance();
                 int day = cldr.get(Calendar.DAY_OF_MONTH);
                 int month = cldr.get(Calendar.MONTH);
@@ -113,10 +127,6 @@ public class EditorActivity extends BaseAppCompatActivity {
                 picker.show();
             }
         });
-        setupActivity();
-    }
-
-    private void setupActivity() {
         if (mCurrentContactUri != null) {
             contactId = mCurrentContactUri.getLastPathSegment();
             setTitle(getResources().getString(R.string.editor_activity_title_edit_contact));
@@ -226,7 +236,8 @@ public class EditorActivity extends BaseAppCompatActivity {
         int itemId = item.getItemId();
         // Respond to a click on the "Save" menu option
         if (itemId == R.id.action_save) {
-            saveContacts();
+            if (!saveContacts())
+                return true;
             if (contactId != null && !contactId.isEmpty())
                 mCurrentContactUri = ContentUris.withAppendedId(CONTENT_URI, Long.parseLong(contactId));
             setupActivity();
@@ -236,9 +247,9 @@ public class EditorActivity extends BaseAppCompatActivity {
         }
         // Respond to a click on the "Delete" menu option
         else if (itemId == R.id.action_delete) {
-            String text = "Error, cannot delete contact.";
+            String text = getResources().getString(R.string.editor_delete_contact_ko);
             if (this.deleteContact() == 1)
-                text = "Contact successfully deleted.";
+                text = getResources().getString(R.string.editor_delete_contact_ok);
             Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
             toast.show();
             NavUtils.navigateUpFromSameTask(this);
@@ -282,11 +293,11 @@ public class EditorActivity extends BaseAppCompatActivity {
      * Disable all editable fields to enter in show mode.
      */
     private void switchFieldToShow() {
-        this.mNameEditText.setEnabled(false);
-        this.mLastnameEditText.setEnabled(false);
-        this.mPhoneEditText.setEnabled(false);
-        this.mMailEditText.setEnabled(false);
-        this.mBDayEditText.setEnabled(false);
+        this.mNameEditText.setFocusable(false);
+        this.mLastnameEditText.setFocusable(false);
+        this.mPhoneEditText.setFocusable(false);
+        this.mMailEditText.setFocusable(false);
+        this.mBDayEditText.setFocusable(false);
         this.fab.setVisibility(View.VISIBLE);
     }
 
@@ -294,11 +305,16 @@ public class EditorActivity extends BaseAppCompatActivity {
      * Enable all editable fields to enter in edit mode.
      */
     private void switchFieldToEdit() {
-        this.mNameEditText.setEnabled(true);
-        this.mLastnameEditText.setEnabled(true);
-        this.mPhoneEditText.setEnabled(true);
-        this.mMailEditText.setEnabled(true);
-        this.mBDayEditText.setEnabled(true);
+        this.mNameEditText.setFocusable(true);
+        this.mNameEditText.setFocusableInTouchMode(true);
+        this.mLastnameEditText.setFocusable(true);
+        this.mLastnameEditText.setFocusableInTouchMode(true);
+        this.mPhoneEditText.setFocusable(true);
+        this.mPhoneEditText.setFocusableInTouchMode(true);
+        this.mMailEditText.setFocusable(true);
+        this.mMailEditText.setFocusableInTouchMode(true);
+        this.mBDayEditText.setFocusable(true);
+        this.mBDayEditText.setFocusableInTouchMode(true);
         this.fab.setVisibility(View.INVISIBLE);
     }
 
@@ -339,18 +355,20 @@ public class EditorActivity extends BaseAppCompatActivity {
     /**
      * Method call to save Contact's informations.
      */
-    private void saveContacts() {
+    private boolean saveContacts() {
         Uri res = null;
         int updateRows = 0;
+        boolean insert = false;
         String name =  mNameEditText.getText().toString().trim();
         String lastname = mLastnameEditText.getText().toString().trim();
         String phone = mPhoneEditText.getText().toString().trim();
         String mail = mMailEditText.getText().toString().trim();
         String bday = mBDayEditText.getText().toString().trim();
 
-        if (mCurrentContactUri == null && TextUtils.isEmpty(name) && TextUtils.isEmpty(lastname)
-                && TextUtils.isEmpty(phone))
-            return ;
+        if (mCurrentContactUri == null && TextUtils.isEmpty(name)) {
+            Toast.makeText(this, getResources().getString(R.string.editor_error_contact_minimum_info), Toast.LENGTH_SHORT).show();
+            return insert;
+        }
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(ContactEntry.COLUMN_CONTACT_NAME, name);
@@ -366,19 +384,22 @@ public class EditorActivity extends BaseAppCompatActivity {
         }
 
         CharSequence text = "";
-        if (res == null && updateRows != 1)
+        if (res == null && updateRows != 1) {
             text = getString(R.string.editor_insert_contact_failed);
-        else if (res != null) {
-            contactId = res.getLastPathSegment();
+        }
+        else if (res != null || updateRows == 1) {
+            if (res != null)
+                contactId = res.getLastPathSegment();
             text = getString(R.string.editor_insert_contact_success);
+            insert = true;
         }
         Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
         toast.show();
+        return insert;
     }
 
     /**
      * Method to delete a Contact.
-     * @return
      */
     private int deleteContact() {
         return (getContentResolver().delete(mCurrentContactUri, null, null));
@@ -399,7 +420,7 @@ public class EditorActivity extends BaseAppCompatActivity {
                 && checkSelfPermission(Manifest.permission.READ_SMS)
                 != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(
-                    new String[]{Manifest.permission.READ_SMS}, REQUEST_READ_SMS_PERMISSION);
+                    new String[]{Manifest.permission.READ_SMS}, REQUEST_SMS_PERMISSION);
         }
     }
 
@@ -409,14 +430,14 @@ public class EditorActivity extends BaseAppCompatActivity {
         if (grantResults == null || grantResults.length == 0)
             return ;
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            if (REQUEST_READ_SMS_PERMISSION == requestCode) {
+            if (REQUEST_SMS_PERMISSION == requestCode) {
                 Intent intent = new Intent(EditorActivity.this, MessageActivity.class);
                 intent.putExtra("phoneNumber", mPhoneEditText.getText().toString());
                 intent.putExtra("contactName", contactName);
                 intent.putExtra("contactId", contactId);
                 startActivity(intent);
             }
-        } else if (grantResults[0] == PackageManager.PERMISSION_DENIED && REQUEST_READ_SMS_PERMISSION == requestCode) {
+        } else if (grantResults[0] == PackageManager.PERMISSION_DENIED && REQUEST_SMS_PERMISSION == requestCode) {
             // setup the alert builder
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.popup_permission_title);

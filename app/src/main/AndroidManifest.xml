@@ -45,7 +45,6 @@
             android:authorities="com.cjacquet.ft.hangouts"
             android:exported="false" />
         <receiver android:name=".receiver.SmsSentReceiver" />
-        <receiver android:name=".receiver.SmsDeliveredReceiver" />
         <receiver android:name=".receiver.SmsReceiver">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />

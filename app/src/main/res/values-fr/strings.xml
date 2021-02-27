@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Contacts</string>
-    <string name="action_insert_dummy_data">Insérer de fausses données</string>
     <string name="action_delete_all_entries">Supprimer tout les contacts</string>
     <string name="editor_activity_title_new_contact">Ajouter un contact</string>
     <string name="editor_activity_title_edit_contact">Mettre à jour le contact</string>
@@ -26,7 +25,7 @@
     <string name="validate_choice">Valider</string>
     <string name="message_activity_title">Contacts</string>
     <string name="action_edit">Editer</string>
-    <string name="on_resume_text">"Dernière connexion à: "</string>
+    <string name="base_activity_on_resume_text">"Dernière connexion à: "</string>
     <string name="action_green_theme">Thème vert</string>
     <string name="action_blue_theme">Thème bleu</string>
     <string name="action_orange_theme">Thème orange</string>
@@ -36,4 +35,11 @@
     <string name="popup_permission_message">Nous avons besoin de votre permission pour accéder à vos SMS afin de pouvoir vous les afficher, vous pouvez nous l\'autoriser dans les paramètres.</string>
     <string name="popup_permission_ok">OK</string>
     <string name="popup_permission_ko">Retour</string>
+    <string name="cancel_choice">Annuler</string>
+    <string name="editor_error_contact_minimum_info">Erreur: Un contact doit au moins avoir un nom.</string>
+    <string name="editor_delete_contact_ko">Erreur: Impossible de supprimer le contact.</string>
+    <string name="editor_delete_contact_ok">Contact enregistré.</string>
+    <string name="sms_send">SMS envoyé</string>
+    <string name="sms_send_generic_failure">SMS non envoyé, erreur générique.</string>
+    <string name="sms_send_no_service">SMS non envoyé, pas de réseau.</string>
 </resources>

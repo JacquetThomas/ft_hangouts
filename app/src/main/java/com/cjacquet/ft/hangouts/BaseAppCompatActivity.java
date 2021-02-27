@@ -72,7 +72,7 @@ public class BaseAppCompatActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (paused) {
-            String text = getResources().getString(R.string.on_resume_text) + Utils.toHoursMinutes(getApplicationContext(), pausedDate.getTime());
+            String text = getResources().getString(R.string.base_activity_on_resume_text) + Utils.toHoursMinutes(getApplicationContext(), pausedDate.getTime());
             Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
             toast.show();
         }

@@ -14,8 +14,7 @@ public final class Utils {
     private Utils(){}
 
     public static String formatNumber(String number) {
-        // TODO: find the right way to format the number
-        return number;
+        return number.replace("+33", "0");
     }
 
     public static String toHoursMinutes(Context context, Long time) {

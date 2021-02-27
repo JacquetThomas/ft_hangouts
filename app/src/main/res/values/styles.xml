@@ -5,6 +5,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
     <!-- Theme of the editor -->
@@ -19,6 +20,7 @@
         <item name="colorPrimary">@color/greenColorPrimary</item>
         <item name="colorPrimaryDark">@color/greenColorPrimaryDark</item>
         <item name="colorAccent">@color/greenColorAccent</item>
+        <item name="android:textColor">@color/greenColorPrimary</item>
     </style>
 
     <!-- Base application BLUE theme -->
@@ -26,6 +28,7 @@
         <item name="colorPrimary">@color/blueColorPrimary</item>
         <item name="colorPrimaryDark">@color/blueColorPrimaryDark</item>
         <item name="colorAccent">@color/blueColorAccent</item>
+        <item name="android:textColor">@color/blueColorPrimary</item>
     </style>
 
     <!-- Base application ORANGE theme -->
@@ -33,6 +36,9 @@
         <item name="colorPrimary">@color/orangeColorPrimary</item>
         <item name="colorPrimaryDark">@color/orangeColorPrimaryDark</item>
         <item name="colorAccent">@color/orangeColorAccent</item>
+        <item name="android:textColor">@color/orangeColorPrimary</item>
+        <item name="android:actionMenuTextColor">@android:color/primary_text_dark_nodisable</item>
+
     </style>
 
     <!-- Style for a category in the editor -->

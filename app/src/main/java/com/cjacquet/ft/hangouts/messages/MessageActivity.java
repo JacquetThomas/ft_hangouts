@@ -27,7 +27,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.cjacquet.ft.hangouts.BaseAppCompatActivity;
 import com.cjacquet.ft.hangouts.R;
 import com.cjacquet.ft.hangouts.contacts.EditorActivity;
-import com.cjacquet.ft.hangouts.receiver.SmsDeliveredReceiver;
 import com.cjacquet.ft.hangouts.receiver.SmsSentReceiver;
 import com.cjacquet.ft.hangouts.utils.Utils;
 
@@ -98,18 +97,12 @@ public class MessageActivity extends BaseAppCompatActivity {
                 SmsManager smsManager = SmsManager.getDefault();
                 ArrayList<String> dividedMessages = smsManager.divideMessage(newMessage.getText());
                 ArrayList<PendingIntent> sentPendingIntents = new ArrayList<>();
-                ArrayList<PendingIntent> deliveredPendingIntents = new ArrayList<>();
                 PendingIntent sentPI = PendingIntent.getBroadcast(getApplicationContext(), 0,
                         new Intent(getApplicationContext(), SmsSentReceiver.class), 0);
-
-                PendingIntent deliveredPI = PendingIntent.getBroadcast(getApplicationContext(), 0,
-                        new Intent(getApplicationContext(), SmsDeliveredReceiver.class), 0);
                 for (int i = 0; i < dividedMessages.size(); i++) {
                     sentPendingIntents.add(i, sentPI);
-
-                    deliveredPendingIntents.add(i, deliveredPI);
                 }
-                smsManager.sendMultipartTextMessage(newMessage.getAddress(), null, dividedMessages, sentPendingIntents, deliveredPendingIntents);
+                smsManager.sendMultipartTextMessage(newMessage.getAddress(), null, dividedMessages, sentPendingIntents, null);
             }
         });
 
@@ -129,12 +122,12 @@ public class MessageActivity extends BaseAppCompatActivity {
 
         if (otherNumber == null || otherNumber.isEmpty())
             return messagesList;
-
+        String formatOtherNumber = Utils.formatNumber(otherNumber);
         Cursor c = cr.query(messageUri, null, null, null, null);
-        if (c.moveToFirst()) {
+        if (c != null && c.moveToFirst()) {
             do {
-                if (c.getString(c
-                        .getColumnIndexOrThrow("address")).contains(otherNumber)) {
+                String numberAddress = Utils.formatNumber(c.getString(c.getColumnIndexOrThrow("address")));
+                if (Utils.formatNumber(numberAddress).equalsIgnoreCase(formatOtherNumber)) {
                     message = new Message();
                     message.setId(c.getString(c.getColumnIndexOrThrow("_id")));
                     message.setAddress(c.getString(c

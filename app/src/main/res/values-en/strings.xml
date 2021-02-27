@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Contacts</string>
-    <string name="action_insert_dummy_data">Insert Dummy Data</string>
     <string name="action_delete_all_entries">Delete All Contacts</string>
     <string name="editor_activity_title_new_contact">Add a Contact</string>
     <string name="editor_activity_title_edit_contact">Edit Contact</string>
@@ -26,7 +25,7 @@
     <string name="validate_choice">Validate</string>
     <string name="message_activity_title">Contacts</string>
     <string name="action_edit">Edit</string>
-    <string name="on_resume_text">"Last connection at: "</string>
+    <string name="base_activity_on_resume_text">"Last connection at: "</string>
     <string name="action_orange_theme">Orange theme</string>
     <string name="action_blue_theme">Blue theme</string>
     <string name="action_green_theme">Green theme</string>
@@ -36,4 +35,11 @@
     <string name="popup_permission_message">We need permission to access your SMS in order to display your SMS. You can allow us in settings.</string>
     <string name="popup_permission_ok">OK</string>
     <string name="popup_permission_ko">Cancel</string>
+    <string name="cancel_choice">Cancel</string>
+    <string name="editor_error_contact_minimum_info">Error: A contact need at least a name.</string>
+    <string name="editor_delete_contact_ko">Error: Cannot delet contact.</string>
+    <string name="editor_delete_contact_ok">Contact successfully deleted</string>
+    <string name="sms_send">SMS send</string>
+    <string name="sms_send_generic_failure">SMS not send, generic failure.</string>
+    <string name="sms_send_no_service">SMS not send, no service.</string>
 </resources>
