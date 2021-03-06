@@ -5,4 +5,21 @@
         <item>@string/language_en</item>
         <item>@string/language_fr</item>
     </string-array>
+
+    <string-array name="language_value">
+        <item>en</item>
+        <item>fr</item>
+    </string-array>
+
+    <string-array name="array_theme_options">
+        <item>@string/action_orange_theme</item>
+        <item>@string/action_blue_theme</item>
+        <item>@string/action_green_theme</item>
+    </string-array>
+
+    <string-array name="array_theme_value">
+        <item>orange</item>
+        <item>bleu</item>
+        <item>vert</item>
+    </string-array>
 </resources>

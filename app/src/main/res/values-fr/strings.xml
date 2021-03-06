@@ -44,4 +44,13 @@
     <string name="sms_send">SMS envoyé</string>
     <string name="sms_send_generic_failure">SMS non envoyé, erreur générique.</string>
     <string name="sms_send_no_service">SMS non envoyé, pas de réseau.</string>
+    <string name="action_settings">Paramètres</string>
+    <string name="settings_activity_title">Paramètres</string>
+    <string name="title_activity_settings">Paramètres</string>
+    <string name="language_header">Langue</string>
+    <string name="general_header">Général</string>
+    <string name="welcome_message_title">Message de bienvenu</string>
+    <string name="language_title">Langue</string>
+    <string name="theme_title">Thème</string>
+    <string name="theme_header">Thème</string>
 </resources>

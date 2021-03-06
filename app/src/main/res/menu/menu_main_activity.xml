@@ -24,4 +24,9 @@
         android:id="@+id/action_green_theme"
         android:title="@string/action_green_theme"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        app:showAsAction="never"/>
 </menu>

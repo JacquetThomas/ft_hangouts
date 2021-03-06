@@ -190,7 +190,7 @@ public class MainActivity extends BaseAppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu options from the res/menu/menu_catalog.xml file.
         // This adds menu items to the app bar.
-        getMenuInflater().inflate(R.menu.menu_catalog, menu);
+        getMenuInflater().inflate(R.menu.menu_main_activity, menu);
         return true;
     }
 
@@ -220,6 +220,9 @@ public class MainActivity extends BaseAppCompatActivity {
             setTheme(Theme.GREEN.getThemeId());
             recreate();
             return true;
+        } else if (itemId == R.id.action_settings) {
+            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

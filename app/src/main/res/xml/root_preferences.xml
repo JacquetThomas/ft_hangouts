@@ -1,0 +1,32 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/general_header">
+
+        <EditTextPreference
+            app:key="welcomeMessage"
+            app:title="@string/welcome_message_title"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/language_header">
+        <ListPreference
+            app:entries="@array/array_language_options"
+            app:entryValues="@array/language_value"
+            app:key="prefLang"
+            app:title="@string/language_title"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+<!--    <PreferenceCategory app:title="@string/theme_header">-->
+<!--        <ListPreference-->
+<!--            app:entries="@array/array_theme_options"-->
+<!--            app:entryValues="@array/array_theme_value"-->
+<!--            app:key="colorThemeId"-->
+<!--            app:title="@string/theme_title"-->
+<!--            app:useSimpleSummaryProvider="true" />-->
+<!--    </PreferenceCategory>-->
+
+</PreferenceScreen>

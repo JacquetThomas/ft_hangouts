@@ -19,6 +19,7 @@ import java.util.Date;
 public class BaseAppCompatActivity extends AppCompatActivity {
     private static final String SP_THEME_COLOR_ID = "colorThemeId";
     private static final String SP_PREF_LANG = "prefLang";
+    private static final String SP_WLC_MSG = "welcomeMessage";
     private Date pausedDate;
     private boolean paused;
     private static Theme colorTheme = Theme.ORANGE;
@@ -73,7 +74,9 @@ public class BaseAppCompatActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (paused) {
-            String text = getResources().getString(R.string.base_activity_on_resume_text) + Utils.toHoursMinutes(getApplicationContext(), pausedDate.getTime());
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+            String welcome = pref.getString(SP_WLC_MSG, null);
+            String text = welcome + "\n" + getResources().getString(R.string.base_activity_on_resume_text) + Utils.toHoursMinutes(getApplicationContext(), pausedDate.getTime());
             Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
             toast.show();
         }

@@ -53,6 +53,22 @@
     <string name="sms_send">sms send</string>
     <string name="sms_send_generic_failure">sms not send, generic failure</string>
     <string name="sms_send_no_service">sms not send, no service</string>
+    <string name="action_settings">settings</string>
+    <string name="settings_activity_title">settings</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!-- General Preferences -->
+    <string name="general_header">general</string>
+    <string name="welcome_message_title">welcome message</string>
+
+    <!-- Language Preferences -->
+    <string name="language_title">language</string>
+    <string name="language_header">language</string>
+
+    <!-- Sync Preferences -->
+    <string name="theme_title">theme</string>
+    <string name="theme_header">theme</string>
+
 
 
 </resources>

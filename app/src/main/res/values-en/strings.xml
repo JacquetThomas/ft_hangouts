@@ -44,4 +44,13 @@
     <string name="sms_send">SMS send</string>
     <string name="sms_send_generic_failure">SMS not send, generic failure.</string>
     <string name="sms_send_no_service">SMS not send, no service.</string>
+    <string name="action_settings">Settings</string>
+    <string name="settings_activity_title">Settings</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="general_header">General</string>
+    <string name="welcome_message_title">Welcoming message</string>
+    <string name="language_header">Language</string>
+    <string name="language_title">Language</string>
+    <string name="theme_title">Theme</string>
+    <string name="theme_header">Theme</string>
 </resources>
