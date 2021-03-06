@@ -1,4 +1,4 @@
-package com.cjacquet.ft.hangouts;
+package com.cjacquet.ft.hangouts.activities;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,6 +8,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.cjacquet.ft.hangouts.R;
 import com.cjacquet.ft.hangouts.receiver.SmsReceiver;
 import com.cjacquet.ft.hangouts.utils.LocaleHelper;
 import com.cjacquet.ft.hangouts.utils.Theme;

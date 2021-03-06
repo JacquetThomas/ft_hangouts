@@ -1,4 +1,4 @@
-package com.cjacquet.ft.hangouts;
+package com.cjacquet.ft.hangouts.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -27,9 +27,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.cjacquet.ft.hangouts.R;
 import com.cjacquet.ft.hangouts.contacts.ContactListAdapter;
 import com.cjacquet.ft.hangouts.contacts.ContactSummary;
-import com.cjacquet.ft.hangouts.contacts.EditorActivity;
 import com.cjacquet.ft.hangouts.utils.LocaleHelper;
 import com.cjacquet.ft.hangouts.utils.Theme;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.COLUMN_CONTACT_BDAY;
 import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.COLUMN_CONTACT_FAV;
 import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.COLUMN_CONTACT_LASTNAME;
 import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.COLUMN_CONTACT_NAME;
@@ -111,7 +112,7 @@ public class MainActivity extends BaseAppCompatActivity {
                 contactSummaries.clear();
                 mContactAdapter.updateData(contactSummaries);
                 String orderBy = COLUMN_CONTACT_FAV + " DESC, " + "upper(" + COLUMN_CONTACT_NAME + ") ASC";
-                String[] projection = {_ID, COLUMN_CONTACT_NAME, COLUMN_CONTACT_LASTNAME, COLUMN_CONTACT_PHONE, COLUMN_CONTACT_FAV};
+                String[] projection = {_ID, COLUMN_CONTACT_NAME, COLUMN_CONTACT_LASTNAME, COLUMN_CONTACT_PHONE, COLUMN_CONTACT_FAV, COLUMN_CONTACT_BDAY};
 
                 return new CursorLoader(getApplicationContext(), CONTENT_URI, projection, null, null,  orderBy);
             }
@@ -130,6 +131,7 @@ public class MainActivity extends BaseAppCompatActivity {
                     String lastname = cursor.getString(cursor.getColumnIndex(COLUMN_CONTACT_LASTNAME));
                     String phoneNumber = cursor.getString(cursor.getColumnIndex(COLUMN_CONTACT_PHONE));
                     boolean fav = "1".equals(cursor.getString(cursor.getColumnIndex(COLUMN_CONTACT_FAV)));
+                    String bDay = cursor.getString(cursor.getColumnIndex(COLUMN_CONTACT_BDAY));
                     String index = null;
                     if (fav)
                         index = "*";
@@ -137,10 +139,10 @@ public class MainActivity extends BaseAppCompatActivity {
                         index = name.substring(0, 1).toUpperCase();
                     if (mapIndex.get(index) == null) {
                         mapIndex.put(index, i++);
-                        contactSummaries.add(new ContactSummary(index, -1, index, null, null, fav));
+                        contactSummaries.add(new ContactSummary(index, -1, index, null, null, fav, null));
                     }
                     i++;
-                    contactSummaries.add(new ContactSummary(null, id, name, lastname, phoneNumber, fav));
+                    contactSummaries.add(new ContactSummary(null, id, name, lastname, phoneNumber, fav, bDay));
                     cursor.moveToNext();
                 }
                 displayIndex();

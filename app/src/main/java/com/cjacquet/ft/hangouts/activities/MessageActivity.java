@@ -1,4 +1,4 @@
-package com.cjacquet.ft.hangouts.messages;
+package com.cjacquet.ft.hangouts.activities;
 
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -24,9 +24,10 @@ import androidx.core.app.NavUtils;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.cjacquet.ft.hangouts.BaseAppCompatActivity;
 import com.cjacquet.ft.hangouts.R;
-import com.cjacquet.ft.hangouts.contacts.EditorActivity;
+import com.cjacquet.ft.hangouts.messages.Message;
+import com.cjacquet.ft.hangouts.messages.MessageListAdapter;
+import com.cjacquet.ft.hangouts.messages.MessageType;
 import com.cjacquet.ft.hangouts.receiver.SmsSentReceiver;
 import com.cjacquet.ft.hangouts.utils.Utils;
 

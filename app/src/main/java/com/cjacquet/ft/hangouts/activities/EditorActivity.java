@@ -1,4 +1,4 @@
-package com.cjacquet.ft.hangouts.contacts;
+package com.cjacquet.ft.hangouts.activities;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
@@ -29,10 +29,8 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 
-import com.cjacquet.ft.hangouts.BaseAppCompatActivity;
 import com.cjacquet.ft.hangouts.R;
 import com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry;
-import com.cjacquet.ft.hangouts.messages.MessageActivity;
 import com.cjacquet.ft.hangouts.utils.Utils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -42,6 +40,7 @@ import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.CON
 
 public class EditorActivity extends BaseAppCompatActivity {
     private static final int REQUEST_SMS_PERMISSION = 3004;
+    private static final int REQUEST_CALL_PERMISSION = 3005;
     private String contactId;
 
     private EditText mNameEditText;
@@ -63,7 +62,8 @@ public class EditorActivity extends BaseAppCompatActivity {
     private Switch favSwith;
     private boolean favContact;
 
-    private FloatingActionButton fab;
+    private FloatingActionButton fabSms;
+    private FloatingActionButton fabCall;
 
     private Menu menu;
 
@@ -89,7 +89,8 @@ public class EditorActivity extends BaseAppCompatActivity {
         mBDayEditText = findViewById(R.id.edit_contact_bday);
         mMailEditText = findViewById(R.id.edit_contact_mail);
         favSwith = findViewById(R.id.favContact);
-        fab = findViewById(R.id.fab_sms);
+        fabSms = findViewById(R.id.fab_sms);
+        fabCall = findViewById(R.id.fab_call);
 
         setupActivity();
     }
@@ -201,8 +202,8 @@ public class EditorActivity extends BaseAppCompatActivity {
 
             LoaderManager.getInstance(this).initLoader(EXISTING_CONTACT_LOADER, null, mCallbacks);
 
-            // Setup FAB to open MessageActivity
-            fab.setOnClickListener(new View.OnClickListener() {
+            // Setup FAB SMS to open MessageActivity
+            fabSms.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (Utils.getSMSPermission(getApplicationContext())) {
@@ -216,9 +217,29 @@ public class EditorActivity extends BaseAppCompatActivity {
                     }
                 }
             });
+
+            // Setup FAB Call to open call contact
+            fabCall.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (Utils.getCallPermission(getApplicationContext())) {
+                        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mPhoneEditText.getText().toString()));
+                        startActivity(intent);
+                    } else {
+                        getCallPermission();
+                    }
+                }
+            });
         } else {
             setTitle(getString(R.string.editor_activity_title_new_contact));
-            fab.setVisibility(View.GONE);
+        }
+
+        if (mPhoneEditText.getText() != null && !mPhoneEditText.getText().toString().isEmpty()) {
+            fabSms.setVisibility(View.VISIBLE);
+            fabCall.setVisibility(View.VISIBLE);
+        } else {
+            fabSms.setVisibility(View.GONE);
+            fabCall.setVisibility(View.GONE);
         }
     }
 
@@ -255,11 +276,13 @@ public class EditorActivity extends BaseAppCompatActivity {
         }
         // Respond to a click on the "Delete" menu option
         else if (itemId == R.id.action_delete) {
-            String text = getResources().getString(R.string.editor_delete_contact_ko);
-            if (this.deleteContact() == 1)
-                text = getResources().getString(R.string.editor_delete_contact_ok);
-            Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-            toast.show();
+            if (mCurrentContactUri != null) {
+                String text = getResources().getString(R.string.editor_delete_contact_ko);
+                if (this.deleteContact() == 1)
+                    text = getResources().getString(R.string.editor_delete_contact_ok);
+                Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+                toast.show();
+            }
             NavUtils.navigateUpFromSameTask(this);
             return true;
         }
@@ -307,7 +330,13 @@ public class EditorActivity extends BaseAppCompatActivity {
         this.mMailEditText.setFocusable(false);
         this.mBDayEditText.setFocusable(false);
         this.favSwith.setClickable(false);
-        this.fab.setVisibility(View.VISIBLE);
+        if (mPhoneEditText.getText() != null && !mPhoneEditText.getText().toString().isEmpty()) {
+            fabSms.setVisibility(View.VISIBLE);
+            fabCall.setVisibility(View.VISIBLE);
+        } else {
+            fabSms.setVisibility(View.GONE);
+            fabCall.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -325,7 +354,8 @@ public class EditorActivity extends BaseAppCompatActivity {
         this.mBDayEditText.setFocusable(true);
         this.mBDayEditText.setFocusableInTouchMode(true);
         this.favSwith.setClickable(true);
-        this.fab.setVisibility(View.INVISIBLE);
+        this.fabSms.setVisibility(View.INVISIBLE);
+        this.fabCall.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -416,7 +446,10 @@ public class EditorActivity extends BaseAppCompatActivity {
      * Method to delete a Contact.
      */
     private int deleteContact() {
-        return (getContentResolver().delete(mCurrentContactUri, null, null));
+        if (mCurrentContactUri != null)
+            return (getContentResolver().delete(mCurrentContactUri, null, null));
+        else
+            return -1;
     }
 
     @Override
@@ -438,6 +471,18 @@ public class EditorActivity extends BaseAppCompatActivity {
         }
     }
 
+    /**
+     * Check if we have read permission on Call and request if not.
+     */
+    public void getCallPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && checkSelfPermission(Manifest.permission.CALL_PHONE)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
+                    new String[]{Manifest.permission.CALL_PHONE}, REQUEST_CALL_PERMISSION);
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -450,40 +495,78 @@ public class EditorActivity extends BaseAppCompatActivity {
                 intent.putExtra("contactName", contactName);
                 intent.putExtra("contactId", contactId);
                 startActivity(intent);
+            } else if (REQUEST_CALL_PERMISSION == requestCode) {
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mPhoneEditText.getText().toString()));
+                startActivity(intent);
             }
-        } else if (grantResults[0] == PackageManager.PERMISSION_DENIED && REQUEST_SMS_PERMISSION == requestCode) {
-            // setup the alert builder
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.popup_permission_title);
-            builder.setMessage(R.string.popup_permission_message);
+        } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+            if (REQUEST_SMS_PERMISSION == requestCode) {
+                // setup the alert builder
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(R.string.popup_permission_title);
+                builder.setMessage(R.string.popup_sms_permission_message);
 
-            // add the buttons
-            builder.setPositiveButton(R.string.popup_permission_ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    // This code is for get permission from setting.
-                    final Intent i = new Intent();
-                    i.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                    i.addCategory(Intent.CATEGORY_DEFAULT);
-                    i.setData(Uri.parse("package:" + getPackageName()));
-                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                    i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                    startActivity(i);
-                    dialog.cancel();
-                }
-            });
-            builder.setNegativeButton(R.string.popup_permission_ko, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.cancel();
-                    String text = getResources().getString(R.string.no_sms_permission);
-                    Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG);
-                    toast.show();
-                }
-            });
-            // create and show the alert dialog
-            AlertDialog dialog = builder.create();
-            dialog.show();
+                // add the buttons
+                builder.setPositiveButton(R.string.popup_permission_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // This code is for get permission from setting.
+                        final Intent i = new Intent();
+                        i.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        i.addCategory(Intent.CATEGORY_DEFAULT);
+                        i.setData(Uri.parse("package:" + getPackageName()));
+                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                        i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                        startActivity(i);
+                        dialog.cancel();
+                    }
+                });
+                builder.setNegativeButton(R.string.popup_permission_ko, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        String text = getResources().getString(R.string.no_sms_permission);
+                        Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG);
+                        toast.show();
+                    }
+                });
+                // create and show the alert dialog
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            } else if (REQUEST_CALL_PERMISSION == requestCode) {
+                // setup the alert builder
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(R.string.popup_permission_title);
+                builder.setMessage(R.string.popup_call_permission_message);
+
+                // add the buttons
+                builder.setPositiveButton(R.string.popup_permission_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // This code is for get permission from setting.
+                        final Intent i = new Intent();
+                        i.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        i.addCategory(Intent.CATEGORY_DEFAULT);
+                        i.setData(Uri.parse("package:" + getPackageName()));
+                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                        i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                        startActivity(i);
+                        dialog.cancel();
+                    }
+                });
+                builder.setNegativeButton(R.string.popup_permission_ko, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        String text = getResources().getString(R.string.no_call_permission);
+                        Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG);
+                        toast.show();
+                    }
+                });
+                // create and show the alert dialog
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
         }
     }
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -15,6 +16,12 @@ public final class Utils {
 
     public static String formatNumber(String number) {
         return number.replace("+33", "0");
+    }
+
+    public static String toStringDate(Date date) {
+        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        String stringDate = formatter.format(date);
+        return stringDate;
     }
 
     public static String toHoursMinutes(Context context, Long time) {
@@ -56,6 +63,13 @@ public final class Utils {
     public static boolean getSMSPermission(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return (context.checkSelfPermission(Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED);
+        }
+        return false;
+    }
+
+    public static boolean getCallPermission(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return (context.checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED);
         }
         return false;
     }

@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:allowBackup="true"
@@ -14,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -22,22 +23,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".contacts.EditorActivity"
+            android:name=".activities.EditorActivity"
             android:label="@string/editor_activity_title_new_contact"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".activities.MainActivity" >
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".activities.MainActivity" />
         </activity>
         <activity
-            android:name=".messages.MessageActivity"
+            android:name=".activities.MessageActivity"
             android:label="@string/message_activity_title"
-            android:parentActivityName=".contacts.EditorActivity" >
+            android:parentActivityName=".activities.EditorActivity" >
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".contacts.EditorActivity" />
+                android:value=".activities.EditorActivity" />
         </activity>
 
         <provider

@@ -3,7 +3,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".contacts.EditorActivity"
+    tools:context=".activities.EditorActivity"
 
 android:actionMenuTextColor="@android:color/black">
 

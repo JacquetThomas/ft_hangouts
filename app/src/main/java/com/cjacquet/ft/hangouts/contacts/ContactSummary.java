@@ -6,15 +6,17 @@ public class ContactSummary {
     private String name;
     private String lastname;
     private String phoneNumber;
+    private String bDay;
     private boolean fav;
 
-    public ContactSummary(String index, int id, String name, String lastname, String phoneNumber, boolean fav) {
+    public ContactSummary(String index, int id, String name, String lastname, String phoneNumber, boolean fav, String bDay) {
         this.index = index;
         this.id = id;
         this.name = name;
         this.lastname = lastname;
         this.phoneNumber = phoneNumber;
         this.fav = fav;
+        this.bDay = bDay;
     }
 
     public String getIndex() {
@@ -35,6 +37,10 @@ public class ContactSummary {
 
     public String getPhoneNumber() {
         return phoneNumber;
+    }
+
+    public String getBDay() {
+        return bDay;
     }
 
     public boolean isFav() {

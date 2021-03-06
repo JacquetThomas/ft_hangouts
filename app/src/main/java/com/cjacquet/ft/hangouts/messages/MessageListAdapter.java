@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.cjacquet.ft.hangouts.BaseAppCompatActivity.getColorTheme;
+import static com.cjacquet.ft.hangouts.activities.BaseAppCompatActivity.getColorTheme;
 
 public class MessageListAdapter extends Adapter<ViewHolder> {
     private static final int VIEW_TYPE_MESSAGE_SENT = 1;

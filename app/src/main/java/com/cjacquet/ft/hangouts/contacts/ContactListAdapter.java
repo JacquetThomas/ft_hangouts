@@ -12,8 +12,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cjacquet.ft.hangouts.R;
+import com.cjacquet.ft.hangouts.activities.EditorActivity;
+import com.cjacquet.ft.hangouts.utils.Utils;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.CONTENT_URI;
@@ -21,6 +24,7 @@ import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.CON
 public class ContactListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int VIEW_TYPE_INDEX = 0;
     private static final int VIEW_TYPE_CONTACT = 1;
+    private static final String CAKE = "\uD83C\uDF82 ";
 
     private List<ContactSummary> mContactSummaryList;
 
@@ -107,7 +111,10 @@ public class ContactListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
         void bind(ContactSummary contactSummary) {
-            tvFullName.setText(contactSummary.getName() + " " + contactSummary.getLastname());
+            String bDay = "";
+            if (contactSummary.getBDay().equals(Utils.toStringDate(new Date())))
+                bDay += CAKE;
+            tvFullName.setText(bDay + contactSummary.getName() + " " + contactSummary.getLastname());
             tvPhone.setText(contactSummary.getPhoneNumber());
         }
     }
