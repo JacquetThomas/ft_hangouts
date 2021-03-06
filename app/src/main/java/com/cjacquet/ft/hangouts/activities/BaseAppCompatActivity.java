@@ -17,7 +17,7 @@ import com.cjacquet.ft.hangouts.utils.Utils;
 import java.util.Date;
 
 public class BaseAppCompatActivity extends AppCompatActivity {
-    private static final String SP_THEME_COLOR_ID = "colorThemeId";
+    private static final String SP_THEME_COLOR = "colorTheme";
     private static final String SP_PREF_LANG = "prefLang";
     private static final String SP_WLC_MSG = "welcomeMessage";
     private Date pausedDate;
@@ -39,9 +39,9 @@ public class BaseAppCompatActivity extends AppCompatActivity {
             LocaleHelper.setLocale(this, getResources().getConfiguration().locale.getLanguage());
         }
         paused = false;
-        int themeSaved = pref.getInt(SP_THEME_COLOR_ID, -1);
-        if (themeSaved != 0) {
-            colorTheme = Theme.valueOf(themeSaved);
+        String themeSaved = pref.getString(SP_THEME_COLOR, null);
+        if (themeSaved != null) {
+            colorTheme = Theme.themeOf(themeSaved);
         }
         setTheme(colorTheme.getThemeId());
         super.onCreate(savedInstanceState);
@@ -53,7 +53,7 @@ public class BaseAppCompatActivity extends AppCompatActivity {
         if (resId != Theme.DEFAULT.getThemeId()) {
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = pref.edit();
-            editor.putInt(SP_THEME_COLOR_ID, colorTheme.getThemeId());
+            editor.putString(SP_THEME_COLOR, colorTheme.getColorString());
             editor.apply();
         }
         super.setTheme(resId);

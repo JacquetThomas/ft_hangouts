@@ -31,7 +31,7 @@ public class SettingsActivity extends BaseAppCompatActivity {
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
-                if (key.equals("prefLang")) {
+                if (key.equals("prefLang") || key.equals("colorTheme")) {
                     prefs.unregisterOnSharedPreferenceChangeListener(listener);
                     Intent i = getIntent();
                     finish();

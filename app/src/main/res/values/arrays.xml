@@ -19,7 +19,7 @@
 
     <string-array name="array_theme_value">
         <item>orange</item>
-        <item>bleu</item>
-        <item>vert</item>
+        <item>blue</item>
+        <item>green</item>
     </string-array>
 </resources>
