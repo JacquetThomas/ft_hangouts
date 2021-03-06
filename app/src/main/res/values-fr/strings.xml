@@ -53,4 +53,7 @@
     <string name="language_title">Langue</string>
     <string name="theme_title">Thème</string>
     <string name="theme_header">Thème</string>
+    <string name="color_title">Couleur</string>
+    <string name="action_light_theme">Clair</string>
+    <string name="action_dark_theme">Sombre</string>
 </resources>

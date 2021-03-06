@@ -11,15 +11,25 @@
         <item>fr</item>
     </string-array>
 
-    <string-array name="array_theme_options">
+    <string-array name="array_color_options">
         <item>@string/action_orange_theme</item>
         <item>@string/action_blue_theme</item>
         <item>@string/action_green_theme</item>
     </string-array>
 
-    <string-array name="array_theme_value">
+    <string-array name="array_color_value">
         <item>orange</item>
         <item>blue</item>
         <item>green</item>
+    </string-array>
+
+    <string-array name="array_theme_options">
+        <item>@string/action_light_theme</item>
+        <item>@string/action_dark_theme</item>
+    </string-array>
+
+    <string-array name="array_theme_value">
+        <item>light</item>
+        <item>dark</item>
     </string-array>
 </resources>

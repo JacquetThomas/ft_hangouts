@@ -23,9 +23,16 @@
     <PreferenceCategory app:title="@string/theme_header">
         <ListPreference
             app:defaultValue="orange"
+            app:entries="@array/array_color_options"
+            app:entryValues="@array/array_color_value"
+            app:key="colorTheme"
+            app:title="@string/color_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
             app:entries="@array/array_theme_options"
             app:entryValues="@array/array_theme_value"
-            app:key="colorTheme"
+            app:key="colorThemeMode"
             app:title="@string/theme_title"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>

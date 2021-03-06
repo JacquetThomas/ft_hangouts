@@ -17,6 +17,7 @@
     <color name="greenColorPrimary">#8bc34a</color>
     <!-- Darker variant for the status bar and contextual app bars -->
     <color name="greenColorPrimaryDark">#5a9216</color>
+    <color name="greenColorPrimaryLight">#bef67a</color>
     <!-- Accent color for UI controls like checkboxes and text fields -->
     <color name="greenColorAccent">#8bc34a</color>
 
@@ -25,6 +26,7 @@
     <color name="blueColorPrimary">#42a5f5</color>
     <!-- Darker variant for the status bar and contextual app bars -->
     <color name="blueColorPrimaryDark">#0077c2</color>
+    <color name="blueColorPrimaryLight">#80d6ff</color>
     <!-- Accent color for UI controls like checkboxes and text fields -->
     <color name="blueColorAccent">#42a5f5</color>
 
@@ -33,6 +35,7 @@
     <color name="orangeColorPrimary">#F0514B</color>
     <!-- Darker variant for the status bar and contextual app bars -->
     <color name="orangeColorPrimaryDark">#C0403C</color>
+    <color name="orangeColorPrimaryLight">#ff8477</color>
     <!-- Accent color for UI controls like checkboxes and text fields -->
     <color name="orangeColorAccent">#F0514B</color>
 </resources>

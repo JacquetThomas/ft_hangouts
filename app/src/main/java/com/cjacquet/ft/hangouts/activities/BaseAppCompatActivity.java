@@ -18,6 +18,7 @@ import java.util.Date;
 
 public class BaseAppCompatActivity extends AppCompatActivity {
     private static final String SP_THEME_COLOR = "colorTheme";
+    private static final String SP_COLOR_MODE = "colorThemeMode";
     private static final String SP_PREF_LANG = "prefLang";
     private static final String SP_WLC_MSG = "welcomeMessage";
     private Date pausedDate;
@@ -49,9 +50,13 @@ public class BaseAppCompatActivity extends AppCompatActivity {
 
     @Override
     public void setTheme(int resId) {
-        colorTheme = Theme.valueOf(resId);
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        if (pref.getString(SP_COLOR_MODE, null).equals("light") && !Theme.valueOf(resId).getColorString().contains("Dark")) {
+            colorTheme = Theme.valueOf(resId);
+        } else {
+            colorTheme = Theme.oppositeOf(Theme.valueOf(resId));
+        }
         if (resId != Theme.DEFAULT.getThemeId()) {
-            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = pref.edit();
             editor.putString(SP_THEME_COLOR, colorTheme.getColorString());
             editor.apply();

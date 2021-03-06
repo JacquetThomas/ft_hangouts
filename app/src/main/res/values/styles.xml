@@ -37,8 +37,6 @@
         <item name="colorPrimaryDark">@color/orangeColorPrimaryDark</item>
         <item name="colorAccent">@color/orangeColorAccent</item>
         <item name="android:textColor">@color/orangeColorPrimary</item>
-        <item name="android:actionMenuTextColor">@android:color/primary_text_dark_nodisable</item>
-
     </style>
 
     <!-- Style for a category in the editor -->
@@ -49,6 +47,30 @@
         <item name="android:paddingTop">16dp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textAppearance">?android:textAppearanceSmall</item>
+    </style>
+
+    <!-- Base application GREEN theme -->
+    <style name="GreenThemeDark" parent="Theme.AppCompat.DayNight">
+        <item name="colorPrimary">@color/greenColorPrimary</item>
+        <item name="colorPrimaryDark">@color/greenColorPrimaryLight</item>
+        <item name="colorAccent">@color/greenColorAccent</item>
+        <item name="android:textColor">@color/greenColorPrimary</item>
+    </style>
+
+    <!-- Base application BLUE theme -->
+    <style name="BlueThemeDark" parent="Theme.AppCompat.DayNight">
+        <item name="colorPrimary">@color/blueColorPrimary</item>
+        <item name="colorPrimaryDark">@color/blueColorPrimaryLight</item>
+        <item name="colorAccent">@color/blueColorAccent</item>
+        <item name="android:textColor">@color/blueColorPrimary</item>
+    </style>
+
+    <!-- Base application ORANGE theme -->
+    <style name="OrangeThemeDark" parent="Theme.AppCompat.DayNight">
+        <item name="colorPrimary">@color/orangeColorPrimary</item>
+        <item name="colorPrimaryDark">@color/orangeColorPrimaryLight</item>
+        <item name="colorAccent">@color/orangeColorAccent</item>
+        <item name="android:textColor">@color/orangeColorPrimary</item>
     </style>
 
     <!-- Style for an EditText field in the editor -->

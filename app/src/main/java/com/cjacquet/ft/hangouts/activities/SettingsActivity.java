@@ -8,9 +8,11 @@ import android.preference.PreferenceManager;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.core.app.NavUtils;
+import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.cjacquet.ft.hangouts.R;
+import com.cjacquet.ft.hangouts.utils.Theme;
 
 public class SettingsActivity extends BaseAppCompatActivity {
     private SharedPreferences prefs;
@@ -31,7 +33,7 @@ public class SettingsActivity extends BaseAppCompatActivity {
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
-                if (key.equals("prefLang") || key.equals("colorTheme")) {
+                if (key.equals("prefLang") || key.equals("colorTheme") || key.equals("colorThemeMode")) {
                     prefs.unregisterOnSharedPreferenceChangeListener(listener);
                     Intent i = getIntent();
                     finish();
@@ -62,6 +64,21 @@ public class SettingsActivity extends BaseAppCompatActivity {
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
+            Preference pref = findPreference("colorThemeMode");
+            pref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
+                    if ((newValue.toString().equals("light") && pref.getString("colorThemeMode", null).equals("dark"))
+                    || (newValue.toString().equals("dark") && pref.getString("colorThemeMode", null).equals("light"))) {
+                        SharedPreferences.Editor editor = pref.edit();
+                        editor.putString("colorTheme", Theme.oppositeOf(getColorTheme()).getColorString());
+                        editor.putString("colorThemeMode", newValue.toString());
+                        editor.apply();
+                    }
+                    return true;
+                }
+            });
         }
     }
 }

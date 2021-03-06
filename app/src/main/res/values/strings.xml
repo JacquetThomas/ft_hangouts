@@ -68,7 +68,9 @@
     <!-- Sync Preferences -->
     <string name="theme_title">theme</string>
     <string name="theme_header">theme</string>
-
+    <string name="color_title">color</string>
+    <string name="action_light_theme">light</string>
+    <string name="action_dark_theme">dark</string>
 
 
 </resources>
