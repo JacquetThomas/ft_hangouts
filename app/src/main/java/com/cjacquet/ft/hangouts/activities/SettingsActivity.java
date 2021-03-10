@@ -12,7 +12,6 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.cjacquet.ft.hangouts.R;
-import com.cjacquet.ft.hangouts.utils.Theme;
 
 public class SettingsActivity extends BaseAppCompatActivity {
     private SharedPreferences prefs;
@@ -69,13 +68,9 @@ public class SettingsActivity extends BaseAppCompatActivity {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
-                    if ((newValue.toString().equals("light") && pref.getString("colorThemeMode", null).equals("dark"))
-                    || (newValue.toString().equals("dark") && pref.getString("colorThemeMode", null).equals("light"))) {
-                        SharedPreferences.Editor editor = pref.edit();
-                        editor.putString("colorTheme", Theme.oppositeOf(getColorTheme()).getColorString());
-                        editor.putString("colorThemeMode", newValue.toString());
-                        editor.apply();
-                    }
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putString("colorThemeMode", newValue.toString());
+                    editor.apply();
                     return true;
                 }
             });

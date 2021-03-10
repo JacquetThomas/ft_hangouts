@@ -25,7 +25,6 @@
             android:name=".activities.EditorActivity"
             android:label="@string/editor_activity_title_new_contact"
             android:parentActivityName=".activities.MainActivity">
-
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

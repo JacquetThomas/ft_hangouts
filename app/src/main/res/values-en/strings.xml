@@ -51,9 +51,9 @@
     <string name="welcome_message_title">Welcoming message</string>
     <string name="language_header">Language</string>
     <string name="language_title">Language</string>
-    <string name="theme_title">Theme</string>
     <string name="theme_header">Theme</string>
     <string name="color_title">Color</string>
+    <string name="mode_title">Mode</string>
     <string name="action_light_theme">Light</string>
     <string name="action_dark_theme">Dark</string>
 </resources>

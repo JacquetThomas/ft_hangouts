@@ -32,12 +32,17 @@ public class SmsReceiver extends BroadcastReceiver {
                     Log.e(TAG, e.getMessage());
                 }
             }
+            // query content resolver to know if the number is known if yes make a toast with the name
+            // else insert with the content resolver a new contact with messageAddress as name and phone number
+            // context.getContentResolver().query();
+
             Toast.makeText(context, "Message: " + messageAddress, Toast.LENGTH_SHORT).show();
             Intent broadcastReceiver = new Intent();
             broadcastReceiver.setAction("RECEIVED_SMS");
             broadcastReceiver.putExtra("number", messageAddress);
             broadcastReceiver.putExtra("message", messageBody);
             context.sendBroadcast(broadcastReceiver);
+
         }
     }
 }

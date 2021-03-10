@@ -18,9 +18,9 @@
     </string-array>
 
     <string-array name="array_color_value">
-        <item>orange</item>
-        <item>blue</item>
-        <item>green</item>
+        <item>ORANGE</item>
+        <item>BLUE</item>
+        <item>GREEN</item>
     </string-array>
 
     <string-array name="array_theme_options">
@@ -29,7 +29,7 @@
     </string-array>
 
     <string-array name="array_theme_value">
-        <item>light</item>
-        <item>dark</item>
+        <item>LIGHT</item>
+        <item>DARK</item>
     </string-array>
 </resources>

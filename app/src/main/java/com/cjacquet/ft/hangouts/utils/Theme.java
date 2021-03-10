@@ -3,24 +3,26 @@ package com.cjacquet.ft.hangouts.utils;
 import com.cjacquet.ft.hangouts.R;
 
 public enum Theme {
-    DEFAULT(R.style.AppTheme, R.color.colorPrimary, R.color.colorPrimaryDark, "orange"),
-    ORANGE(R.style.OrangeTheme, R.color.orangeColorPrimary, R.color.orangeColorPrimaryDark, "orange"),
-    BLUE(R.style.BlueTheme, R.color.blueColorPrimary, R.color.blueColorPrimaryDark, "blue"),
-    GREEN(R.style.GreenTheme, R.color.greenColorPrimary, R.color.greenColorPrimaryDark, "green"),
-    ORANGE_DARK(R.style.OrangeThemeDark, R.color.orangeColorPrimary, R.color.orangeColorPrimaryLight, "orangeDark"),
-    BLUE_DARK(R.style.BlueThemeDark, R.color.blueColorPrimary, R.color.blueColorPrimaryLight, "blueDark"),
-    GREEN_DARK(R.style.GreenThemeDark, R.color.greenColorPrimary, R.color.greenColorPrimaryLight, "greenDark");
+    DEFAULT(R.style.AppTheme, R.color.colorPrimary, R.color.colorPrimaryDark, Color.ORANGE, Mode.LIGHT),
+    ORANGE(R.style.OrangeTheme, R.color.orangeColorPrimary, R.color.orangeColorPrimaryDark, Color.ORANGE, Mode.LIGHT),
+    BLUE(R.style.BlueTheme, R.color.blueColorPrimary, R.color.blueColorPrimaryDark, Color.BLUE, Mode.LIGHT),
+    GREEN(R.style.GreenTheme, R.color.greenColorPrimary, R.color.greenColorPrimaryDark, Color.GREEN, Mode.LIGHT),
+    ORANGE_DARK(R.style.OrangeThemeDark, R.color.orangeColorPrimary, R.color.orangeColorPrimaryLight, Color.ORANGE, Mode.DARK),
+    BLUE_DARK(R.style.BlueThemeDark, R.color.blueColorPrimary, R.color.blueColorPrimaryLight, Color.BLUE, Mode.DARK),
+    GREEN_DARK(R.style.GreenThemeDark, R.color.greenColorPrimary, R.color.greenColorPrimaryLight, Color.GREEN, Mode.DARK);
 
     private final int themeId;
     private final int primaryColorId;
     private final int primaryDarkColorId;
-    private final String colorString;
+    private final Color color;
+    private final Mode mode;
 
-    Theme(final int value, final int primaryColorId, final int primaryDarkColorId, final String colorString) {
+    Theme(final int value, final int primaryColorId, final int primaryDarkColorId, final Color colorString, final Mode mode) {
         this.themeId = value;
         this.primaryColorId = primaryColorId;
         this.primaryDarkColorId = primaryDarkColorId;
-        this.colorString = colorString;
+        this.color = colorString;
+        this.mode = mode;
     }
 
     public static Theme valueOf(int themeId) {
@@ -33,7 +35,15 @@ public enum Theme {
 
     public static Theme themeOf(String color) {
         for (Theme t : values()) {
-            if (t.getColorString().equals(color))
+            if (t.getColor().equals(color))
+                return t;
+        }
+        return DEFAULT;
+    }
+
+    public static Theme themeOf(Color color, Mode mode) {
+        for (Theme t : values()) {
+            if (t.getColor().equals(color) && t.getMode().equals(mode))
                 return t;
         }
         return DEFAULT;
@@ -59,8 +69,8 @@ public enum Theme {
 
     public int getThemeId() { return this.themeId; }
 
-    public String getColorString() { return this.colorString; }
-
+    public Color getColor() { return this.color; }
+    public Mode getMode() {return this.mode; }
     public int getPrimaryColorId() { return this.primaryColorId; }
     public int getPrimaryDarkColorId() { return this.primaryDarkColorId; }
 }

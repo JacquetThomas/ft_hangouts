@@ -10,7 +10,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.cjacquet.ft.hangouts.R;
 import com.cjacquet.ft.hangouts.receiver.SmsReceiver;
+import com.cjacquet.ft.hangouts.utils.Color;
 import com.cjacquet.ft.hangouts.utils.LocaleHelper;
+import com.cjacquet.ft.hangouts.utils.Mode;
 import com.cjacquet.ft.hangouts.utils.Theme;
 import com.cjacquet.ft.hangouts.utils.Utils;
 
@@ -18,7 +20,7 @@ import java.util.Date;
 
 public class BaseAppCompatActivity extends AppCompatActivity {
     private static final String SP_THEME_COLOR = "colorTheme";
-    private static final String SP_COLOR_MODE = "colorThemeMode";
+    private static final String SP_THEME_MODE = "colorThemeMode";
     private static final String SP_PREF_LANG = "prefLang";
     private static final String SP_WLC_MSG = "welcomeMessage";
     private Date pausedDate;
@@ -40,9 +42,10 @@ public class BaseAppCompatActivity extends AppCompatActivity {
             LocaleHelper.setLocale(this, getResources().getConfiguration().locale.getLanguage());
         }
         paused = false;
-        String themeSaved = pref.getString(SP_THEME_COLOR, null);
-        if (themeSaved != null) {
-            colorTheme = Theme.themeOf(themeSaved);
+        String colorSaved = pref.getString(SP_THEME_COLOR, null);
+        String modeSaved = pref.getString(SP_THEME_MODE, null);
+        if (colorSaved != null && modeSaved != null) {
+            colorTheme = Theme.themeOf(Color.getEnum(colorSaved), Mode.getEnum(modeSaved));
         }
         setTheme(colorTheme.getThemeId());
         super.onCreate(savedInstanceState);
@@ -51,14 +54,15 @@ public class BaseAppCompatActivity extends AppCompatActivity {
     @Override
     public void setTheme(int resId) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-        if (pref.getString(SP_COLOR_MODE, null).equals("light") && !Theme.valueOf(resId).getColorString().contains("Dark")) {
-            colorTheme = Theme.valueOf(resId);
+        String modeString = pref.getString(SP_THEME_MODE, null);
+        if (modeString != null) {
+            colorTheme = Theme.themeOf(Theme.valueOf(resId).getColor(), Mode.getEnum(modeString));
         } else {
-            colorTheme = Theme.oppositeOf(Theme.valueOf(resId));
+            colorTheme = Theme.valueOf(resId);
         }
         if (resId != Theme.DEFAULT.getThemeId()) {
             SharedPreferences.Editor editor = pref.edit();
-            editor.putString(SP_THEME_COLOR, colorTheme.getColorString());
+            editor.putString(SP_THEME_COLOR, colorTheme.getColor().toString());
             editor.apply();
         }
         super.setTheme(resId);
