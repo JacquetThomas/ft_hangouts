@@ -297,7 +297,7 @@ public class EditorActivity extends BaseAppCompatActivity {
         // Respond to a click on the "Up" arrow button in the app bar
         else if (itemId == android.R.id.home) {
             // If we are in edit mode we clear the unsaved fields
-            if (menu.findItem(R.id.action_save).isVisible()) {
+            if (mCurrentContactUri != null && menu.findItem(R.id.action_save).isVisible()) {
                 this.resetUnsavedFields();
                 this.switchMenuToShow();
                 this.switchFieldToShow();
@@ -380,7 +380,7 @@ public class EditorActivity extends BaseAppCompatActivity {
      * Method call to reset field whom change but has got savec.
      */
     private void resetUnsavedFields() {
-        if (!this.mName.equals(this.mNameEditText.getText().toString()))
+        if (this.mName != null && !this.mName.equals(this.mNameEditText.getText().toString()))
             this.mNameEditText.setText("");
         if (this.mLastname != null && !this.mLastname.equals(this.mLastnameEditText.getText().toString()))
             this.mLastnameEditText.setText("");
@@ -498,18 +498,19 @@ public class EditorActivity extends BaseAppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults == null || grantResults.length == 0)
             return ;
-        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            if (REQUEST_SMS_PERMISSION == requestCode) {
-                Intent intent = new Intent(EditorActivity.this, MessageActivity.class);
-                intent.putExtra("phoneNumber", mPhoneEditText.getText().toString());
-                intent.putExtra("contactName", contactName);
-                intent.putExtra("contactId", contactId);
-                startActivity(intent);
-            } else if (REQUEST_CALL_PERMISSION == requestCode) {
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mPhoneEditText.getText().toString()));
-                startActivity(intent);
-            }
-        } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+//        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//            if (REQUEST_SMS_PERMISSION == requestCode) {
+//                Intent intent = new Intent(EditorActivity.this, MessageActivity.class);
+//                intent.putExtra("phoneNumber", mPhoneEditText.getText().toString());
+//                intent.putExtra("contactName", contactName);
+//                intent.putExtra("contactId", contactId);
+//                startActivity(intent);
+//            } else if (REQUEST_CALL_PERMISSION == requestCode) {
+//                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mPhoneEditText.getText().toString()));
+//                startActivity(intent);
+//            }
+//        } else
+            if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
             if (REQUEST_SMS_PERMISSION == requestCode) {
                 // setup the alert builder
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);

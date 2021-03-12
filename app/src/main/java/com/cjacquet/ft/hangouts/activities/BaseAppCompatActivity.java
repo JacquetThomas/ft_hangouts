@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.cjacquet.ft.hangouts.R;
 import com.cjacquet.ft.hangouts.receiver.SmsReceiver;
@@ -72,6 +73,8 @@ public class BaseAppCompatActivity extends AppCompatActivity {
             editor.putString(SP_THEME_COLOR, colorTheme.getColor().toString());
             editor.apply();
         }
+        if (Mode.getEnum(modeString).equals(Mode.DARK))
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         super.setTheme(resId);
     }
 

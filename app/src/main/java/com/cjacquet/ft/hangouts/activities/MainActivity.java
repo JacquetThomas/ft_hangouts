@@ -215,6 +215,7 @@ public class MainActivity extends BaseAppCompatActivity {
         // Inflate the menu options from the res/menu/menu_catalog.xml file.
         // This adds menu items to the app bar.
         getMenuInflater().inflate(R.menu.menu_main_activity, menu);
+
         return true;
     }
 
