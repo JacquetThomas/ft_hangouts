@@ -108,6 +108,7 @@
                 <EditText
                     android:id="@+id/edit_contact_bday"
                     android:hint="@string/hint_contact_bday"
+                    android:focusableInTouchMode="false"
                     android:inputType=""
                     style="@style/EditorFieldStyle"/>
             </LinearLayout>
