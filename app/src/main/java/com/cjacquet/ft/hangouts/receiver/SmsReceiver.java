@@ -1,13 +1,25 @@
 package com.cjacquet.ft.hangouts.receiver;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Telephony;
 import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.cjacquet.ft.hangouts.contacts.ContactSummary;
+import com.cjacquet.ft.hangouts.utils.Utils;
+
+import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.COLUMN_CONTACT_LASTNAME;
+import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.COLUMN_CONTACT_NAME;
+import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.COLUMN_CONTACT_PHONE;
+import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.CONTENT_URI;
+import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry._ID;
 
 public class SmsReceiver extends BroadcastReceiver {
     private static final String TAG = "SmsReceiver";
@@ -32,17 +44,51 @@ public class SmsReceiver extends BroadcastReceiver {
                     Log.e(TAG, e.getMessage());
                 }
             }
-            // query content resolver to know if the number is known if yes make a toast with the name
-            // else insert with the content resolver a new contact with messageAddress as name and phone number
-            // context.getContentResolver().query();
 
-            Toast.makeText(context, "Message: " + messageAddress, Toast.LENGTH_SHORT).show();
-            Intent broadcastReceiver = new Intent();
-            broadcastReceiver.setAction("RECEIVED_SMS");
-            broadcastReceiver.putExtra("number", messageAddress);
-            broadcastReceiver.putExtra("message", messageBody);
-            context.sendBroadcast(broadcastReceiver);
+            String[] projection = {_ID, COLUMN_CONTACT_NAME, COLUMN_CONTACT_LASTNAME, COLUMN_CONTACT_PHONE};
+            Cursor c = context.getContentResolver().query(CONTENT_URI, projection, null, null,  null);
 
+            ContactSummary contact;
+            if ((contact = this.contactExists(c, messageAddress)) != null) {
+                String name = contact.getName();
+                String lastname = contact.getLastname();
+                Toast.makeText(context, "Message: " + name + " " + lastname, Toast.LENGTH_SHORT).show();
+                Intent broadcastReceiver = new Intent();
+                broadcastReceiver.setAction("RECEIVED_SMS");
+                broadcastReceiver.putExtra("number", messageAddress);
+                broadcastReceiver.putExtra("message", messageBody);
+                context.sendBroadcast(broadcastReceiver);
+            } else {
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(COLUMN_CONTACT_NAME, messageAddress);
+                contentValues.put(COLUMN_CONTACT_PHONE, messageAddress);
+                Uri res = context.getContentResolver().insert(CONTENT_URI, contentValues);
+
+                Toast.makeText(context, "Message: " + messageAddress, Toast.LENGTH_SHORT).show();
+
+                Intent broadcastReceiver = new Intent();
+                broadcastReceiver.setAction("UNKNOWN_SMS_RECEIVED");
+                broadcastReceiver.putExtra("uri", res);
+                context.sendBroadcast(broadcastReceiver);
+            }
         }
+    }
+    
+    private ContactSummary contactExists(Cursor c, String number) {
+        String searchedNumber = Utils.formatNumberSearch(number);
+        if (c.moveToFirst()) {
+            while(!c.isAfterLast()) {
+                int id = c.getInt(c.getColumnIndex(_ID));
+                String name = c.getString(c.getColumnIndex(COLUMN_CONTACT_NAME));
+                String lastname = c.getString(c.getColumnIndex(COLUMN_CONTACT_LASTNAME));
+                String phoneNumber = c.getString(c.getColumnIndex(COLUMN_CONTACT_PHONE));
+
+                if (Utils.formatNumberSearch(phoneNumber).equals(searchedNumber)) {
+                    return new ContactSummary(null, id, name, lastname, phoneNumber, false, null);
+                }
+                c.moveToNext();
+            }
+        }
+        return null;
     }
 }

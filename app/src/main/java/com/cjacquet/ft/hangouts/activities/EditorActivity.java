@@ -382,13 +382,13 @@ public class EditorActivity extends BaseAppCompatActivity {
     private void resetUnsavedFields() {
         if (!this.mName.equals(this.mNameEditText.getText().toString()))
             this.mNameEditText.setText("");
-        if (!this.mLastname.equals(this.mLastnameEditText.getText().toString()))
+        if (this.mLastname != null && !this.mLastname.equals(this.mLastnameEditText.getText().toString()))
             this.mLastnameEditText.setText("");
-        if (!this.mPhone.equals(this.mPhoneEditText.getText().toString()))
+        if (this.mPhone != null && !this.mPhone.equals(this.mPhoneEditText.getText().toString()))
             this.mPhoneEditText.setText("");
-        if (!this.mMail.equals(this.mMailEditText.getText().toString()))
+        if (this.mMail != null && !this.mMail.equals(this.mMailEditText.getText().toString()))
             this.mMailEditText.setText("");
-        if (!this.mBDay.equals(this.mBDayEditText.getText().toString()))
+        if (this.mBDay != null && !this.mBDay.equals(this.mBDayEditText.getText().toString()))
             this.mBDayEditText.setText("");
         if (this.favContact != this.favSwith.isChecked())
             this.favSwith.setChecked(favContact);

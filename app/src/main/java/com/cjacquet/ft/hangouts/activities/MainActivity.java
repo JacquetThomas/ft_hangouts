@@ -1,12 +1,17 @@
 package com.cjacquet.ft.hangouts.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -63,6 +68,17 @@ public class MainActivity extends BaseAppCompatActivity {
     private RecyclerView.SmoothScroller smoothScroller;
     private LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 
+    private IntentFilter intentFilter;
+    private BroadcastReceiver intentReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equalsIgnoreCase("UNKNOWN_SMS_RECEIVED")) {
+                Uri uri = Uri.parse(intent.getExtras().get("uri").toString());
+                getContentResolver().notifyChange(uri, null);
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +90,12 @@ public class MainActivity extends BaseAppCompatActivity {
             LocaleHelper.setLocale(this, getResources().getConfiguration().locale.getLanguage());
         }
         setContentView(R.layout.activity_main_list);
+
+        /* --------------- Register the receiver --------------- */
+        intentFilter = new IntentFilter();
+        intentFilter.addAction("UNKNOWN_SMS_RECEIVED");
+        registerReceiver(intentReceiver, intentFilter);
+        /* ----------------------------------------------------- */
 
         // Setup FAB to open EditorActivity
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -87,8 +109,10 @@ public class MainActivity extends BaseAppCompatActivity {
 
         // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
         View emptyView = findViewById(R.id.empty_view);
-        emptyView.setVisibility(View.GONE);
-        //contactListView.setEmptyView(emptyView);
+        if (contactSummaries.isEmpty())
+            emptyView.setVisibility(View.VISIBLE);
+        else
+            emptyView.setVisibility(View.GONE);
 
         // Find the ListView which will be populated with the contact data
         contactRecyclerView = findViewById(R.id.listview_contact);
@@ -148,11 +172,15 @@ public class MainActivity extends BaseAppCompatActivity {
                 displayIndex();
                 mContactAdapter.updateData(contactSummaries);
                 mContactAdapter.notifyDataSetChanged();
+                View emptyView = findViewById(R.id.empty_view);
+                if (contactSummaries.isEmpty())
+                    emptyView.setVisibility(View.VISIBLE);
+                else
+                    emptyView.setVisibility(View.GONE);
             }
 
             @Override
             public void onLoaderReset(androidx.loader.content.Loader<Cursor> loader) {
-
                 loader.reset();
             }
         };
@@ -170,15 +198,12 @@ public class MainActivity extends BaseAppCompatActivity {
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     TextView tv = v.findViewById(R.id.side_index_item);
                     Integer index = mapIndex.get(tv.getText());
                     if (index != null) {
                         smoothScroller.setTargetPosition(index);
                         layoutManager.startSmoothScroll(smoothScroller);
-
                     }
-
                 }
             });
             textView.setClickable(true);
@@ -230,6 +255,19 @@ public class MainActivity extends BaseAppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        intentFilter = new IntentFilter();
+        intentFilter.addAction("UNKNOWN_RECEIVED_SMS");
+        registerReceiver(intentReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try {
+            unregisterReceiver(intentReceiver);
+        } catch (Exception e) {
+            Log.e(this.getPackageName(), e.getMessage());
+        }
     }
 
     public void showPopupWindow() {

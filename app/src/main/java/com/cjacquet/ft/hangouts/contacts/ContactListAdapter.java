@@ -99,6 +99,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public void updateData(List<ContactSummary> contacts) {
         mContactSummaryList = contacts;
+        mContactSummaryList.removeAll(Collections.singleton(null));
     }
 
     private static class DataViewHolder extends RecyclerView.ViewHolder {
@@ -114,9 +115,13 @@ public class ContactListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         void bind(ContactSummary contactSummary) {
             String bDay = "";
-            if (contactSummary.getBDay().equals(Utils.toStringDate(new Date())))
+            String lastname = contactSummary.getLastname();
+            String fullname = contactSummary.getName();
+            if (contactSummary.getBDay() != null && contactSummary.getBDay().equals(Utils.toStringDate(new Date())))
                 bDay += CAKE;
-            tvFullName.setText(bDay + contactSummary.getName() + " " + contactSummary.getLastname());
+            if (lastname != null && !lastname.isEmpty())
+                fullname += " " + lastname;
+            tvFullName.setText(bDay + fullname);
             tvPhone.setText(contactSummary.getPhoneNumber());
         }
     }

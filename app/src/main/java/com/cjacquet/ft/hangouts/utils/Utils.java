@@ -18,6 +18,10 @@ public final class Utils {
         return number.replace("+33", "0");
     }
 
+    public static String formatNumberSearch(String number) {
+        return number.replaceAll("^0", "").replace("+33", "");
+    }
+
     public static String toStringDate(Date date) {
         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         String stringDate = formatter.format(date);

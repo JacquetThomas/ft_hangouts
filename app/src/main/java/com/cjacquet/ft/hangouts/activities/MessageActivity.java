@@ -41,7 +41,7 @@ public class MessageActivity extends BaseAppCompatActivity {
     private String otherNumber;
     private List<Message> messages;
     private EditText messageToSend;
-    IntentFilter intentFilter;
+    private IntentFilter intentFilter;
 
     private BroadcastReceiver intentReceiver = new BroadcastReceiver() {
         @Override
