@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.cjacquet.ft.hangouts.activities.BaseAppCompatActivity.getColorTheme;
-
 public class MessageListAdapter extends Adapter<ViewHolder> {
     private static final int VIEW_TYPE_MESSAGE_SENT = 1;
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
@@ -117,7 +115,7 @@ public class MessageListAdapter extends Adapter<ViewHolder> {
             timeText.setText(Utils.toHoursMinutes(itemView.getContext(), message.getTime()));
             dateText.setText(Utils.toDay(itemView.getContext(), message.getTime()));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                cardview.setCardBackgroundColor(itemView.getContext().getResources().getColor(getColorTheme().getPrimaryColorId(), itemView.getContext().getTheme()));
+                cardview.setCardBackgroundColor(itemView.getContext().getResources().getColor(Utils.getTheme(itemView.getContext()).getPrimaryColorId(), itemView.getContext().getTheme()));
             }
         }
     }

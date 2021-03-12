@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.util.Log;
@@ -70,9 +69,7 @@ public class MessageActivity extends BaseAppCompatActivity {
         otherNumber = this.getIntent().getExtras().get("phoneNumber").toString();
         messages = new ArrayList<>();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            ((Button)findViewById(R.id.button_gchat_send)).setTextColor(getResources().getColor(getColorTheme().getPrimaryColorId(), super.getTheme()));
-        }
+        ((Button)findViewById(R.id.button_gchat_send)).setTextColor(getResources().getColor(getColorTheme().getPrimaryColorId(), super.getTheme()));
 
         /* --------------- Register the receiver --------------- */
         intentFilter = new IntentFilter();

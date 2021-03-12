@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.telephony.PhoneNumberFormattingTextWatcher;
@@ -42,6 +41,9 @@ public class EditorActivity extends BaseAppCompatActivity {
     private static final int REQUEST_SMS_PERMISSION = 3004;
     private static final int REQUEST_CALL_PERMISSION = 3005;
     private String contactId;
+    private String contactName;
+
+    private boolean requestPermission;
 
     private EditText mNameEditText;
     private String mName;
@@ -59,15 +61,13 @@ public class EditorActivity extends BaseAppCompatActivity {
     private EditText mMailEditText;
     private String mMail;
 
-    private Switch favSwith;
+    private Switch favSwitch;
     private boolean favContact;
 
     private FloatingActionButton fabSms;
     private FloatingActionButton fabCall;
 
     private Menu menu;
-
-    private String contactName;
 
     private static final int EXISTING_CONTACT_LOADER = 0;
 
@@ -88,7 +88,7 @@ public class EditorActivity extends BaseAppCompatActivity {
         mPhoneEditText = findViewById(R.id.edit_contact_phone);
         mBDayEditText = findViewById(R.id.edit_contact_bday);
         mMailEditText = findViewById(R.id.edit_contact_mail);
-        favSwith = findViewById(R.id.favContact);
+        favSwitch = findViewById(R.id.favContact);
         fabSms = findViewById(R.id.fab_sms);
         fabCall = findViewById(R.id.fab_call);
 
@@ -186,7 +186,7 @@ public class EditorActivity extends BaseAppCompatActivity {
                         mPhoneEditText.setText(mPhone);
                         mBDayEditText.setText(mBDay);
                         mMailEditText.setText(mMail);
-                        favSwith.setChecked(favContact);
+                        favSwitch.setChecked(favContact);
 
                         switchFieldToShow();
                         contactName = mNameEditText.getText().toString() + " " + mLastnameEditText.getText().toString();
@@ -329,7 +329,7 @@ public class EditorActivity extends BaseAppCompatActivity {
         this.mPhoneEditText.setFocusable(false);
         this.mMailEditText.setFocusable(false);
         this.mBDayEditText.setFocusable(false);
-        this.favSwith.setClickable(false);
+        this.favSwitch.setClickable(false);
         if (mPhoneEditText.getText() != null && !mPhoneEditText.getText().toString().isEmpty()) {
             fabSms.setVisibility(View.VISIBLE);
             fabCall.setVisibility(View.VISIBLE);
@@ -353,7 +353,7 @@ public class EditorActivity extends BaseAppCompatActivity {
         this.mMailEditText.setFocusableInTouchMode(true);
         this.mBDayEditText.setFocusable(true);
         this.mBDayEditText.setFocusableInTouchMode(true);
-        this.favSwith.setClickable(true);
+        this.favSwitch.setClickable(true);
         this.fabSms.setVisibility(View.INVISIBLE);
         this.fabCall.setVisibility(View.INVISIBLE);
     }
@@ -390,8 +390,8 @@ public class EditorActivity extends BaseAppCompatActivity {
             this.mMailEditText.setText("");
         if (this.mBDay != null && !this.mBDay.equals(this.mBDayEditText.getText().toString()))
             this.mBDayEditText.setText("");
-        if (this.favContact != this.favSwith.isChecked())
-            this.favSwith.setChecked(favContact);
+        if (this.favContact != this.favSwitch.isChecked())
+            this.favSwitch.setChecked(favContact);
     }
 
     /**
@@ -406,7 +406,7 @@ public class EditorActivity extends BaseAppCompatActivity {
         String phone = mPhoneEditText.getText().toString().trim();
         String mail = mMailEditText.getText().toString().trim();
         String bday = mBDayEditText.getText().toString().trim();
-        boolean fav = favSwith.isChecked();
+        boolean fav = favSwitch.isChecked();
 
         if (mCurrentContactUri == null && TextUtils.isEmpty(name)) {
             Toast.makeText(this, getResources().getString(R.string.editor_error_contact_minimum_info), Toast.LENGTH_SHORT).show();
@@ -457,15 +457,24 @@ public class EditorActivity extends BaseAppCompatActivity {
         NavUtils.navigateUpFromSameTask(this);
     }
 
+    @Override
+    protected void onResume() {
+        if (this.requestPermission) {
+            this.paused = false;
+            this.requestPermission = false;
+        }
+        super.onResume();
+    }
+
     /* --------------------------- Handle permission -------------------------------- */
 
     /**
      * Check if we have read permission on SMS and request if not.
      */
     public void getSMSPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && checkSelfPermission(Manifest.permission.READ_SMS)
+        if (checkSelfPermission(Manifest.permission.READ_SMS)
                 != PackageManager.PERMISSION_GRANTED) {
+            this.requestPermission = true;
             requestPermissions(
                     new String[]{Manifest.permission.READ_SMS}, REQUEST_SMS_PERMISSION);
         }
@@ -475,9 +484,9 @@ public class EditorActivity extends BaseAppCompatActivity {
      * Check if we have read permission on Call and request if not.
      */
     public void getCallPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && checkSelfPermission(Manifest.permission.CALL_PHONE)
+        if (checkSelfPermission(Manifest.permission.CALL_PHONE)
                 != PackageManager.PERMISSION_GRANTED) {
+            this.requestPermission = true;
             requestPermissions(
                     new String[]{Manifest.permission.CALL_PHONE}, REQUEST_CALL_PERMISSION);
         }

@@ -1,32 +1,45 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
-    <PreferenceCategory app:title="@string/general_header">
-
+    <PreferenceCategory app:title="@string/general_header"
+        app:iconSpaceReserved="false">
         <EditTextPreference
             app:key="welcomeMessage"
             app:title="@string/welcome_message_title"
+            app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
 
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:entries="@array/array_unknown_contact_options"
+            app:entryValues="@array/array_unknown_contact_value"
+            app:key="unknownContact"
+            app:title="@string/unknown_contact_title"
+            app:iconSpaceReserved="false"
+            app:summary="@string/unknown_contact_summary" />
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/language_header">
+    <PreferenceCategory app:title="@string/language_header"
+        app:iconSpaceReserved="false">
         <ListPreference
             app:entries="@array/array_language_options"
             app:entryValues="@array/language_value"
             app:key="prefLang"
             app:title="@string/language_title"
+            app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
-
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/theme_header">
+    <PreferenceCategory app:title="@string/theme_header"
+        app:iconSpaceReserved="false">
         <ListPreference
             app:defaultValue="orange"
             app:entries="@array/array_color_options"
             app:entryValues="@array/array_color_value"
             app:key="colorTheme"
             app:title="@string/color_title"
+            app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
@@ -34,7 +47,7 @@
             app:entryValues="@array/array_theme_value"
             app:key="colorThemeMode"
             app:title="@string/mode_title"
+            app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
-
 </PreferenceScreen>

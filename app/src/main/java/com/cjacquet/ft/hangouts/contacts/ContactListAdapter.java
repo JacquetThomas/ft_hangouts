@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import static com.cjacquet.ft.hangouts.activities.BaseAppCompatActivity.getColorTheme;
 import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.CONTENT_URI;
 
 public class ContactListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -103,13 +102,13 @@ public class ContactListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     private static class DataViewHolder extends RecyclerView.ViewHolder {
-        public TextView tvFullName;
-        public TextView tvPhone;
+        private TextView tvFullName;
+        private TextView tvPhone;
 
         public DataViewHolder(@NonNull View itemView) {
             super(itemView);
             tvFullName = itemView.findViewById(R.id.name);
-            tvFullName.setTextColor(itemView.getContext().getResources().getColor(getColorTheme().getPrimaryDarkColorId()));
+            tvFullName.setTextColor(itemView.getContext().getResources().getColor(Utils.getTheme(itemView.getContext()).getPrimaryDarkColorId(), itemView.getContext().getTheme()));
             tvPhone = itemView.findViewById(R.id.summary);
         }
 
@@ -127,13 +126,12 @@ public class ContactListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     private static class IndexViewHolder extends RecyclerView.ViewHolder {
-
-        public TextView tvIndex;
+        private TextView tvIndex;
 
         public IndexViewHolder(@NonNull View itemView) {
             super(itemView);
             tvIndex = itemView.findViewById(R.id.tvIndex);
-            tvIndex.setTextColor(itemView.getContext().getResources().getColor(getColorTheme().getPrimaryColorId()));
+            tvIndex.setTextColor(itemView.getContext().getResources().getColor(Utils.getTheme(itemView.getContext()).getPrimaryColorId(), itemView.getContext().getTheme()));
         }
 
         void bind(ContactSummary contactSummary) {

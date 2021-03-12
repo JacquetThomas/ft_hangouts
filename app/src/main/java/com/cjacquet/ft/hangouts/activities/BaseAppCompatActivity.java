@@ -25,8 +25,8 @@ import static com.cjacquet.ft.hangouts.utils.SharedPreferencesConstant.SP_WLC_MS
 
 public class BaseAppCompatActivity extends AppCompatActivity {
     private Date pausedDate;
-    private boolean paused;
-    private static Theme colorTheme = Theme.ORANGE;
+    protected boolean paused;
+    private Theme colorTheme = Theme.ORANGE;
     private SmsReceiver receiver = new SmsReceiver();
 
     public static String getSpPrefLang() {
@@ -36,19 +36,25 @@ public class BaseAppCompatActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+
         String lang = pref.getString(SP_PREF_LANG, null);
-        if (lang != null) {
-            LocaleHelper.setLocale(this, lang);
-        } else {
-            LocaleHelper.setLocale(this, getResources().getConfiguration().locale.getLanguage());
+        if (lang == null) {
+            lang = getResources().getConfiguration().locale.getLanguage();
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putString(SP_PREF_LANG, lang);
+            editor.apply();
         }
+        LocaleHelper.setLocale(this, lang);
+
         paused = false;
+
         String colorSaved = pref.getString(SP_THEME_COLOR, null);
         String modeSaved = pref.getString(SP_THEME_MODE, null);
         if (colorSaved != null && modeSaved != null) {
             colorTheme = Theme.themeOf(Color.getEnum(colorSaved), Mode.getEnum(modeSaved));
         }
         setTheme(colorTheme.getThemeId());
+
         super.onCreate(savedInstanceState);
     }
 
@@ -69,7 +75,7 @@ public class BaseAppCompatActivity extends AppCompatActivity {
         super.setTheme(resId);
     }
 
-    public static Theme getColorTheme() {
+    public Theme getColorTheme() {
         return colorTheme;
     }
 
@@ -86,7 +92,10 @@ public class BaseAppCompatActivity extends AppCompatActivity {
         if (paused) {
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
             String welcome = pref.getString(SP_WLC_MSG, null);
-            String text = welcome + "\n" + getResources().getString(R.string.base_activity_on_resume_text) + Utils.toHoursMinutes(getApplicationContext(), pausedDate.getTime());
+            String text = "";
+            if (welcome != null)
+                text += welcome + "\n";
+            text += getResources().getString(R.string.base_activity_on_resume_text) + Utils.toHoursMinutes(getApplicationContext(), pausedDate.getTime());
             Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
             toast.show();
         }

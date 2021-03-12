@@ -4,9 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Telephony;
 import android.telephony.SmsMessage;
 import android.util.Log;
@@ -21,11 +23,14 @@ import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.COL
 import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.COLUMN_CONTACT_PHONE;
 import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.CONTENT_URI;
 import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry._ID;
+import static com.cjacquet.ft.hangouts.utils.SharedPreferencesConstant.SP_UNKNOWN_CONTACT;
 
 public class SmsReceiver extends BroadcastReceiver {
     private static final String TAG = "SmsReceiver";
     @Override
     public void onReceive(Context context, Intent intent) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        Boolean unknownContactString = pref.getBoolean(SP_UNKNOWN_CONTACT, false);
 
         if(Telephony.Sms.Intents.SMS_RECEIVED_ACTION.equals(intent.getAction())){
             Bundle bundle = intent.getExtras();
@@ -59,7 +64,7 @@ public class SmsReceiver extends BroadcastReceiver {
                 broadcastReceiver.putExtra("number", messageAddress);
                 broadcastReceiver.putExtra("message", messageBody);
                 context.sendBroadcast(broadcastReceiver);
-            } else {
+            } else if (unknownContactString) {
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(COLUMN_CONTACT_NAME, messageAddress);
                 contentValues.put(COLUMN_CONTACT_PHONE, messageAddress);

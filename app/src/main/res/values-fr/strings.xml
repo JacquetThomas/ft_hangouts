@@ -25,7 +25,7 @@
     <string name="validate_choice">Valider</string>
     <string name="message_activity_title">Contacts</string>
     <string name="action_edit">Editer</string>
-    <string name="base_activity_on_resume_text">"Dernière connexion à: "</string>
+    <string name="base_activity_on_resume_text">Dernière connexion à: </string>
     <string name="action_green_theme">Thème vert</string>
     <string name="action_blue_theme">Thème bleu</string>
     <string name="action_orange_theme">Thème orange</string>
@@ -56,4 +56,10 @@
     <string name="mode_title">Mode</string>
     <string name="action_light_theme">Clair</string>
     <string name="action_dark_theme">Sombre</string>
+    <string name="no">Non</string>
+    <string name="yes">Oui</string>
+    <string name="unknown_contact_summary">Sauvegarde tout les numéros de SMS reçu inconnu. La permission SMS doit être autorisée pour cette option.</string>
+    <string name="unknown_contact_title">Reception SMS de numéros inconnus</string>
+    <string name="popup_sms_permission_message_main_activity">Nous avons besoin de votre permission pour afficher et recevoir vos SMS.  Sans cela vous ne pourrait pas voir vos SMS ou recevoir de notification quand un SMS arrive. Vous pouvez nous l\'autoriser dans les paramètres.</string>
+    <string name="no_sms_permission_main_activity">Permission SMS refusée.</string>
 </resources>

@@ -2,13 +2,17 @@ package com.cjacquet.ft.hangouts.utils;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.os.Build;
+import android.preference.PreferenceManager;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import static com.cjacquet.ft.hangouts.utils.SharedPreferencesConstant.SP_THEME_COLOR;
+import static com.cjacquet.ft.hangouts.utils.SharedPreferencesConstant.SP_THEME_MODE;
 
 public final class Utils {
 
@@ -22,10 +26,22 @@ public final class Utils {
         return number.replaceAll("^0", "").replace("+33", "");
     }
 
+    public static Theme getTheme(Context context) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        String modeString = pref.getString(SP_THEME_MODE, null);
+        String colorString = pref.getString(SP_THEME_COLOR, null);
+        if (modeString != null && colorString != null) {
+            return Theme.themeOf(Color.getEnum(colorString), Mode.getEnum(modeString));
+        } else if (colorString != null) {
+            return Theme.themeOf(Color.getEnum(colorString), Mode.LIGHT);
+        } else {
+            return Theme.DEFAULT;
+        }
+    }
+
     public static String toStringDate(Date date) {
         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        String stringDate = formatter.format(date);
-        return stringDate;
+        return formatter.format(date);
     }
 
     public static String toHoursMinutes(Context context, Long time) {
@@ -65,16 +81,10 @@ public final class Utils {
     }
 
     public static boolean getSMSPermission(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return (context.checkSelfPermission(Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED);
-        }
-        return false;
+        return (context.checkSelfPermission(Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED);
     }
 
     public static boolean getCallPermission(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return (context.checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED);
-        }
-        return false;
+        return (context.checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED);
     }
 }

@@ -32,4 +32,14 @@
         <item>LIGHT</item>
         <item>DARK</item>
     </string-array>
+
+    <string-array name="array_unknown_contact_options">
+        <item>@string/yes</item>
+        <item>@string/no</item>
+    </string-array>
+
+    <string-array name="array_unknown_contact_value">
+        <item>true</item>
+        <item>false</item>
+    </string-array>
 </resources>

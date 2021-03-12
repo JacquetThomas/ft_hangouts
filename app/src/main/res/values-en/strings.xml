@@ -25,7 +25,7 @@
     <string name="validate_choice">Validate</string>
     <string name="message_activity_title">Contacts</string>
     <string name="action_edit">Edit</string>
-    <string name="base_activity_on_resume_text">"Last connection at: "</string>
+    <string name="base_activity_on_resume_text">Last connection at: </string>
     <string name="action_orange_theme">Orange theme</string>
     <string name="action_blue_theme">Blue theme</string>
     <string name="action_green_theme">Green theme</string>
@@ -56,4 +56,10 @@
     <string name="mode_title">Mode</string>
     <string name="action_light_theme">Light</string>
     <string name="action_dark_theme">Dark</string>
+    <string name="unknown_contact_title">Received unknown sms contact</string>
+    <string name="unknown_contact_summary">Save as contact all unknown number sending sms. SMS permission must be granted to work.</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="no_sms_permission_main_activity">SMS permission not granted.</string>
+    <string name="popup_sms_permission_message_main_activity">We need permission to access your SMS in order to display and receive them. You can allow us in settings. If we can\'t get SMS permission you won\'t access to sending messages or get notification when a SMS arrive.</string>
 </resources>

@@ -61,6 +61,7 @@ import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry._ID
 public class MainActivity extends BaseAppCompatActivity {
 
     private static final int CONTACT_LOADER = 0;
+    private static final int REQUEST_SMS_PERMISSION = 3004;
 
     private List<ContactSummary> contactSummaries = new ArrayList<>();
     private ContactListAdapter mContactAdapter;
@@ -252,10 +253,10 @@ public class MainActivity extends BaseAppCompatActivity {
 
     @Override
     protected void onResume() {
-        super.onResume();
         intentFilter = new IntentFilter();
         intentFilter.addAction(CustomIntent.UNKNOWN_SMS_RECEIVED);
         registerReceiver(intentReceiver, intentFilter);
+        super.onResume();
     }
 
     @Override
@@ -269,7 +270,6 @@ public class MainActivity extends BaseAppCompatActivity {
     }
 
     public void showPopupWindow() {
-
         // inflate the layout of the popup window
         LayoutInflater inflater = (LayoutInflater)
                 getSystemService(LAYOUT_INFLATER_SERVICE);

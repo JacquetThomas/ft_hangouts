@@ -2,75 +2,79 @@
 <resources>
     <string name="app_name">Contacts</string>
     <string name="no_sms_permission">SMS permission not granted, you can\'t see messages.</string>
-    <string name="no_call_permission">call permission not granted, you can\'t call your contact from here.</string>
+    <string name="no_call_permission">Call permission not granted, you can\'t call your contact from here.</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="no_sms_permission_main_activity">SMS permission not granted</string>
+    <string name="popup_sms_permission_message_main_activity">We need permission to access your SMS in order to display and receive them. You can allow us in settings. If we can\'t get SMS permission you won\'t access to sending messages or get notification when a SMS arrive.</string>
 
     <!-- BaseActivity strings -->
-    <string name="base_activity_on_resume_text">"last connection at: "</string>
+    <string name="base_activity_on_resume_text">Last connection at: </string>
 
     <!-- MainActivity strings -->
     <string name="empty_view_title_text">it\'s a bit lonely here…</string>
-    <string name="empty_view_subtitle_text">get started by adding a contact with the "+" button down there!</string>
-    <string name="language_change">change language</string>
-    <string name="language_fr">french</string>
-    <string name="language_en">english</string>
-    <string name="cancel_choice">cancel</string>
-    <string name="validate_choice">validate</string>
+    <string name="empty_view_subtitle_text">Get started by adding a contact with the "+" button down there!</string>
+    <string name="language_change">Change language</string>
+    <string name="language_fr">French</string>
+    <string name="language_en">English</string>
+    <string name="cancel_choice">Cancel</string>
+    <string name="validate_choice">Validate</string>
     <string name="action_delete_all_entries">Delete All Contacts</string>
-    <string name="action_orange_theme">change to orange theme</string>
-    <string name="action_blue_theme">change to blue theme</string>
-    <string name="action_green_theme">change to green theme</string>
+    <string name="action_orange_theme">Change to orange theme</string>
+    <string name="action_blue_theme">Change to blue theme</string>
+    <string name="action_green_theme">Change to green theme</string>
 
     <!-- EditorActivity strings -->
     <string name="editor_activity_title_new_contact">Add a Contact</string>
     <string name="editor_activity_title_edit_contact">Edit Contact</string>
-    <string name="category_overview">overview</string>
-    <string name="category_favContactSwitch">favorite contact</string>
-    <string name="hint_contact_name">name</string>
-    <string name="hint_contact_lastname">lastname</string>
-    <string name="category_contacts">contacts</string>
-    <string name="hint_contact_phone">phone number</string>
-    <string name="hint_contact_mail">email</string>
-    <string name="category_infos">birthday</string>
-    <string name="hint_contact_bday">birthday date</string>
-    <string name="action_save">save</string>
-    <string name="action_edit">edit</string>
-    <string name="action_delete">delete</string>
-    <string name="editor_insert_contact_success">contact saved!</string>
-    <string name="editor_insert_contact_failed">error with saving contact</string>
-    <string name="editor_error_contact_minimum_info">error: a contact need at least a name</string>
-    <string name="editor_delete_contact_ko">error, cannot delete contact.</string>
-    <string name="editor_delete_contact_ok">contact successfully deleted.</string>
-    <string name="popup_permission_title">required permission</string>
-    <string name="popup_sms_permission_message">we need permission to access and send sms, please activate in settings or this window will stay blank</string>
-    <string name="popup_call_permission_message">we need permission to call contact, please activate in settings or you\'ll can\'t call from here</string>
-    <string name="popup_permission_ok">ok</string>
-    <string name="popup_permission_ko">cancel</string>
+    <string name="category_overview">Overview</string>
+    <string name="category_favContactSwitch">Favorite contact</string>
+    <string name="hint_contact_name">Name</string>
+    <string name="hint_contact_lastname">Lastname</string>
+    <string name="category_contacts">Contacts</string>
+    <string name="hint_contact_phone">Phone number</string>
+    <string name="hint_contact_mail">Email</string>
+    <string name="category_infos">Birthday</string>
+    <string name="hint_contact_bday">Birthday date</string>
+    <string name="action_save">Save</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_delete">Delete</string>
+    <string name="editor_insert_contact_success">Contact saved!</string>
+    <string name="editor_insert_contact_failed">Error with saving contact</string>
+    <string name="editor_error_contact_minimum_info">Error: a contact need at least a name</string>
+    <string name="editor_delete_contact_ko">Error, cannot delete contact.</string>
+    <string name="editor_delete_contact_ok">Contact successfully deleted.</string>
+    <string name="popup_permission_title">Required permission</string>
+    <string name="popup_sms_permission_message">We need permission to access and send sms, please activate in settings or this window will stay blank</string>
+    <string name="popup_call_permission_message">We need permission to call contact, please activate in settings or you\'ll can\'t call from here</string>
+    <string name="popup_permission_ok">Ok</string>
+    <string name="popup_permission_ko">Cancel</string>
 
     <!-- MessageActivity strings -->
-    <string name="message_activity_title">contact\'s name</string>
-    <string name="enter_message">enter message</string>
+    <string name="message_activity_title">Contact\'s name</string>
+    <string name="enter_message">Enter message</string>
     <string name="send_button_text" translatable="false"><![CDATA[>>]]></string>
-    <string name="sms_send">sms send</string>
-    <string name="sms_send_generic_failure">sms not send, generic failure</string>
-    <string name="sms_send_no_service">sms not send, no service</string>
-    <string name="action_settings">settings</string>
-    <string name="settings_activity_title">settings</string>
-    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="sms_send">SMS send</string>
+    <string name="sms_send_generic_failure">SMS not send, generic failure</string>
+    <string name="sms_send_no_service">SMS not send, no service</string>
+    <string name="action_settings">Settings</string>
+    <string name="settings_activity_title">Settings</string>
+    <string name="title_activity_settings">Settings</string>
 
     <!-- General Preferences -->
-    <string name="general_header">general</string>
-    <string name="welcome_message_title">welcome message</string>
+    <string name="general_header">General</string>
+    <string name="welcome_message_title">Welcome message</string>
+    <string name="unknown_contact_title">Authorize unknown sms contact</string>
+    <string name="unknown_contact_summary">Saved as contact all unknown number sending sms. SMS permission must be granted to work.</string>
 
     <!-- Language Preferences -->
-    <string name="language_title">language</string>
-    <string name="language_header">language</string>
+    <string name="language_title">Language</string>
+    <string name="language_header">Language</string>
 
-    <!-- Sync Preferences -->
-    <string name="theme_header">theme</string>
-    <string name="color_title">color</string>
-    <string name="mode_title">mode</string>
-    <string name="action_light_theme">light</string>
-    <string name="action_dark_theme">dark</string>
-
-
+    <!-- Theme Preferences -->
+    <string name="theme_header">Theme</string>
+    <string name="color_title">Color</string>
+    <string name="mode_title">Mode</string>
+    <string name="action_light_theme">Light</string>
+    <string name="action_dark_theme">Dark</string>
 </resources>
