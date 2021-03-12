@@ -265,7 +265,7 @@ public class EditorActivity extends BaseAppCompatActivity {
         int itemId = item.getItemId();
         // Respond to a click on the "Save" menu option
         if (itemId == R.id.action_save) {
-            if (!saveContacts())
+            if (!saveContact())
                 return true;
             if (contactId != null && !contactId.isEmpty())
                 mCurrentContactUri = ContentUris.withAppendedId(CONTENT_URI, Long.parseLong(contactId));
@@ -397,7 +397,7 @@ public class EditorActivity extends BaseAppCompatActivity {
     /**
      * Method call to save Contact's informations.
      */
-    private boolean saveContacts() {
+    private boolean saveContact() {
         Uri res = null;
         int updateRows = 0;
         boolean insert = false;
@@ -439,6 +439,7 @@ public class EditorActivity extends BaseAppCompatActivity {
         }
         Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
         toast.show();
+        getSMSPermission();
         return insert;
     }
 

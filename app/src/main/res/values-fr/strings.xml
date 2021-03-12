@@ -38,7 +38,7 @@
     <string name="popup_permission_ok">OK</string>
     <string name="popup_permission_ko">Retour</string>
     <string name="cancel_choice">Annuler</string>
-    <string name="editor_error_contact_minimum_info">Erreur: Un contactSummary doit au moins avoir un nom.</string>
+    <string name="editor_error_contact_minimum_info">Erreur: Un contact doit au moins avoir un nom.</string>
     <string name="editor_delete_contact_ko">Erreur: Impossible de supprimer le contact.</string>
     <string name="editor_delete_contact_ok">Contact enregistré.</string>
     <string name="sms_send">SMS envoyé</string>
