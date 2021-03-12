@@ -13,6 +13,10 @@ import androidx.preference.PreferenceFragmentCompat;
 
 import com.cjacquet.ft.hangouts.R;
 
+import static com.cjacquet.ft.hangouts.utils.SharedPreferencesConstant.SP_PREF_LANG;
+import static com.cjacquet.ft.hangouts.utils.SharedPreferencesConstant.SP_THEME_COLOR;
+import static com.cjacquet.ft.hangouts.utils.SharedPreferencesConstant.SP_THEME_MODE;
+
 public class SettingsActivity extends BaseAppCompatActivity {
     private SharedPreferences prefs;
     private SharedPreferences.OnSharedPreferenceChangeListener listener;
@@ -32,7 +36,7 @@ public class SettingsActivity extends BaseAppCompatActivity {
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
-                if (key.equals("prefLang") || key.equals("colorTheme") || key.equals("colorThemeMode")) {
+                if (key.equals(SP_PREF_LANG) || key.equals(SP_THEME_COLOR) || key.equals(SP_THEME_MODE)) {
                     prefs.unregisterOnSharedPreferenceChangeListener(listener);
                     Intent i = getIntent();
                     finish();
@@ -63,13 +67,13 @@ public class SettingsActivity extends BaseAppCompatActivity {
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
-            Preference pref = findPreference("colorThemeMode");
+            Preference pref = findPreference(SP_THEME_MODE);
             pref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
                     SharedPreferences.Editor editor = pref.edit();
-                    editor.putString("colorThemeMode", newValue.toString());
+                    editor.putString(SP_THEME_MODE, newValue.toString());
                     editor.apply();
                     return true;
                 }

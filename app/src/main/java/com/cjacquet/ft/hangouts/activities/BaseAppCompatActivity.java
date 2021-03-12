@@ -18,11 +18,12 @@ import com.cjacquet.ft.hangouts.utils.Utils;
 
 import java.util.Date;
 
+import static com.cjacquet.ft.hangouts.utils.SharedPreferencesConstant.SP_PREF_LANG;
+import static com.cjacquet.ft.hangouts.utils.SharedPreferencesConstant.SP_THEME_COLOR;
+import static com.cjacquet.ft.hangouts.utils.SharedPreferencesConstant.SP_THEME_MODE;
+import static com.cjacquet.ft.hangouts.utils.SharedPreferencesConstant.SP_WLC_MSG;
+
 public class BaseAppCompatActivity extends AppCompatActivity {
-    private static final String SP_THEME_COLOR = "colorTheme";
-    private static final String SP_THEME_MODE = "colorThemeMode";
-    private static final String SP_PREF_LANG = "prefLang";
-    private static final String SP_WLC_MSG = "welcomeMessage";
     private Date pausedDate;
     private boolean paused;
     private static Theme colorTheme = Theme.ORANGE;

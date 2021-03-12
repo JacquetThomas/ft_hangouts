@@ -29,6 +29,7 @@ import com.cjacquet.ft.hangouts.messages.Message;
 import com.cjacquet.ft.hangouts.messages.MessageListAdapter;
 import com.cjacquet.ft.hangouts.messages.MessageType;
 import com.cjacquet.ft.hangouts.receiver.SmsSentReceiver;
+import com.cjacquet.ft.hangouts.utils.CustomIntent;
 import com.cjacquet.ft.hangouts.utils.Utils;
 
 import java.util.ArrayList;
@@ -75,7 +76,7 @@ public class MessageActivity extends BaseAppCompatActivity {
 
         /* --------------- Register the receiver --------------- */
         intentFilter = new IntentFilter();
-        intentFilter.addAction("RECEIVED_SMS");
+        intentFilter.addAction(CustomIntent.RECEIVED_SMS);
         registerReceiver(intentReceiver, intentFilter);
 
         /* --------------- Handle message to send --------------- */

@@ -35,6 +35,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.cjacquet.ft.hangouts.R;
 import com.cjacquet.ft.hangouts.contacts.ContactListAdapter;
 import com.cjacquet.ft.hangouts.contacts.ContactSummary;
+import com.cjacquet.ft.hangouts.utils.CustomIntent;
 import com.cjacquet.ft.hangouts.utils.LocaleHelper;
 import com.cjacquet.ft.hangouts.utils.Theme;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -64,7 +65,6 @@ public class MainActivity extends BaseAppCompatActivity {
     private List<ContactSummary> contactSummaries = new ArrayList<>();
     private ContactListAdapter mContactAdapter;
     private HashMap<String, Integer> mapIndex = new LinkedHashMap<>();
-    private RecyclerView contactRecyclerView;
     private RecyclerView.SmoothScroller smoothScroller;
     private LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 
@@ -72,10 +72,8 @@ public class MainActivity extends BaseAppCompatActivity {
     private BroadcastReceiver intentReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equalsIgnoreCase("UNKNOWN_SMS_RECEIVED")) {
-                Uri uri = Uri.parse(intent.getExtras().get("uri").toString());
-                getContentResolver().notifyChange(uri, null);
-            }
+            Uri uri = Uri.parse(intent.getExtras().get("uri").toString());
+            getContentResolver().notifyChange(uri, null);
         }
     };
 
@@ -93,7 +91,7 @@ public class MainActivity extends BaseAppCompatActivity {
 
         /* --------------- Register the receiver --------------- */
         intentFilter = new IntentFilter();
-        intentFilter.addAction("UNKNOWN_SMS_RECEIVED");
+        intentFilter.addAction(CustomIntent.UNKNOWN_SMS_RECEIVED);
         registerReceiver(intentReceiver, intentFilter);
         /* ----------------------------------------------------- */
 
@@ -115,7 +113,7 @@ public class MainActivity extends BaseAppCompatActivity {
             emptyView.setVisibility(View.GONE);
 
         // Find the ListView which will be populated with the contact data
-        contactRecyclerView = findViewById(R.id.listview_contact);
+        RecyclerView contactRecyclerView = findViewById(R.id.listview_contact);
         mContactAdapter = new ContactListAdapter(contactSummaries);
         contactRecyclerView.setLayoutManager(layoutManager);
         contactRecyclerView.setAdapter(mContactAdapter);
@@ -199,7 +197,7 @@ public class MainActivity extends BaseAppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     TextView tv = v.findViewById(R.id.side_index_item);
-                    Integer index = mapIndex.get(tv.getText());
+                    Integer index = mapIndex.get(tv.getText().toString());
                     if (index != null) {
                         smoothScroller.setTargetPosition(index);
                         layoutManager.startSmoothScroll(smoothScroller);
@@ -256,7 +254,7 @@ public class MainActivity extends BaseAppCompatActivity {
     protected void onResume() {
         super.onResume();
         intentFilter = new IntentFilter();
-        intentFilter.addAction("UNKNOWN_RECEIVED_SMS");
+        intentFilter.addAction(CustomIntent.UNKNOWN_SMS_RECEIVED);
         registerReceiver(intentReceiver, intentFilter);
     }
 

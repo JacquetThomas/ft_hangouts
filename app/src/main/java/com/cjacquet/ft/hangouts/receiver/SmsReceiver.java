@@ -13,6 +13,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.cjacquet.ft.hangouts.contacts.ContactSummary;
+import com.cjacquet.ft.hangouts.utils.CustomIntent;
 import com.cjacquet.ft.hangouts.utils.Utils;
 
 import static com.cjacquet.ft.hangouts.database.ContactContract.ContactEntry.COLUMN_CONTACT_LASTNAME;
@@ -54,7 +55,7 @@ public class SmsReceiver extends BroadcastReceiver {
                 String lastname = contact.getLastname();
                 Toast.makeText(context, "Message: " + name + " " + lastname, Toast.LENGTH_SHORT).show();
                 Intent broadcastReceiver = new Intent();
-                broadcastReceiver.setAction("RECEIVED_SMS");
+                broadcastReceiver.setAction(CustomIntent.RECEIVED_SMS);
                 broadcastReceiver.putExtra("number", messageAddress);
                 broadcastReceiver.putExtra("message", messageBody);
                 context.sendBroadcast(broadcastReceiver);
@@ -67,7 +68,7 @@ public class SmsReceiver extends BroadcastReceiver {
                 Toast.makeText(context, "Message: " + messageAddress, Toast.LENGTH_SHORT).show();
 
                 Intent broadcastReceiver = new Intent();
-                broadcastReceiver.setAction("UNKNOWN_SMS_RECEIVED");
+                broadcastReceiver.setAction(CustomIntent.UNKNOWN_SMS_RECEIVED);
                 broadcastReceiver.putExtra("uri", res);
                 context.sendBroadcast(broadcastReceiver);
             }
