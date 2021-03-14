@@ -62,4 +62,8 @@
     <string name="yes">Yes</string>
     <string name="no_sms_permission_main_activity">SMS permission not granted.</string>
     <string name="popup_sms_permission_message_main_activity">We need permission to access your SMS in order to display and receive them. You can allow us in settings. If we can\'t get SMS permission you won\'t access to sending messages or get notification when a SMS arrive.</string>
+    <string name="action_sms">Send SMS</string>
+    <string name="action_call">Call</string>
+    <string name="editor_no_number">The contact need a phone number for this action.</string>
+    <string name="action_add_contact">Add a Contact</string>
 </resources>

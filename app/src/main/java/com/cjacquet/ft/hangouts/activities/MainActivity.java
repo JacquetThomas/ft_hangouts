@@ -233,6 +233,9 @@ public class MainActivity extends BaseAppCompatActivity {
         } else if (itemId == R.id.action_settings) {
             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(intent);
+        } else if (itemId == R.id.action_add_contact) {
+            Intent intent = new Intent(MainActivity.this, EditorActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

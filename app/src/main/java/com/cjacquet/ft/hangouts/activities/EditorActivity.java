@@ -307,6 +307,37 @@ public class EditorActivity extends BaseAppCompatActivity {
             }
             return true;
         }
+        // Respond to a click on the "SMS" button in the app bar
+        else if (itemId == R.id.action_sms) {
+            if (mPhoneEditText.getText().toString().isEmpty()) {
+                Toast.makeText(this, getResources().getString(R.string.editor_no_number), Toast.LENGTH_SHORT).show();
+            } else if (mCurrentContactUri != null) {
+                if (Utils.getSMSPermission(getApplicationContext())) {
+                    Intent intent = new Intent(EditorActivity.this, MessageActivity.class);
+                    intent.putExtra("phoneNumber", mPhoneEditText.getText().toString());
+                    intent.putExtra("contactName", contactName);
+                    intent.putExtra("contactId", contactId);
+                    startActivity(intent);
+                } else {
+                    getSMSPermission();
+                }
+            }
+            return true;
+        }
+        // Respond to a click on the "Call" button in the app bar
+        else if (itemId == R.id.action_call) {
+            if (mPhoneEditText.getText().toString().isEmpty()) {
+
+            } else if (mCurrentContactUri != null) {
+                if (Utils.getCallPermission(getApplicationContext())) {
+                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mPhoneEditText.getText().toString()));
+                    startActivity(intent);
+                } else {
+                    getCallPermission();
+                }
+            }
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -365,6 +396,8 @@ public class EditorActivity extends BaseAppCompatActivity {
         this.showOption(R.id.action_edit);
         this.hideOption(R.id.action_save);
         setTitle(this.mNameEditText.getText().toString() + " " + this.mLastnameEditText.getText().toString());
+        this.showOption(R.id.action_sms);
+        this.showOption(R.id.action_call);
     }
 
     /**
@@ -373,6 +406,8 @@ public class EditorActivity extends BaseAppCompatActivity {
     private void switchMenuToEdit() {
         this.showOption(R.id.action_save);
         this.hideOption(R.id.action_edit);
+        this.hideOption(R.id.action_sms);
+        this.hideOption(R.id.action_call);
         setTitle(R.string.editor_activity_title_edit_contact);
     }
 
@@ -498,19 +533,8 @@ public class EditorActivity extends BaseAppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults == null || grantResults.length == 0)
             return ;
-//        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//            if (REQUEST_SMS_PERMISSION == requestCode) {
-//                Intent intent = new Intent(EditorActivity.this, MessageActivity.class);
-//                intent.putExtra("phoneNumber", mPhoneEditText.getText().toString());
-//                intent.putExtra("contactName", contactName);
-//                intent.putExtra("contactId", contactId);
-//                startActivity(intent);
-//            } else if (REQUEST_CALL_PERMISSION == requestCode) {
-//                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mPhoneEditText.getText().toString()));
-//                startActivity(intent);
-//            }
-//        } else
-            if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+
+        if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
             if (REQUEST_SMS_PERMISSION == requestCode) {
                 // setup the alert builder
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);

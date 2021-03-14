@@ -77,4 +77,8 @@
     <string name="mode_title">Mode</string>
     <string name="action_light_theme">Light</string>
     <string name="action_dark_theme">Dark</string>
+    <string name="action_sms">Send message</string>
+    <string name="action_call">Call</string>
+    <string name="editor_no_number">The contact need a phone number for this action.</string>
+    <string name="action_add_contact">Add a Contact</string>
 </resources>

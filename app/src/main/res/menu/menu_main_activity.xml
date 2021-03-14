@@ -22,6 +22,11 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/action_add_contact"
+        android:title="@string/action_add_contact"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_delete_all_entries"
         android:title="@string/action_delete_all_entries"
         app:showAsAction="never" />

@@ -62,4 +62,8 @@
     <string name="unknown_contact_title">Reception SMS de numéros inconnus</string>
     <string name="popup_sms_permission_message_main_activity">Nous avons besoin de votre permission pour afficher et recevoir vos SMS.  Sans cela vous ne pourrait pas voir vos SMS ou recevoir de notification quand un SMS arrive. Vous pouvez nous l\'autoriser dans les paramètres.</string>
     <string name="no_sms_permission_main_activity">Permission SMS refusée.</string>
+    <string name="action_sms">Envoyer un SMS</string>
+    <string name="action_call">Appeler</string>
+    <string name="editor_no_number">Le contact doit avoir un numéro de téléphone pour cette action.</string>
+    <string name="action_add_contact">Ajouter un contact</string>
 </resources>

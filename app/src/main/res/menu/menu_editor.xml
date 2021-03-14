@@ -20,6 +20,16 @@ android:actionMenuTextColor="@android:color/black">
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/action_sms"
+        android:title="@string/action_sms"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_call"
+        android:title="@string/action_call"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_delete"
         android:title="@string/action_delete"
         app:showAsAction="never" />
