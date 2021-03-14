@@ -47,7 +47,7 @@
     <string name="popup_permission_title">Required permission</string>
     <string name="popup_sms_permission_message">We need permission to access and send sms, please activate in settings or this window will stay blank</string>
     <string name="popup_call_permission_message">We need permission to call contact, please activate in settings or you\'ll can\'t call from here</string>
-    <string name="popup_permission_ok">Ok</string>
+    <string name="popup_permission_ok">OK</string>
     <string name="popup_permission_ko">Cancel</string>
 
     <!-- MessageActivity strings -->
